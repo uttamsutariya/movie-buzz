@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { HashRouter, Routes, Route } from "react-router-dom";
 
 // components
 import Home from "./components/Home";
@@ -24,7 +24,7 @@ import SeatSelector from "./components/shows/SeatSelector";
 
 const App = () => {
 	return (
-		<BrowserRouter>
+		<HashRouter>
 			<Routes>
 				<Route path="/" element={<Home />} />
 				<Route path="/login" element={<Login />} />
@@ -52,7 +52,7 @@ const App = () => {
 
 				<Route path="*" element={<Error404 />} />
 			</Routes>
-		</BrowserRouter>
+		</HashRouter>
 	);
 };
 
