@@ -3,7 +3,7 @@ import axios from "axios";
 
 // components
 import FileUploadOutlinedIcon from "@mui/icons-material/FileUploadOutlined";
-import Navbar from "../Navigation/Navbar";
+import Navbar from "../navigation/Navbar";
 import Loader from "../../Loader";
 
 import { movieGenres, languages } from "../../../../constants";

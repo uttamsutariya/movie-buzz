@@ -5,7 +5,7 @@ import axios from "axios";
 // components
 import FileUploadOutlinedIcon from "@mui/icons-material/FileUploadOutlined";
 import DesignServicesOutlinedIcon from "@mui/icons-material/DesignServicesOutlined";
-import Navbar from "../Navigation/Navbar";
+import Navbar from "../navigation/Navbar";
 import Loader from "../../Loader";
 
 const initialState = {

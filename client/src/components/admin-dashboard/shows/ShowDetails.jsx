@@ -4,7 +4,7 @@ import axios from "axios";
 
 // components
 import SwapVertRoundedIcon from "@mui/icons-material/SwapVertRounded";
-import Navbar from "../Navigation/Navbar";
+import Navbar from "../navigation/Navbar";
 import Loader from "../../Loader";
 import Date from "../../util/Date";
 import ArrayString from "../../util/ArrayString";
