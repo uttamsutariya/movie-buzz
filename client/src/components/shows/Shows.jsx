@@ -1,0 +1,165 @@
+import { useParams, useNavigate } from "react-router-dom";
+import { useState, useEffect, useReducer } from "react";
+import axios from "axios";
+
+// conponents
+import SwapVertRoundedIcon from "@mui/icons-material/SwapVertRounded";
+import BackButton from "../BackButton";
+import Loader from "../Loader";
+import Navbar from "../Navbar";
+import Time from "../util/Time";
+import Date from "../util/Date";
+
+const initialState = {
+	loading: true,
+	error: "",
+	movie: "",
+	shows: [],
+};
+
+const reducer = (state, action) => {
+	const { type, payload } = action;
+
+	switch (type) {
+		case "FETCH_SUCCESS":
+			const { movie, shows } = payload;
+			return { loading: false, error: "", movie, shows };
+		case "FETCH_ERROR":
+			return { ...state, error: payload };
+		default:
+			return state;
+	}
+};
+
+const Shows = () => {
+	const { id } = useParams();
+	const navigate = useNavigate();
+
+	const [radioValue, setRadioValue] = useState("");
+
+	const [state, dispatch] = useReducer(reducer, initialState);
+
+	const { loading, error, shows, movie } = state;
+
+	useEffect(() => {
+		axios
+			.get(`/api/shows/${id}`)
+			.then((res) => {
+				dispatch({ type: "FETCH_SUCCESS", payload: res.data.data });
+			})
+			.catch(() => dispatch({ type: "FETCH_ERROR", payload: "Something went wrong" }));
+	}, []);
+
+	const handleSubmit = (e) => {
+		e.preventDefault();
+		navigate(`/shows/seat-map/${radioValue}`);
+	};
+
+	const handleRadioOnChange = (e) => {
+		setRadioValue(e.target.value);
+	};
+
+	if (error) return <Loader msg="error" />;
+	else if (loading) return <Loader msg="loading" />;
+
+	const show = (
+		<div className="max-w-[1296px] my-2 mx-auto w-full p-10 bg-slate-800 rounded-2xl relative">
+			<BackButton />
+			<div className="text-xl text-white text-center">{movie}</div>
+			<div className="mx-auto px-4 sm:px-8 max-w-2xl">
+				<form onSubmit={handleSubmit}>
+					<div className="py-2">
+						<div className="py-4 overflow-x-auto">
+							<div className={styles.table_container}>
+								<table className="min-w-full">
+									<thead>
+										<tr>
+											<th scope="col" className={styles.th}></th>
+											<th scope="col" className={styles.th}>
+												Date
+												<SwapVertRoundedIcon fontSize="small" className="ml-2" />
+											</th>
+											<th scope="col" className={styles.th}>
+												Time
+												<SwapVertRoundedIcon fontSize="small" className="ml-2" />
+											</th>
+											<th scope="col" className={styles.th}>
+												Price
+												<SwapVertRoundedIcon fontSize="small" className="ml-2" />
+											</th>
+											<th scope="col" className={styles.th}>
+												Cinema Hall
+											</th>
+										</tr>
+									</thead>
+									<tbody>
+										{shows?.map((show, index) => (
+											<tr className={styles.tr} key={index}>
+												<td className={styles.td}>
+													<input
+														type="radio"
+														name="show"
+														radioGroup="show"
+														value={show._id}
+														className="w-[100%]"
+														required
+														onChange={handleRadioOnChange}
+														checked={radioValue == `${show._id}`}
+													/>
+												</td>
+												<td className={styles.td}>
+													<p className={styles.td_p}>{<Date date={show.date} />}</p>
+												</td>
+												<td className={styles.td}>
+													<p className={styles.td_p}>{<Time date={show.startTime} />}</p>
+												</td>
+												<td className={styles.td}>
+													<p className={styles.td_p}>{show.price} INR</p>
+												</td>
+												<td className={styles.td}>
+													<p className={styles.td_p}>{show.cinemaHall.screenName}</p>
+												</td>
+											</tr>
+										))}
+									</tbody>
+								</table>
+							</div>
+						</div>
+					</div>
+					<button type="submit" className="bg-blue-600 w-full rounded-md font-medium my-6 p-2 text-white">
+						Select Seats
+					</button>
+				</form>
+			</div>
+		</div>
+	);
+
+	const noShow = (
+		<div className="max-w-[1296px] w-[100vw] relative flex justify-center items-center m-auto">
+			<BackButton />
+			<p className="text-center font-extrabold text-gray-400 mt-48">
+				<span className="text-5xl">Sorry 🙇‍♂️</span>
+				<br />
+				<br />
+				<span className="text-5xl">Show is not available for this movie</span>
+			</p>
+		</div>
+	);
+
+	return (
+		<div>
+			<Navbar />
+			{shows.length > 0 ? show : noShow}
+		</div>
+	);
+};
+
+const styles = {
+	th: "px-5 py-3 bg-black text-gray-200 text-left text-md font-light",
+	td: "px-5 py-4 border-b border-gray-500 text-sm",
+	tr: "bg-gray-300 hover:bg-gray-100",
+	td_p: "text-black whitespace-no-wrap",
+	table_container: "inline-block min-w-full rounded-lg max-h-[70vh] overflow-auto scroll-smooth",
+};
+
+export default Shows;

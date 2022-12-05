@@ -1,0 +1,26 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html,
+body {
+	max-width: 100%;
+	font-family: "Karla", sans-serif;
+}
+
+body {
+	/* background-color: rgb(15, 23, 42); */
+	background-color: #0d1117;
+}
+
+::-webkit-scrollbar {
+	display: none;
+}
+/* 
+::-webkit-scrollbar-track {
+	background: #0f172a;
+}
+
+::-webkit-scrollbar-thumb {
+	background: white;
+} */
