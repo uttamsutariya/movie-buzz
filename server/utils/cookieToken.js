@@ -11,11 +11,14 @@ exports.cookieToken = (user, res) => {
 		expiresIn: process.env.JWT_EXPIRY,
 	});
 
-	user.password = undefined;
+	user._doc.password = undefined;
+	user._doc.createdAt = undefined;
+	user._doc.updatedAt = undefined;
+	user._doc.token = token;
 
 	// sending token as a cookie in response
 	res.status(201).cookie("token", token, options).json({
 		status: "success",
-		data: { user, token },
+		data: { user },
 	});
 };

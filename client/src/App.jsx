@@ -21,38 +21,60 @@ import CinemaHall from "./components/admin-dashboard/cinemaHall/CinemaHall";
 import CinemaHallForm from "./components/admin-dashboard/cinemaHall/CinemaHallForm";
 import AdminWelcome from "./components/admin-dashboard/AdminWelcome";
 import SeatSelector from "./components/shows/SeatSelector";
+import PrivateRoute from "./components/PrivateRoute";
+
+// toast
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
+// auth provider
+import { AuthProvider } from "./context";
 
 const App = () => {
 	return (
-		<HashRouter>
-			<Routes>
-				<Route path="/" element={<Home />} />
-				<Route path="/login" element={<Login />} />
-				<Route path="/signup" element={<Signup />} />
-				<Route path="/movies" element={<Movies />} />
-				<Route path="/movies/details/:id" element={<MovieDetails />} />
-				<Route path="/shows/:id" element={<Shows />} />
-				<Route path="/shows/seat-map/:id" element={<SeatSelector />} />
-				<Route path="/bookings" element={<Booking />} />
-				<Route path="/feedback" element={<Feedback />} />
+		<AuthProvider>
+			<ToastContainer
+				autoClose={2000}
+				hideProgressBar={true}
+				newestOnTop={true}
+				closeOnClick={false}
+				closeButton={false}
+				limit={1}
+			/>
+			<HashRouter>
+				<Routes>
+					{/* user routes */}
+					<Route path="/" element={<Home />} />
+					<Route path="/login" element={<Login />} />
+					<Route path="/signup" element={<Signup />} />
+					<Route path="/movies" element={<Movies />} />
+					<Route path="/shows/:id" element={<Shows />} />
+					<Route path="/movies/details/:id" element={<MovieDetails />} />
+					<Route path="/shows/seat-map/:id" element={<SeatSelector />} />
+					{/* protected routes */}
+					<Route element={<PrivateRoute />}>
+						<Route path="/bookings" element={<Booking />} />
+						<Route path="/feedback" element={<Feedback />} />
 
-				{/* admin route */}
-				<Route path="/admin" element={<AdminHome />}>
-					<Route path="" element={<AdminWelcome />} />
-					<Route path="movies" element={<AdminMovies />} />
-					<Route path="movies/add" element={<MovieForm />} />
-					<Route path="shows" element={<AdminShows />} />
-					<Route path="shows/add" element={<ShowForm />} />
-					<Route path="shows/update/:id" element={<ShowForm update={true} />} />
-					<Route path="shows/:id" element={<ShowDetails />} />
-					<Route path="feedbacks" element={<AdminFeedback />} />
-					<Route path="cinemahalls" element={<CinemaHall />} />
-					<Route path="cinemahalls/add" element={<CinemaHallForm />} />
-				</Route>
+						{/* admin route */}
+						<Route path="/admin" element={<AdminHome />}>
+							<Route path="" element={<AdminWelcome />} />
+							<Route path="movies" element={<AdminMovies />} />
+							<Route path="movies/add" element={<MovieForm />} />
+							<Route path="shows" element={<AdminShows />} />
+							<Route path="shows/add" element={<ShowForm />} />
+							<Route path="shows/update/:id" element={<ShowForm update={true} />} />
+							<Route path="shows/:id" element={<ShowDetails />} />
+							<Route path="feedbacks" element={<AdminFeedback />} />
+							<Route path="cinemahalls" element={<CinemaHall />} />
+							<Route path="cinemahalls/add" element={<CinemaHallForm />} />
+						</Route>
+					</Route>
 
-				<Route path="*" element={<Error404 />} />
-			</Routes>
-		</HashRouter>
+					<Route path="*" element={<Error404 />} />
+				</Routes>
+			</HashRouter>
+		</AuthProvider>
 	);
 };
 

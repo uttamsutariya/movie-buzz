@@ -156,7 +156,7 @@ const ShowForm = ({ update }) => {
 			/>
 
 			<div className="m-5 p-5 bg-slate-800 rounded-lg">
-				<form onSubmit={handleSubmit} className="w-[60%] m-auto">
+				<form onSubmit={handleSubmit} className="w-[60%] m-auto" autoComplete="off">
 					{/* Movie */}
 					<div className="mb-6">
 						<label htmlFor="lang" className={styles.label}>

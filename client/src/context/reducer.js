@@ -1,13 +1,13 @@
-import { useReducer } from "react";
-
 export const initialState = {
-	user: {},
+	user: null,
 	loading: false,
 	error: null,
 };
 
 export const AuthReducer = (initialState, action) => {
-	switch (action.type) {
+	const { type, payload } = action;
+
+	switch (type) {
 		case "REQUEST_LOGIN":
 			return {
 				...initialState,
@@ -16,20 +16,20 @@ export const AuthReducer = (initialState, action) => {
 		case "LOGIN_SUCCESS":
 			return {
 				...initialState,
-				user: action.payload.user,
+				user: payload,
 				loading: false,
 			};
 		case "LOGOUT":
 			return {
 				...initialState,
-				user: "",
+				user: null,
 			};
 
-		case "LOGIN_ERROR":
+		case "ERROR":
 			return {
 				...initialState,
 				loading: false,
-				error: action.error,
+				error: payload,
 			};
 
 		default:

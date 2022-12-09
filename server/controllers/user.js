@@ -45,7 +45,7 @@ exports.logIn = asyncHandler(async (req, res, next) => {
 	if (!email || !password) return next(new CustomError("Email and password are required", 400));
 
 	// getting user from DB
-	const user = await User.findOne({ email, role: 0 }).select("+password +role");
+	const user = await User.findOne({ email }).select("+password +role");
 
 	// if user not exist
 	if (!user) {

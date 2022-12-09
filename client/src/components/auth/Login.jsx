@@ -1,6 +1,9 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+
+// components
 import BackButton from "../BackButton";
+import Loader from "../Loader";
 
 import { loginUser, useAuthDispatch, useAuthState } from "../../context";
 
@@ -8,28 +11,30 @@ const Login = () => {
 	const [email, setEmail] = useState("");
 	const [password, setPassword] = useState("");
 
+	const dispatch = useAuthDispatch();
+	const { loading } = useAuthState();
+
+	const navigate = useNavigate();
+
+	// login handler
 	const handleLogin = async (e) => {
 		e.preventDefault();
 		let data = { email, password };
 
-		const dispatch = useAuthDispatch();
-		const { loading, error } = useAuthState();
-
-		try {
-			let response = await loginUser(dispatch, payload); //loginUser action makes the request and handles all the neccessary state changes
-			if (!response.user) return;
-			props.history.push("/dashboard"); //navigate to dashboard on success
-		} catch (error) {
-			console.log(error);
-		}
+		let user = await loginUser(dispatch, data);
+		if (!user) return;
+		else if (user.role == 1) navigate("/admin");
+		else if (user.role == 0) navigate(-2);
 	};
+
+	if (loading) return <Loader msg="loading" />;
 
 	return (
 		<div className={styles.parent}>
 			<BackButton />
 
 			<div className={styles.formContainer}>
-				<form onSubmit={handleLogin}>
+				<form onSubmit={handleLogin} autoComplete="off">
 					<div className={styles.formGroup}>
 						<input
 							type="email"
@@ -48,14 +53,10 @@ const Login = () => {
 							placeholder="Password"
 						/>
 					</div>
-					<div className="flex justify-between items-center mb-6">
-						<div className="form-group form-check">
-							<input
-								type="checkbox"
-								className="h-4 w-4 border border-gray-300 rounded-sm bg-white checked:bg-blue-600  mr-2 cursor-pointer"
-								id="exampleCheck2"
-							/>
-							<label className="form-check-label inline-block text-gray-200" htmlFor="exampleCheck2">
+					<div className={styles.utils_div}>
+						<div>
+							<input type="checkbox" className={styles.checkbox_input} id="exampleCheck2" />
+							<label className={styles.checkbox_label} htmlFor="exampleCheck2">
 								Remember me
 							</label>
 						</div>
@@ -63,14 +64,10 @@ const Login = () => {
 							Forgot password?
 						</a>
 					</div>
-					<button
-						type="submit"
-						className="
-                        w-full px-6 py-2.5 bg-blue-600 text-white font-medium text-sm rounded hover:bg-blue-700"
-					>
+					<button type="submit" className={styles.login_btn}>
 						Login
 					</button>
-					<p className="text-gray-200 mt-6 text-center">
+					<p className={styles.signup_link}>
 						Don't have account ?{" "}
 						<Link to="../signup" replace={true} className="text-blue-400">
 							SignUp
@@ -88,6 +85,11 @@ const styles = {
 	formGroup: "form-group mb-6",
 	inputItem:
 		"text-sm rounded-lg  block w-full p-2.5 bg-gray-700 placeholder-gray-200 text-white focus:outline-blue-600",
+	utils_div: "flex justify-between items-center mb-6",
+	checkbox_input: "h-4 w-4 border border-gray-300 rounded-sm bg-white checked:bg-blue-600  mr-2 cursor-pointer",
+	checkbox_label: "form-check-label inline-block text-gray-200",
+	login_btn: "w-full px-6 py-2.5 bg-blue-600 text-white font-medium text-sm rounded hover:bg-blue-700",
+	signup_link: "text-gray-200 mt-6 text-center",
 };
 
 export default Login;

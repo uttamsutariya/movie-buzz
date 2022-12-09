@@ -1,7 +1,28 @@
 import Navbar from "../Navbar";
 import BackButton from "../BackButton";
+import { useState } from "react";
+
+// toast
+import { toast } from "react-toastify";
+import axios from "axios";
 
 const Feedback = () => {
+	const [message, setMessage] = useState("");
+
+	const handleSubmit = async (e) => {
+		e.preventDefault();
+
+		if (!message) {
+			toast.error("Please write your message");
+			return;
+		}
+
+		const res = await axios.post(`/api/user/feedback`, { message });
+		if (res) {
+			toast.success("Thanks for your valuable feedback");
+		}
+	};
+
 	return (
 		<>
 			<Navbar />
@@ -12,13 +33,13 @@ const Feedback = () => {
 						<h1 className="text-4xl font-semibold">Your Feedback is importtant for us !</h1>
 					</div>
 					<div className="w-[50%] m-auto mt-5">
-						<form action="">
+						<form onSubmit={handleSubmit} autoComplete="off">
 							<textarea
+								onChange={(e) => setMessage(e.target.value)}
 								id="feedback"
 								rows={10}
 								className="resize-none  text-sm rounded-lg  block w-full p-5 bg-gray-700 placeholder-gray-200 text-white focus:outline-blue-600"
 								placeholder="Write your message here !"
-								required
 							></textarea>
 							<button
 								type="submit"

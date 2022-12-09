@@ -3,7 +3,11 @@ import { Link } from "react-router-dom";
 import User from "./UserProfileButton";
 import GitHubIcon from "@mui/icons-material/GitHub";
 
+import { useAuthState } from "../context";
+
 const Navbar = () => {
+	const { user } = useAuthState();
+
 	return (
 		<nav className="bg-slate-800 mb-5 mx-auto w-[100vw] shadow-xl sticky top-0 z-50">
 			<div className="mx-auto px-8 max-w-[1400px]">
@@ -19,15 +23,18 @@ const Navbar = () => {
 						</Link>
 						<div>
 							<div className=" flex space-x-4 items-center">
-								<Link to="/login">
-									<button
-										type="button"
-										className="py-1 px-4 bg-blue-600 text-white text-center font-medium rounded-md"
-									>
-										Login
-									</button>
-								</Link>
-								<User />
+								{user != null ? (
+									<User icon={user.username[0].toUpperCase()} />
+								) : (
+									<Link to="/login">
+										<button
+											type="button"
+											className="py-1 px-4 bg-blue-600 text-white text-center font-medium rounded-md"
+										>
+											Login
+										</button>
+									</Link>
+								)}
 							</div>
 						</div>
 					</div>

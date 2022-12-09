@@ -1,24 +1,47 @@
-export async function loginUser(dispatch, loginPayload) {
-	const requestOptions = {
-		method: "POST",
-		headers: { "Content-Type": "application/json" },
-		body: JSON.stringify(loginPayload),
-	};
+import axios from "axios";
 
+// toast
+import { toast } from "react-toastify";
+
+export async function loginUser(dispatch, loginPayload) {
 	try {
 		dispatch({ type: "REQUEST_LOGIN" });
-		let response = await fetch(`api/login`, requestOptions);
-		let data = await response.json();
+		let {
+			data: {
+				data: { user },
+			},
+		} = await axios.post(`api/user/login`, loginPayload);
 
-		if (data.user) {
-			dispatch({ type: "LOGIN_SUCCESS", payload: data });
-			return data;
+		if (user) {
+			dispatch({ type: "LOGIN_SUCCESS", payload: user });
+			toast.success("Login success");
+			return user;
 		}
-
-		dispatch({ type: "LOGIN_ERROR", error: data.errors[0] });
-		return;
 	} catch (error) {
-		dispatch({ type: "LOGIN_ERROR", error: error });
+		const errorMessage = error.response.data.message;
+		dispatch({ type: "ERROR", payload: errorMessage });
+		toast.error(errorMessage);
+	}
+}
+
+export async function signupUser(dispatch, loginPayload) {
+	try {
+		dispatch({ type: "REQUEST_LOGIN" });
+		let {
+			data: {
+				data: { user },
+			},
+		} = await axios.post(`api/user/signup`, loginPayload);
+
+		if (user) {
+			dispatch({ type: "LOGIN_SUCCESS", payload: user });
+			toast.success("Signup success");
+			return user;
+		}
+	} catch (error) {
+		const errorMessage = error.response.data.message;
+		dispatch({ type: "ERROR", payload: errorMessage });
+		toast.error(errorMessage);
 	}
 }
 

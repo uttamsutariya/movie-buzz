@@ -79,7 +79,7 @@ const MovieForm = () => {
 			<Navbar child={<h1 className={styles.nav_h1}>Add New Movie</h1>} />
 
 			<div className="m-5 p-5 bg-slate-800 rounded-lg">
-				<form onSubmit={handleSubmit} className="w-[60%] m-auto">
+				<form onSubmit={handleSubmit} className="w-[60%] m-auto" autoComplete="off">
 					{/* movie title */}
 					<div className="mb-6">
 						<label className={styles.label} htmlFor="title">

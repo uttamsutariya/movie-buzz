@@ -2,7 +2,6 @@ const router = require("express").Router();
 
 // contgrollers
 const {
-	logIn,
 	addCinemaHall,
 	viewFeedback,
 	getAllShowsAndAnalytics,
@@ -18,9 +17,6 @@ const { addNewShow, updateShowDetails } = require("../controllers/show");
 // auth middleware
 const { authToken } = require("../middlewares/authenticateToken");
 const { authorizeRole } = require("../middlewares/authorizer");
-
-// login
-router.post("/login", logIn);
 
 // add new movie
 // router.post("/movies", authToken, authorizeRole(1), addMovie);

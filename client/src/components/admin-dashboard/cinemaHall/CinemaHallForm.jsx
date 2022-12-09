@@ -44,7 +44,7 @@ const CinemaHallForm = () => {
 			<Navbar child={<h1 className={styles.nav_h1}>Add new cinemahall</h1>} />
 
 			<div className="m-5 p-5 bg-slate-800 rounded-lg">
-				<form onSubmit={handleSubmit} className="w-[40%] m-auto">
+				<form onSubmit={handleSubmit} className="w-[40%] m-auto" autoComplete="off">
 					{/* Name */}
 					<div className="flex flex-col justify-start space-x-20">
 						<div>

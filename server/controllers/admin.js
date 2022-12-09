@@ -12,32 +12,6 @@ const Feedback = require("../models/feedback");
 const Show = require("../models/show");
 const Booking = require("../models/booking");
 
-// login
-exports.logIn = asyncHandler(async (req, res, next) => {
-	const { email, password } = req.body;
-
-	// check if email & password present
-	if (!email || !password) return next(new CustomError("Email and password are required", 400));
-
-	// getting user from DB
-	const user = await User.findOne({ email, role: 1 }).select("+password +role");
-
-	// if user not exist
-	if (!user) {
-		return next(new CustomError("Invalid credentials", 400));
-	}
-
-	const isPasswordValidate = await user.isValidatedPassword(password);
-
-	// wrong password
-	if (!isPasswordValidate) {
-		return next(new CustomError("Invalid credentials", 400));
-	}
-
-	// sending token in cookie
-	cookieToken(user, res);
-});
-
 // add movie
 exports.addMovie = asyncHandler(async (req, res, next) => {
 	let { title, description, release_date, status, language, duration, genre, actors, adult, trailer_link } = req.body;

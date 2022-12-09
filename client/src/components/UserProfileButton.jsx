@@ -5,13 +5,11 @@ import StyleOutlinedIcon from "@mui/icons-material/StyleOutlined";
 import TextsmsOutlinedIcon from "@mui/icons-material/TextsmsOutlined";
 import { Link } from "react-router-dom";
 
-const styles = {
-	linkItem:
-		"block px-2 p-1 text-md text-mygray border-b-2 border-solid border-mygray hover:bg-mygray hover:text-white",
-};
+import { logout, useAuthDispatch } from "../context";
 
-const User = () => {
+const User = ({ icon }) => {
 	const [isOpen, setIsOpen] = useState(false);
+	const dispatch = useAuthDispatch();
 
 	return (
 		<div>
@@ -23,7 +21,7 @@ const User = () => {
 							color: "black",
 						}}
 					>
-						<p className="font-extrabold text-white">U</p>
+						<p className="font-extrabold text-white">{icon}</p>
 					</Avatar>
 				</div>
 				{isOpen ? (
@@ -45,20 +43,25 @@ const User = () => {
 									</span>
 								</span>
 							</Link>
-							<Link to={"#"} className={styles.linkItem}>
+							<div onClick={() => logout(dispatch)} className={styles.linkItem}>
 								<span className="flex flex-col">
 									<span>
 										<LogoutRoundedIcon className="mr-5" />
 										Logout{" "}
 									</span>
 								</span>
-							</Link>
+							</div>
 						</div>
 					</div>
 				) : null}
 			</div>
 		</div>
 	);
+};
+
+const styles = {
+	linkItem:
+		"block px-2 p-1 cursor-pointer text-md text-mygray border-b-2 border-solid border-mygray hover:bg-mygray hover:text-white",
 };
 
 export default User;
