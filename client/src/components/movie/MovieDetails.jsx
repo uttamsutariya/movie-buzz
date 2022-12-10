@@ -1,6 +1,8 @@
 import Navbar from "../Navbar";
 import MovieFilterOutlinedIcon from "@mui/icons-material/MovieFilterOutlined";
 import BackButton from "../BackButton";
+import Date from "../util/Date";
+import Time from "../util/Time";
 import { useParams, Link } from "react-router-dom";
 import { useEffect, useReducer } from "react";
 import axios from "axios";
@@ -55,7 +57,7 @@ const MovieDetails = () => {
 		},
 		{
 			key: "Release Date",
-			value: release_date,
+			value: <Date date={release_date} />,
 		},
 		{
 			key: "Language",

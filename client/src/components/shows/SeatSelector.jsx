@@ -1,11 +1,14 @@
-import { useEffect, useReducer } from "react";
-import { useParams } from "react-router-dom";
+import { useEffect, useReducer, useState } from "react";
+import { useParams, useNavigate } from "react-router-dom";
 
 import SeatMap from "../SeatMap";
 import BackButton from "../BackButton";
 import Loader from "../Loader.jsx";
 
 import axios from "axios";
+
+// toast
+import { toast } from "react-toastify";
 
 const initialState = {
 	loading: true,
@@ -34,6 +37,7 @@ const reducer = (state, action) => {
 
 const SeatSelector = () => {
 	const { id } = useParams();
+	const navigate = useNavigate();
 
 	const [state, dispatch] = useReducer(reducer, initialState);
 
@@ -47,6 +51,31 @@ const SeatSelector = () => {
 			})
 			.catch(() => dispatch({ type: "FETCH_ERROR", payload: "Something went wrong" }));
 	}, []);
+
+	const [seats, setSeats] = useState([]);
+
+	const handleSelectedSeats = (seatSet) => {
+		setSeats([...seatSet]);
+	};
+
+	const handleSubmit = async (e) => {
+		console.log(seats);
+
+		if (seats.length == 0) {
+			toast.error("Please select a seat");
+			return;
+		}
+
+		const formData = {
+			show: id,
+			seats,
+		};
+
+		const { data } = await axios.post(`/api/user/bookShow`, formData);
+		console.log(data);
+		toast.success("Your tickets are booked and sent on your mail 🤩");
+		navigate("/movies");
+	};
 
 	if (error) return <Loader msg="error" />;
 	else if (loading) return <Loader msg="loading" />;
@@ -86,19 +115,12 @@ const SeatSelector = () => {
 						bookedSeats={bookedSeats}
 						rows={cinemaHall?.totalRows}
 						cols={cinemaHall?.totalColumns}
+						handleSelectedSeats={handleSelectedSeats}
 					/>
 				</div>
 				<div className="mt-5">
-					<p>
-						Selected Seats: <span className={styles.selected_options_span}>A1, A2, A3</span>
-					</p>
-					<p>
-						Total Amount: <span className={styles.selected_options_span}>450 INR</span>
-					</p>
-				</div>
-				<div className="mt-5">
-					<button className="bg-blue-600 w-[200px] rounded-md font-medium px-3 py-2 text-white">
-						Pay 450 INR.
+					<button onClick={handleSubmit} type="button" className={styles.submit_btn}>
+						Pay {price * seats.length} INR.
 					</button>
 				</div>
 			</div>
@@ -118,6 +140,7 @@ const styles = {
 	selected_options_span: "ml-2 text-blue-400",
 	availability: "my-3 flex justify-between",
 	avail_div: "flex flex-col items-center justify-around mx-3",
+	submit_btn: "bg-blue-600 w-[200px] rounded-md font-medium px-3 py-2 text-white",
 };
 
 export default SeatSelector;

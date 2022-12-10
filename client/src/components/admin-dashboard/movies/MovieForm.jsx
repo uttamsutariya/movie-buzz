@@ -6,6 +6,9 @@ import FileUploadOutlinedIcon from "@mui/icons-material/FileUploadOutlined";
 import Navbar from "../navigation/Navbar";
 import Loader from "../../Loader";
 
+// toast
+import { toast } from "react-toastify";
+
 import { movieGenres, languages } from "../../../../constants";
 
 const MovieForm = () => {
@@ -64,7 +67,7 @@ const MovieForm = () => {
 			.post(`/api/admin/movies`, uploadData)
 			.then((res) => {
 				setLoading(false);
-				alert("Movie added succesfully");
+				toast.success("Movie added successfully");
 			})
 			.catch((error) => {
 				setError("Something went wrong");

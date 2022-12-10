@@ -1,8 +1,10 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Loader from "./Loader";
 
+const seatSet = new Set();
+
 const SeatMap = (props) => {
-	const { availableSeats, bookedSeats, rows, cols } = props;
+	const { availableSeats, bookedSeats, rows, cols, handleSelectedSeats } = props;
 
 	const myRows = [];
 	const myCols = [];
@@ -12,17 +14,22 @@ const SeatMap = (props) => {
 
 	const seats = [...available, ...booked];
 
-	const seatSet = new Set();
+	useEffect(() => {
+		seatSet.clear();
+	}, []);
 
 	/**
 	 * creating state variable for managing selected & not selected seats
 	 */
-	const checkedSeat = new Array(seats.length).fill(false);
+	const defaultCheckedSeats = new Array(seats.length).fill(false);
 	seats.forEach((seat) => {
-		checkedSeat[seat.row * seat.col - 1] = seat.isBooked;
+		const myIndex = cols * (seat.row - 1) + (seat.col - 1);
+		defaultCheckedSeats[myIndex] = seat.isBooked;
 	});
 
-	const handleSeatChange = (e) => {
+	const [checkedSeats, setCheckedSeats] = useState(defaultCheckedSeats);
+
+	const handleSeatChange = (myIndex, e) => {
 		/**
 		 * if defaultChecked is false =>
 		 * 		user want to select that seat =>
@@ -32,24 +39,19 @@ const SeatMap = (props) => {
 		 * 		user want to disselect seat =>
 		 * 			change defaultChecked option & remove from set
 		 * */
-
-		console.log(e.target.defaultChecked);
-
-		if (!e.target.defaultChecked) {
-			e.target.defaultChecked = true;
-
-			console.log(e.target.defaultChecked);
-
+		if (checkedSeats[myIndex] == false) {
 			seatSet.add(e.target.value);
+			const newArr = checkedSeats;
+			newArr[myIndex] = true;
+			setCheckedSeats([...newArr]);
 		} else {
-			e.target.defaultChecked = false;
-			console.log(e.target.defaultChecked);
-			console.log(seatSet.has(e.target.value));
 			seatSet.delete(e.target.value);
+			const newArr = checkedSeats;
+			newArr[myIndex] = false;
+			setCheckedSeats([...newArr]);
 		}
 
-		console.log(seatSet);
-		console.log(e.target.value, e.target.defaultChecked);
+		handleSelectedSeats(seatSet);
 	};
 
 	const str = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
@@ -64,15 +66,16 @@ const SeatMap = (props) => {
 		tr.push(str[row - 1]);
 		for (let col = 1; col <= cols; col++) {
 			const seat = seats.find((seat) => seat.row === row && seat.col === col);
+			const myIndex = cols * (seat.row - 1) + (seat.col - 1);
 			tr.push(
 				<input
-					className="w-[15px] h-[15px]"
+					className="w-[17px] h-[17px]"
 					type="checkbox"
-					name=""
-					checked={seat?.isBooked}
+					checked={checkedSeats[myIndex]}
 					disabled={seat?.isBooked}
 					value={seat?._id}
-					onChange={handleSeatChange}
+					name={seat?.name}
+					onChange={(e) => handleSeatChange(myIndex, e)}
 				/>
 			);
 		}

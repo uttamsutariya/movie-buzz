@@ -1,6 +1,7 @@
 export const movieGenres = [
 	"Action",
 	"Animation",
+	"Adventure",
 	"Comedy",
 	"Crime",
 	"Drama",
@@ -14,4 +15,14 @@ export const movieGenres = [
 	"Western",
 ];
 
-export const languages = ["Hindi", "English", "Marathi", "Punjabi", "Gujarati", "Tamil", "Telugu"];
+export const languages = [
+	"Hindi",
+	"English",
+	"Marathi",
+	"Punjabi",
+	"Gujarati",
+	"Tamil",
+	"Telugu",
+	"Malyalam",
+	"Kannada",
+];
