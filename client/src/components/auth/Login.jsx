@@ -2,8 +2,8 @@ import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
 // components
-import BackButton from "../BackButton";
-import Loader from "../Loader";
+import BackButton from "../util/BackButton";
+import Loader from "../util/Loader";
 
 import { loginUser, useAuthDispatch, useAuthState } from "../../context";
 
@@ -42,6 +42,7 @@ const Login = () => {
 							onChange={(e) => setEmail(e.target.value)}
 							className={styles.inputItem}
 							placeholder="Enter email"
+							required
 						/>
 					</div>
 					<div className={styles.formGroup}>
@@ -51,6 +52,7 @@ const Login = () => {
 							onChange={(e) => setPassword(e.target.value)}
 							className={styles.inputItem}
 							placeholder="Password"
+							required
 						/>
 					</div>
 					<div className={styles.utils_div}>

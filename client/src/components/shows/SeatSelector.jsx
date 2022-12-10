@@ -1,9 +1,9 @@
 import { useEffect, useReducer, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 
-import SeatMap from "../SeatMap";
-import BackButton from "../BackButton";
-import Loader from "../Loader.jsx";
+import SeatMap from "../util/SeatMap";
+import BackButton from "../util/BackButton";
+import Loader from "../util/Loader";
 
 import axios from "axios";
 
@@ -59,8 +59,6 @@ const SeatSelector = () => {
 	};
 
 	const handleSubmit = async (e) => {
-		console.log(seats);
-
 		if (seats.length == 0) {
 			toast.error("Please select a seat");
 			return;
@@ -72,7 +70,6 @@ const SeatSelector = () => {
 		};
 
 		const { data } = await axios.post(`/api/user/bookShow`, formData);
-		console.log(data);
 		toast.success("Your tickets are booked and sent on your mail 🤩");
 		navigate("/movies");
 	};

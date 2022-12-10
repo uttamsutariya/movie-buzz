@@ -2,8 +2,8 @@ import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
 // components
-import BackButton from "../BackButton";
-import Loader from "../Loader";
+import BackButton from "../util/BackButton";
+import Loader from "../util/Loader";
 
 // toast
 import { toast } from "react-toastify";

@@ -4,12 +4,13 @@ import axios from "axios";
 // components
 import MovieCard from "./MovieCard";
 import Navbar from "../Navbar";
-import Loader from "../Loader";
-import BackButton from "../BackButton";
+import Loader from "../util/Loader";
+import SearchIcon from "@mui/icons-material/Search";
+import { useState } from "react";
 
 const initialState = {
 	loading: true,
-	error: "",
+	error: null,
 	movies: [],
 };
 
@@ -29,15 +30,28 @@ const reducer = (state, action) => {
 const Movies = () => {
 	const [state, dispatch] = useReducer(reducer, initialState);
 
+	const [searchKey, setSearchKey] = useState("");
+
 	const { loading, error, movies } = state;
 
-	useEffect(() => {
+	const fetchMovies = async (searchKey = null) => {
+		let url = "/api/movies";
+		if (searchKey) url = `/api/movies?searchKey=${searchKey}`;
 		axios
-			.get(`/api/movies`)
+			.get(`${url}`)
 			.then((res) => {
 				dispatch({ type: "FETCH_SUCCESS", payload: res.data.data.movies });
 			})
 			.catch(() => dispatch({ type: "FETCH_ERROR", payload: "Something went wrong" }));
+	};
+
+	const handleSearch = (e) => {
+		e.preventDefault();
+		fetchMovies(searchKey);
+	};
+
+	useEffect(() => {
+		fetchMovies();
 	}, []);
 
 	const releasedMovies = movies?.filter((movie) => movie.status === "released");
@@ -50,11 +64,19 @@ const Movies = () => {
 		<div className="">
 			<Navbar />
 			<div className={styles.main_div}>
+				<form onSubmit={handleSearch}>
+					<input
+						onChange={(e) => setSearchKey(e.target.value)}
+						type="text"
+						placeholder="search movie"
+						className={styles.search_input}
+					/>
+					<button type="submit" className=" ml-2 p-1.5 bg-blue-600 rounded-full">
+						<SearchIcon fontSize="large" />
+					</button>
+				</form>
 				{movies.length > 0 ? (
 					<>
-						<div>
-							<input type="text" placeholder="search movie" className={styles.search_input} />
-						</div>
 						<div className="w-[1296px] max-w-[1296px] my-2 mx-auto">
 							{releasedMovies.length > 0 ? (
 								<DisplayMovies movies={releasedMovies} heading="In Cinema" />
@@ -87,9 +109,8 @@ const DisplayMovies = ({ movies, heading }) => (
 
 const noMovies = (
 	<div className="max-w-[1296px] w-[100vw] relative flex justify-center items-center m-auto">
-		<BackButton />
 		<p className="text-center font-extrabold text-gray-400 mt-48">
-			<span className="text-5xl"> 💥 No available movies</span>
+			<span className="text-5xl">❎ No movies ❎</span>
 		</p>
 	</div>
 );

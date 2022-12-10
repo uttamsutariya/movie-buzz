@@ -3,7 +3,7 @@ import axios from "axios";
 
 // components
 import Navbar from "../navigation/Navbar";
-import Loader from "../../Loader";
+import Loader from "../../util/Loader";
 import Date from "../../util/Date";
 
 const initialState = {

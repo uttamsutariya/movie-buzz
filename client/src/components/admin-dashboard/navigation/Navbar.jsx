@@ -1,4 +1,4 @@
-import BackButton from "../../BackButton";
+import BackButton from "../../util/BackButton";
 
 const styles = {
 	nav: "flex justify-around items center p-3 bg-slate-800 shadow-xl w-full sticky top-0 z-50 relative",

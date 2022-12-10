@@ -6,7 +6,7 @@ import axios from "axios";
 import FileUploadOutlinedIcon from "@mui/icons-material/FileUploadOutlined";
 import DesignServicesOutlinedIcon from "@mui/icons-material/DesignServicesOutlined";
 import Navbar from "../navigation/Navbar";
-import Loader from "../../Loader";
+import Loader from "../../util/Loader";
 
 const initialState = {
 	loading: true,

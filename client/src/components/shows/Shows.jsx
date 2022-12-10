@@ -4,8 +4,8 @@ import axios from "axios";
 
 // conponents
 import SwapVertRoundedIcon from "@mui/icons-material/SwapVertRounded";
-import BackButton from "../BackButton";
-import Loader from "../Loader";
+import BackButton from "../util/BackButton";
+import Loader from "../util/Loader";
 import Navbar from "../Navbar";
 import Time from "../util/Time";
 import Date from "../util/Date";

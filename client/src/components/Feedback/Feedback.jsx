@@ -1,5 +1,5 @@
 import Navbar from "../Navbar";
-import BackButton from "../BackButton";
+import BackButton from "../util/BackButton";
 import { useState } from "react";
 
 // toast

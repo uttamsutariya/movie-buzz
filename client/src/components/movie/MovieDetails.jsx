@@ -1,12 +1,14 @@
-import Navbar from "../Navbar";
-import MovieFilterOutlinedIcon from "@mui/icons-material/MovieFilterOutlined";
-import BackButton from "../BackButton";
-import Date from "../util/Date";
-import Time from "../util/Time";
 import { useParams, Link } from "react-router-dom";
 import { useEffect, useReducer } from "react";
 import axios from "axios";
-import Loader from "../Loader";
+
+// components
+import Navbar from "../Navbar";
+import MovieFilterOutlinedIcon from "@mui/icons-material/MovieFilterOutlined";
+import BackButton from "../util/BackButton";
+import Date from "../util/Date";
+import Time from "../util/Time";
+import Loader from "../util/Loader";
 import ArrayString from "../util/ArrayString";
 
 const initialState = {

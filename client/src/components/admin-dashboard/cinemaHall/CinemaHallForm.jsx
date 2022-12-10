@@ -4,7 +4,7 @@ import axios from "axios";
 // components
 import FileUploadOutlinedIcon from "@mui/icons-material/FileUploadOutlined";
 import Navbar from "../navigation/Navbar";
-import Loader from "../../Loader";
+import Loader from "../../util/Loader";
 
 const defaultFormData = {
 	name: "",

@@ -2,7 +2,7 @@ import { useReducer, useState, useEffect } from "react";
 import SwapVertRoundedIcon from "@mui/icons-material/SwapVertRounded";
 import { Link } from "react-router-dom";
 import Navbar from "../navigation/Navbar";
-import Loader from "../../Loader";
+import Loader from "../../util/Loader";
 import axios from "axios";
 import Date from "../../util/Date";
 
