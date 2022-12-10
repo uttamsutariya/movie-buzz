@@ -87,31 +87,13 @@ exports.giveFeedback = asyncHandler(async (req, res, next) => {
 
 // get my bookings
 exports.getMyBookings = asyncHandler(async (req, res, next) => {
-	// const bookings = await Booking.find({ user: req.user._id }, { user: 0, updatedAt: 0 }).sort({ createdAt: -1 });
-
-	const bookings = await Booking.aggregate([
-		{
-			$match: { user: req.user._id },
-		},
-		{
-			$project: {
-				movie: "$show.title",
-				screenName: "$show.screenName",
-				date: "$show.date",
-				startTime: "$show.startTime",
-				price: "$show.price",
-				bookingDate: "$createdAt",
-				seats: 1,
-				bookingId: 1,
-				totalAmount: 1,
-			},
-		},
-		{
-			$sort: {
-				createdAt: -1,
-			},
-		},
-	]);
+	const bookings = await Booking.find({ user: req.user._id }, { user: 0, updatedAt: 0 })
+		.populate({
+			path: "movie",
+			model: "Movie",
+			select: "title images",
+		})
+		.sort({ createdAt: -1 });
 
 	return res.status(200).json({
 		status: "success",

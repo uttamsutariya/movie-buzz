@@ -15,11 +15,14 @@ const bookingSchema = new Schema(
 		seats: [String],
 		show: {
 			id: SchemaTypes.ObjectId,
-			title: String,
 			screenName: String,
 			date: Date,
 			startTime: Date,
 			price: Number,
+		},
+		movie: {
+			type: SchemaTypes.ObjectId,
+			ref: "Movie",
 		},
 		totalAmount: {
 			type: Number,

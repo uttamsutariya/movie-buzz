@@ -1,23 +1,52 @@
+import { useEffect, useReducer } from "react";
+import axios from "axios";
+
+// components
 import Navbar from "../Navbar";
 import Ticket from "./Ticket";
-import BackButton from "../BackButton";
+import BackButton from "../util/BackButton";
+import Loader from "../util/Loader";
 
-const bookings = [
-	{
-		url: "https://assets-in.bmscdn.com/iedb/movies/images/mobile/thumbnail/xlarge/thank-god-et00318167-1665398727.jpg",
-	},
-	{
-		url: "https://assets-in.bmscdn.com/iedb/movies/images/mobile/thumbnail/xlarge/black-adam-et00117411-1665552700.jpg",
-	},
-	{
-		url: "https://assets-in.bmscdn.com/iedb/movies/images/mobile/thumbnail/xlarge/black-panther-wakanda-forever-et00310792-1666006244.jpg",
-	},
-	{
-		url: "https://assets-in.bmscdn.com/iedb/movies/images/mobile/thumbnail/xlarge/black-adam-et00117411-1665552700.jpg",
-	},
-];
+const initialState = {
+	loading: true,
+	error: null,
+	bookings: [],
+};
+
+const reducer = (state, action) => {
+	const { type, payload } = action;
+
+	switch (type) {
+		case "FETCH_SUCCESS":
+			return { loading: false, error: "", bookings: payload };
+		case "FETCH_ERROR":
+			return { ...state, error: payload };
+		default:
+			return state;
+	}
+};
 
 const Booking = () => {
+	const [state, dispatch] = useReducer(reducer, initialState);
+
+	const { loading, error, bookings } = state;
+
+	const fetchBookings = async () => {
+		axios
+			.get(`/api/user/bookings`)
+			.then((res) => {
+				dispatch({ type: "FETCH_SUCCESS", payload: res.data.data.bookings });
+			})
+			.catch(() => dispatch({ type: "FETCH_ERROR", payload: "Something went wrong" }));
+	};
+
+	useEffect(() => {
+		fetchBookings();
+	}, []);
+
+	if (error) return <Loader msg="error" />;
+	else if (loading) return <Loader msg="loading" />;
+
 	return (
 		<>
 			<Navbar />
@@ -25,8 +54,8 @@ const Booking = () => {
 				<BackButton />
 				<div className="text-4xl text-white text-center mb-3">My Bookings</div>
 				<div className="flex justify-center items-center flex-wrap">
-					{bookings.map((booking, index) => (
-						<Ticket imgUrl={booking.url} key={index} />
+					{bookings?.map((booking, index) => (
+						<Ticket booking={booking} key={booking._id} />
 					))}
 				</div>
 			</div>

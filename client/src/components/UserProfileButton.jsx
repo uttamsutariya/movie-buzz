@@ -25,8 +25,8 @@ const User = ({ icon }) => {
 					</Avatar>
 				</div>
 				{isOpen ? (
-					<div className="origin-top-right absolute right-0 mt-2 w-48 rounded-md bg-white">
-						<div className="" role="menu">
+					<div className={styles.link_div_container}>
+						<div>
 							<Link to={"/bookings"} className={styles.linkItem}>
 								<span className="flex flex-col">
 									<span>
@@ -62,6 +62,7 @@ const User = ({ icon }) => {
 const styles = {
 	linkItem:
 		"block px-2 p-1 cursor-pointer text-md text-mygray border-b-2 border-solid border-mygray hover:bg-mygray hover:text-white",
+	link_div_container: "origin-top-right absolute right-0 mt-2 w-48 rounded-md bg-white",
 };
 
 export default User;

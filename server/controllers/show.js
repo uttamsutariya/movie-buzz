@@ -123,13 +123,8 @@ exports.bookShow = asyncHandler(async (req, res, next) => {
 	// remove selected seats from show.availableSeats and insert into show.bookedSeats
 	const showDoc = await Show.findOne(
 		{ _id: show },
-		{ availableSeats: 1, bookedSeats: 1, price: 1, date: 1, startTime: 1 }
+		{ availableSeats: 1, bookedSeats: 1, price: 1, date: 1, startTime: 1, movie: 1 }
 	).populate([
-		{
-			path: "movie",
-			model: "Movie",
-			select: "title",
-		},
 		{
 			path: "cinemaHall",
 			model: "CinemaHall",
@@ -176,12 +171,12 @@ exports.bookShow = asyncHandler(async (req, res, next) => {
 		seats: userSeats,
 		show: {
 			id: show,
-			title: showDoc.movie.title,
 			screenName: showDoc.cinemaHall.screenName,
 			date: showDoc.date,
 			startTime: showDoc.startTime,
 			price: showDoc.price,
 		},
+		movie: showDoc.movie._id,
 		totalAmount,
 		bookingId,
 		user: req.user._id,
