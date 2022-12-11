@@ -1,5 +1,5 @@
 import { useEffect, useReducer } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
 
 // components
@@ -37,6 +37,8 @@ const reducer = (state, action) => {
 
 const ShowDetails = () => {
 	const { id } = useParams();
+	const navigate = useNavigate();
+	const location = useLocation();
 
 	const [state, dispatch] = useReducer(reducer, initialState);
 
@@ -48,7 +50,10 @@ const ShowDetails = () => {
 			.then((res) => {
 				dispatch({ type: "FETCH_SUCCESS", payload: { ...res.data.data, loading: false, error: "" } });
 			})
-			.catch(() => dispatch({ type: "FETCH_ERROR", payload: "Something went wrong" }));
+			.catch((error) => {
+				if (error?.response?.status == 403) navigate("/login", { state: { from: location } });
+				dispatch({ type: "FETCH_ERROR", payload: "Something went wrong" });
+			});
 	};
 
 	useEffect(() => {

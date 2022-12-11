@@ -7,7 +7,7 @@ const Home = () => {
 	return (
 		<>
 			<Navbar />
-			<div className="">
+			<div>
 				<div className="-mt-28 h-[100vh] w-full mx-auto text-center flex flex-col justify-center items-center">
 					<h1 className="text-4xl sm:text-6xl md:text-7xl md:py-6 font-bold">Welcome to uMovies</h1>
 					<div className="flex justify-center items-center py-4">

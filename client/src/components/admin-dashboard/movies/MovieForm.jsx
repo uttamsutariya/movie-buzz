@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
 
 // components
@@ -29,7 +30,8 @@ const MovieForm = () => {
 
 	const [formData, setFormData] = useState(defaultFormData);
 	const [loading, setLoading] = useState(false);
-	const [error, setError] = useState("");
+	const location = useLocation();
+	const navigate = useNavigate();
 
 	const handleChange = (e) => {
 		const { target } = e;
@@ -70,19 +72,24 @@ const MovieForm = () => {
 				toast.success("Movie added successfully");
 			})
 			.catch((error) => {
-				setError("Something went wrong");
+				if (error?.response?.status == 403) navigate("/login", { state: { from: location } });
+				else toast.error(error?.response?.data?.message);
 			});
 	};
 
-	if (error) return <Loader msg="error" />;
-	else if (loading) return <Loader msg="loading" />;
+	if (loading) return <Loader msg="loading" />;
 
 	return (
 		<div className="h-[100vh] overflow-auto">
 			<Navbar child={<h1 className={styles.nav_h1}>Add New Movie</h1>} />
 
 			<div className="m-5 p-5 bg-slate-800 rounded-lg">
-				<form onSubmit={handleSubmit} className="w-[60%] m-auto" autoComplete="off">
+				<form
+					onSubmit={handleSubmit}
+					className="w-[60%] m-auto"
+					autoComplete="off"
+					encType="multipart/form-data"
+				>
 					{/* movie title */}
 					<div className="mb-6">
 						<label className={styles.label} htmlFor="title">

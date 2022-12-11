@@ -2,6 +2,7 @@ const crypto = require("crypto");
 const asyncHandler = require("../middlewares/asyncHandler");
 const { cookieToken } = require("../utils/cookieToken");
 const CustomError = require("../utils/customError");
+const jwt = require("jsonwebtoken");
 
 // mail sender
 const { sendMail } = require("../helper/mailer");
@@ -162,6 +163,41 @@ exports.resetPassword = asyncHandler(async (req, res, next) => {
 	return res.status(200).json({
 		status: "success",
 		message: "password reset successfully",
+		data: {},
+	});
+});
+
+// load user
+exports.loadUser = asyncHandler(async (req, res, next) => {
+	const token = req.cookies.token;
+
+	// if token unavailable send null user
+	if (!token)
+		return res.status(200).json({
+			status: "success",
+			data: {
+				user: null,
+			},
+		});
+
+	const decode = jwt.verify(token, process.env.JWT_SECRET);
+
+	// token invalid or expired
+	if (!decode) return next(new CustomError("Login again", 403));
+
+	let user = await User.findOne({ _id: decode.id }).select("+role");
+
+	// sending token in cookie
+	cookieToken(user, res);
+});
+
+// logout user
+exports.logout = asyncHandler(async (req, res, next) => {
+	res.clearCookie("token");
+
+	return res.status(200).json({
+		status: "success",
+		message: "Logout success",
 		data: {},
 	});
 });

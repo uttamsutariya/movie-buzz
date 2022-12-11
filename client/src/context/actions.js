@@ -6,7 +6,7 @@ import { toast } from "react-toastify";
 export async function loginUser(dispatch, loginPayload) {
 	try {
 		dispatch({ type: "REQUEST_LOGIN" });
-		let {
+		const {
 			data: {
 				data: { user },
 			},
@@ -14,11 +14,12 @@ export async function loginUser(dispatch, loginPayload) {
 
 		if (user) {
 			dispatch({ type: "LOGIN_SUCCESS", payload: user });
-			toast.success("Login success");
 			return user;
 		}
+
+		return null;
 	} catch (error) {
-		const errorMessage = error.response.data.message;
+		const errorMessage = error?.response?.data?.message;
 		dispatch({ type: "ERROR", payload: errorMessage });
 		toast.error(errorMessage);
 	}
@@ -27,7 +28,7 @@ export async function loginUser(dispatch, loginPayload) {
 export async function signupUser(dispatch, loginPayload) {
 	try {
 		dispatch({ type: "REQUEST_LOGIN" });
-		let {
+		const {
 			data: {
 				data: { user },
 			},
@@ -46,5 +47,10 @@ export async function signupUser(dispatch, loginPayload) {
 }
 
 export async function logout(dispatch) {
-	dispatch({ type: "LOGOUT" });
+	try {
+		await axios.get("/api/user/logout");
+		dispatch({ type: "LOGOUT" });
+	} catch (error) {
+		console.log(error);
+	}
 }

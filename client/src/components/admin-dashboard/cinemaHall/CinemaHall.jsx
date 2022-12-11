@@ -1,5 +1,5 @@
 import { useEffect, useReducer } from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
 
 // components
@@ -31,6 +31,8 @@ const reducer = (state, action) => {
 
 const CinemaHall = () => {
 	const [state, dispatch] = useReducer(reducer, initialState);
+	const navigate = useNavigate();
+	const location = useLocation();
 
 	const { totalHalls, cinemaHalls, loading, error } = state;
 
@@ -40,7 +42,10 @@ const CinemaHall = () => {
 			.then((res) => {
 				dispatch({ type: "FETCH_SUCCESS", payload: { ...res.data.data, loading: false, error: "" } });
 			})
-			.catch(() => dispatch({ type: "FETCH_ERROR", payload: "Something went wrong" }));
+			.catch(() => {
+				if (error?.response?.status == 403) navigate("/login", { state: { from: location } });
+				dispatch({ type: "FETCH_ERROR", payload: "Something went wrong" });
+			});
 	};
 
 	useEffect(() => {

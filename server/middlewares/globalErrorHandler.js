@@ -46,7 +46,7 @@ const handleValidationErrorDB = (err) => {
 };
 
 const handleTokenExpiredError = (err) => {
-	err.statusCode = 400;
+	err.statusCode = 403;
 	err.message = "Your token has expired. Login again";
 	return err;
 };

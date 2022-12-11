@@ -1,4 +1,5 @@
 import { useEffect, useReducer } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
 
 // components
@@ -29,6 +30,8 @@ const reducer = (state, action) => {
 
 const Feedback = () => {
 	const [state, dispatch] = useReducer(reducer, initialState);
+	const location = useLocation();
+	const navigate = useNavigate();
 
 	const { feedbacks, loading, error } = state;
 
@@ -38,7 +41,10 @@ const Feedback = () => {
 			.then((res) => {
 				dispatch({ type: "FETCH_SUCCESS", payload: { ...res.data.data, loading: false, error: "" } });
 			})
-			.catch(() => dispatch({ type: "FETCH_ERROR", payload: "Something went wrong" }));
+			.catch(() => {
+				if (error?.response?.status == 403) navigate("/login", { state: { from: location } });
+				dispatch({ type: "FETCH_ERROR", payload: "Something went wrong" });
+			});
 	};
 
 	useEffect(() => {

@@ -1,6 +1,7 @@
 import Navbar from "../Navbar";
 import BackButton from "../util/BackButton";
 import { useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 
 // toast
 import { toast } from "react-toastify";
@@ -8,6 +9,8 @@ import axios from "axios";
 
 const Feedback = () => {
 	const [message, setMessage] = useState("");
+	const location = useLocation();
+	const navigate = useNavigate();
 
 	const handleSubmit = async (e) => {
 		e.preventDefault();
@@ -17,9 +20,14 @@ const Feedback = () => {
 			return;
 		}
 
-		const res = await axios.post(`/api/user/feedback`, { message });
-		if (res) {
-			toast.success("Thanks for your valuable feedback");
+		try {
+			const res = await axios.post(`/api/user/feedback`, { message });
+			if (res) {
+				toast.success("Thanks for your valuable feedback");
+				navigate(-1);
+			}
+		} catch (error) {
+			if (error.response.status == 403) navigate("/login", { state: { from: location } });
 		}
 	};
 

@@ -1,5 +1,5 @@
 import { useState, useEffect, useReducer } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, useLocation } from "react-router-dom";
 import axios from "axios";
 
 // components
@@ -7,6 +7,9 @@ import FileUploadOutlinedIcon from "@mui/icons-material/FileUploadOutlined";
 import DesignServicesOutlinedIcon from "@mui/icons-material/DesignServicesOutlined";
 import Navbar from "../navigation/Navbar";
 import Loader from "../../util/Loader";
+
+// toast
+import { toast } from "react-toastify";
 
 const initialState = {
 	loading: true,
@@ -32,6 +35,9 @@ const reducer = (state, action) => {
 
 const ShowForm = ({ update }) => {
 	const [state, dispatch] = useReducer(reducer, initialState);
+	const { id } = useParams();
+	const navigate = useNavigate();
+	const location = useLocation();
 
 	const { movies, cinemaHalls, loading, error } = state;
 
@@ -50,7 +56,8 @@ const ShowForm = ({ update }) => {
 				},
 			});
 		} catch (error) {
-			dispatch({ type: "FETCH_ERROR", payload: "Something went wrong" });
+			if (error?.response?.status == 403) navigate("/login", { state: { from: location } });
+			else dispatch({ type: "FETCH_ERROR", payload: "Something went wrong" });
 		}
 	};
 
@@ -65,9 +72,6 @@ const ShowForm = ({ update }) => {
 		dateTime: "",
 	};
 
-	const { id } = useParams();
-	const navigate = useNavigate();
-
 	if (update) {
 		useEffect(() => {
 			axios
@@ -76,7 +80,10 @@ const ShowForm = ({ update }) => {
 					const data = res.data.data.show;
 					setFormData((prev) => ({ ...prev, ...data, dateTime: data.date }));
 				})
-				.catch((error) => dispatch({ type: "FETCH_ERROR", payload: "Something went wrong" }));
+				.catch((error) => {
+					if (error?.response?.status == 403) navigate("/login", { state: { from: location } });
+					dispatch({ type: "FETCH_ERROR", payload: "Something went wrong" });
+				});
 		}, []);
 	}
 
@@ -122,15 +129,24 @@ const ShowForm = ({ update }) => {
 			axios
 				.patch(`/api/admin/show/${id}`, formData)
 				.then((res) => {
-					alert("Show updated");
+					toast.success("Show updated");
 					navigate(-1);
 				})
-				.catch((error) => dispatch({ type: "FETCH_ERROR", payload: "Something went wrong" }));
+				.catch((error) => {
+					if (error?.response?.status == 403) navigate("/login", { state: { from: location } });
+					else toast.error(error?.response?.data?.message);
+				});
 		} else {
 			axios
 				.post(`/api/admin/show`, formData)
-				.then((res) => alert("Show added successfully"))
-				.catch((error) => dispatch({ type: "FETCH_ERROR", payload: "Something went wrong" }));
+				.then((res) => {
+					toast.success("Show added succesfully");
+					navigate(-1);
+				})
+				.catch((error) => {
+					if (error?.response?.status == 403) navigate("/login", { state: { from: location } });
+					else toast.error(error?.response?.data?.message);
+				});
 		}
 	};
 
@@ -138,8 +154,8 @@ const ShowForm = ({ update }) => {
 		setFormData((prevState) => ({ ...prevState, [e.target.name]: e.target.value }));
 	};
 
-	if (error) return <Loader msg="error" />;
-	else if (loading) return <Loader msg="loading" />;
+	if (error) return <Loader msg="err" />;
+	if (loading) return <Loader msg="loading" />;
 
 	return (
 		<div className="h-[100vh] overflow-auto">

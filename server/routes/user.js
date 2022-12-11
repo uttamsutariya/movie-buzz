@@ -1,12 +1,20 @@
 const router = require("express").Router();
 
 // controllers
-const { signUp, logIn, giveFeedback, getMyBookings, forgotPassword, resetPassword } = require("../controllers/user");
+const {
+	signUp,
+	logIn,
+	giveFeedback,
+	getMyBookings,
+	forgotPassword,
+	resetPassword,
+	loadUser,
+	logout,
+} = require("../controllers/user");
 const { bookShow } = require("../controllers/show");
 
 // auth middleware
 const { authToken } = require("../middlewares/authenticateToken");
-const { authorizeRole } = require("../middlewares/authorizer");
 
 // sign up
 router.post("/signup", signUp);
@@ -14,14 +22,20 @@ router.post("/signup", signUp);
 // login
 router.post("/login", logIn);
 
+// logout
+router.get("/logout", logout);
+
+// load user
+router.get("/load", loadUser);
+
 // book show
-router.post("/bookShow", authToken, authorizeRole(0), bookShow);
+router.post("/bookShow", authToken, bookShow);
 
 // give feedback
-router.post("/feedback", authToken, authorizeRole(0), giveFeedback);
+router.post("/feedback", authToken, giveFeedback);
 
 // view my bookings
-router.get("/bookings", authToken, authorizeRole(0), getMyBookings);
+router.get("/bookings", authToken, getMyBookings);
 
 // forgot password
 router.post("/forgotPassword", forgotPassword);

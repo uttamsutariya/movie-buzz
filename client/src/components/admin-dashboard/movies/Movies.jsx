@@ -1,4 +1,5 @@
-import { useReducer, useState, useEffect } from "react";
+import { useReducer, useEffect } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 import SwapVertRoundedIcon from "@mui/icons-material/SwapVertRounded";
 import { Link } from "react-router-dom";
 import Navbar from "../navigation/Navbar";
@@ -32,6 +33,8 @@ const reducer = (state, action) => {
 
 const Movies = () => {
 	const [state, dispatch] = useReducer(reducer, initialState);
+	const location = useLocation();
+	const navigate = useNavigate();
 
 	const { movies, totalMovies, releasedMovies, comingSoonMovies, loading, error } = state;
 
@@ -41,7 +44,10 @@ const Movies = () => {
 			.then((res) => {
 				dispatch({ type: "FETCH_SUCCESS", payload: { ...res.data.data, loading: false, error: "" } });
 			})
-			.catch(() => dispatch({ type: "FETCH_ERROR", payload: "Something went wrong" }));
+			.catch((error) => {
+				if (error.response.status == 403) navigate("/login", { state: { from: location } });
+				else dispatch({ type: "FETCH_ERROR", payload: "Something went wrong" });
+			});
 	};
 
 	useEffect(() => {
@@ -57,7 +63,9 @@ const Movies = () => {
 				.then(() => {
 					fetchMovies();
 				})
-				.catch((error) => console.log(error));
+				.catch((error) => {
+					if (error.response.status == 403) navigate("/login", { state: { from: location } });
+				});
 		}
 	};
 

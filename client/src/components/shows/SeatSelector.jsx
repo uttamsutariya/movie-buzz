@@ -1,5 +1,5 @@
 import { useEffect, useReducer, useState } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, useLocation } from "react-router-dom";
 
 import SeatMap from "../util/SeatMap";
 import BackButton from "../util/BackButton";
@@ -38,18 +38,26 @@ const reducer = (state, action) => {
 const SeatSelector = () => {
 	const { id } = useParams();
 	const navigate = useNavigate();
+	const location = useLocation();
 
 	const [state, dispatch] = useReducer(reducer, initialState);
 
 	const { loading, error, availableSeats, bookedSeats, cinemaHall, price } = state;
 
-	useEffect(() => {
+	const fetchSeats = () => {
 		axios
 			.get(`/api/shows/seats/${id}`)
 			.then((res) => {
 				dispatch({ type: "FETCH_SUCCESS", payload: res.data.data });
 			})
-			.catch(() => dispatch({ type: "FETCH_ERROR", payload: "Something went wrong" }));
+			.catch((err) => {
+				if (err.response.status == 403) navigate("/login", { state: { from: location } });
+				dispatch({ type: "FETCH_ERROR", payload: "Something went wrong" });
+			});
+	};
+
+	useEffect(() => {
+		fetchSeats();
 	}, []);
 
 	const [seats, setSeats] = useState([]);
@@ -69,9 +77,13 @@ const SeatSelector = () => {
 			seats,
 		};
 
-		const { data } = await axios.post(`/api/user/bookShow`, formData);
-		toast.success("Your tickets are booked and sent on your mail 🤩");
-		navigate("/movies");
+		try {
+			await axios.post(`/api/user/bookShow`, formData);
+			toast.success("Your tickets are booked and sent on your mail 🤩");
+			navigate("/movies");
+		} catch (error) {
+			if (error.response.status == 403) navigate("/login", { state: { from: location } });
+		}
 	};
 
 	if (error) return <Loader msg="error" />;

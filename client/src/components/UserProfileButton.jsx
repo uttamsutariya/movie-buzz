@@ -3,13 +3,14 @@ import Avatar from "@mui/material/Avatar";
 import LogoutRoundedIcon from "@mui/icons-material/LogoutRounded";
 import StyleOutlinedIcon from "@mui/icons-material/StyleOutlined";
 import TextsmsOutlinedIcon from "@mui/icons-material/TextsmsOutlined";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 import { logout, useAuthDispatch } from "../context";
 
 const User = ({ icon }) => {
 	const [isOpen, setIsOpen] = useState(false);
 	const dispatch = useAuthDispatch();
+	const navigate = useNavigate();
 
 	return (
 		<div>
@@ -43,7 +44,13 @@ const User = ({ icon }) => {
 									</span>
 								</span>
 							</Link>
-							<div onClick={() => logout(dispatch)} className={styles.linkItem}>
+							<div
+								onClick={() => {
+									logout(dispatch);
+									navigate("/");
+								}}
+								className={styles.linkItem}
+							>
 								<span className="flex flex-col">
 									<span>
 										<LogoutRoundedIcon className="mr-5" />
@@ -61,7 +68,7 @@ const User = ({ icon }) => {
 
 const styles = {
 	linkItem:
-		"block px-2 p-1 cursor-pointer text-md text-mygray border-b-2 border-solid border-mygray hover:bg-mygray hover:text-white",
+		"block px-2 p-1 cursor-pointer text-md text-mygray border-b-2 border-solid border-mygray hover:bg-blue-600 hover:text-white",
 	link_div_container: "origin-top-right absolute right-0 mt-2 w-48 rounded-md bg-white",
 };
 

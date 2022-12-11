@@ -1,10 +1,12 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
 
 // components
 import FileUploadOutlinedIcon from "@mui/icons-material/FileUploadOutlined";
 import Navbar from "../navigation/Navbar";
 import Loader from "../../util/Loader";
+import { toast } from "react-toastify";
 
 const defaultFormData = {
 	name: "",
@@ -15,7 +17,8 @@ const defaultFormData = {
 const CinemaHallForm = () => {
 	const [formData, setFormData] = useState(defaultFormData);
 	const [loading, setLoading] = useState(false);
-	const [error, setError] = useState("");
+	const navigate = useNavigate();
+	const location = useLocation();
 
 	const handleSubmit = (e) => {
 		setLoading(true);
@@ -25,10 +28,11 @@ const CinemaHallForm = () => {
 			.post(`/api/admin/cinemaHall`, formData)
 			.then((res) => {
 				setLoading(false);
-				alert("Cinemahall added succesfully");
+				toast.success("Cinemahall added succesfully");
 			})
 			.catch((error) => {
-				setError("Something went wrong");
+				if (error?.response?.status == 403) navigate("/login", { state: { from: location } });
+				else toast.error(error?.response?.data?.message);
 			});
 	};
 
@@ -36,8 +40,7 @@ const CinemaHallForm = () => {
 		setFormData({ ...formData, [e.target.name]: e.target.value });
 	};
 
-	if (error) return <Loader msg="error" />;
-	else if (loading) return <Loader msg="loading" />;
+	if (loading) return <Loader msg="loading" />;
 
 	return (
 		<div className="h-[100vh] overflow-auto">

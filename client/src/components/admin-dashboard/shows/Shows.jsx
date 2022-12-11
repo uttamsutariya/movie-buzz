@@ -1,6 +1,6 @@
 import { useEffect, useReducer } from "react";
 import SwapVertRoundedIcon from "@mui/icons-material/SwapVertRounded";
-import { Link } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
 
 // components
@@ -34,6 +34,8 @@ const reducer = (state, action) => {
 
 const Shows = () => {
 	const [state, dispatch] = useReducer(reducer, initialState);
+	const location = useLocation();
+	const navigate = useNavigate();
 
 	const { shows, loading, error, totalShows, todaysShows } = state;
 
@@ -43,7 +45,10 @@ const Shows = () => {
 			.then((res) => {
 				dispatch({ type: "FETCH_SUCCESS", payload: { ...res.data.data, loading: false, error: "" } });
 			})
-			.catch(() => dispatch({ type: "FETCH_ERROR", payload: "Something went wrong" }));
+			.catch((error) => {
+				if (error.response.status == 403) navigate("/login", { state: { from: location } });
+				else dispatch({ type: "FETCH_ERROR", payload: "Something went wrong" });
+			});
 	};
 
 	useEffect(() => {
@@ -118,26 +123,15 @@ const Shows = () => {
 							<p className={styles.td_p}>{show.screen}</p>
 						</td>
 						<td className={styles.td}>
-							<Link
-								to={`${show._id}`}
-								type="button"
-								className="py-0.5 px-3 mx-1 bg-green-700 cursor-pointer text-white text-center font-medium rounded-md"
-							>
+							<Link to={`${show._id}`} type="button" className={styles.view_details_btn}>
 								View Details
 							</Link>
 							{show.totalBookings !== 0 ? (
-								<button
-									type="button"
-									className="py-0.5 px-3 mx-1 cursor-not-allowed bg-purple-400 text-white text-center font-medium rounded-md"
-								>
+								<button type="button" className={styles.update_disabled_btn}>
 									Update
 								</button>
 							) : (
-								<Link
-									to={`update/${show._id}`}
-									type="button"
-									className="py-0.5 px-3 mx-1 bg-purple-700 cursor-pointer text-white text-center font-medium rounded-md"
-								>
+								<Link to={`update/${show._id}`} type="button" className={styles.update_btn}>
 									Update
 								</Link>
 							)}
@@ -195,6 +189,10 @@ const styles = {
 	stat_h1: "text-3xl font-extrabold mb-2",
 	stat_p: "text-blue-400 text-3xl font-semibold",
 	table_container: "inline-block min-w-full rounded-lg max-h-[70vh] overflow-auto scroll-smooth",
+	view_details_btn: "py-0.5 px-3 mx-1 bg-green-700 cursor-pointer text-white text-center font-medium rounded-md",
+	update_disabled_btn:
+		"py-0.5 px-3 mx-1 cursor-not-allowed bg-purple-400 text-white text-center font-medium rounded-md",
+	update_btn: "py-0.5 px-3 mx-1 bg-purple-700 cursor-pointer text-white text-center font-medium rounded-md",
 };
 
 export default Shows;

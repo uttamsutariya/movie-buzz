@@ -1,4 +1,4 @@
-import { NavLink, Link, Outlet } from "react-router-dom";
+import { NavLink, Link, Outlet, useNavigate } from "react-router-dom";
 import MovieFilterOutlinedIcon from "@mui/icons-material/MovieFilterOutlined";
 import TheatersOutlinedIcon from "@mui/icons-material/TheatersOutlined";
 import RateReviewOutlinedIcon from "@mui/icons-material/RateReviewOutlined";
@@ -8,6 +8,7 @@ import { logout, useAuthDispatch } from "../../context";
 
 const AdminHome = () => {
 	const dispatch = useAuthDispatch();
+	const navigate = useNavigate();
 
 	return (
 		<div className="flex">
@@ -57,7 +58,13 @@ const AdminHome = () => {
 
 							<span className="mx-4 font-medium">Feedbacks</span>
 						</NavLink>
-						<div onClick={() => logout(dispatch)} className={styles.normal_link}>
+						<div
+							onClick={() => {
+								logout(dispatch);
+								navigate("/", { replace: true });
+							}}
+							className={styles.normal_link}
+						>
 							<LogoutOutlinedIcon />
 
 							<span className="mx-4 font-medium">Logout</span>

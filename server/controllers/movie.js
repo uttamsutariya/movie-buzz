@@ -22,7 +22,7 @@ exports.userGetAllMovies = asyncHandler(async (req, res, next) => {
 
 	const movies = await Movie.find(
 		{
-			$or: [{ title: movieNameRegex }, { description: movieNameRegex }],
+			$or: [{ title: movieNameRegex }],
 			status: { $ne: "deleted" },
 		},
 		{

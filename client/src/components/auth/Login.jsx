@@ -23,8 +23,7 @@ const Login = () => {
 
 		let user = await loginUser(dispatch, data);
 		if (!user) return;
-		else if (user.role == 1) navigate("/admin");
-		else if (user.role == 0) navigate(-2);
+		user?.role == 1 ? navigate("/admin") : navigate(-1);
 	};
 
 	if (loading) return <Loader msg="loading" />;

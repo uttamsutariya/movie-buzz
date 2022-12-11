@@ -1,4 +1,5 @@
 import { useEffect, useReducer } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
 
 // components
@@ -28,6 +29,8 @@ const reducer = (state, action) => {
 
 const Booking = () => {
 	const [state, dispatch] = useReducer(reducer, initialState);
+	const location = useLocation();
+	const navigate = useNavigate();
 
 	const { loading, error, bookings } = state;
 
@@ -37,7 +40,10 @@ const Booking = () => {
 			.then((res) => {
 				dispatch({ type: "FETCH_SUCCESS", payload: res.data.data.bookings });
 			})
-			.catch(() => dispatch({ type: "FETCH_ERROR", payload: "Something went wrong" }));
+			.catch(() => {
+				if (error.response.status == 403) navigate("/login", { state: { from: location } });
+				dispatch({ type: "FETCH_ERROR", payload: "Something went wrong" });
+			});
 	};
 
 	useEffect(() => {
