@@ -82,33 +82,34 @@ const MovieDetails = () => {
 	return (
 		<>
 			<Navbar />
-			<div className="max-w-[1296px] m-auto">
+			<div className={styles.main}>
 				<div className={`${styles.movie_container} bg-slate-800`}>
 					<BackButton />
 
 					<h1 className={styles.movie_name}>{title}</h1>
 
-					<div>
-						<div className={styles.div1_container}>
-							<div className="w-[65%]">
-								<img className="rounded-lg" src={images.banner} alt={title} />
-							</div>
-							<div className={styles.details_container}>
-								<div className="rounded-full">
-									<h2 className={styles.about_movie}>
-										<MovieFilterOutlinedIcon className="mr-4" fontSize="large" />
-										About the movie
-									</h2>
-									<p className="text-gray-400">{description}</p>
-								</div>
-							</div>
-						</div>
+					<div className={styles.img_container}>
+						<img className={styles.img} src={images.banner} alt={title} />
 					</div>
-				</div>
-
-				<div className={`${styles.movie_container} bg-black flex justify-center items-center`}>
-					<div className="flex flex-col items-center justify-between my-10 w-[80%]">
-						<div className="flex justify-center items-center">
+					<div className={styles.main_details_container}>
+						<div className={styles.details_container}>
+							<div>
+								<h2 className={styles.about_movie}>
+									<MovieFilterOutlinedIcon className="mr-4" fontSize="large" />
+									About the movie
+								</h2>
+								<p className="text-gray-400">{description}</p>
+							</div>
+							<a href={trailer_link} target={"_blank"} className={styles.trailer_btn}>
+								Watch Trailer
+							</a>
+							{status === "released" ? (
+								<Link to={`/shows/${_id}`} className={styles.book_btn}>
+									Book Your Show
+								</Link>
+							) : null}
+						</div>
+						<div className={styles.table_container}>
 							<table>
 								<tbody>
 									{TABLE_FIELDS.map(({ key, value }, index) => (
@@ -120,14 +121,6 @@ const MovieDetails = () => {
 								</tbody>
 							</table>
 						</div>
-						<a href={trailer_link} target={"_blank"} className={styles.trailer_btn}>
-							Watch Trailer
-						</a>
-						{status === "released" ? (
-							<Link to={`/shows/${_id}`} className={styles.book_btn}>
-								Book Your Show
-							</Link>
-						) : null}
 					</div>
 				</div>
 			</div>
@@ -136,16 +129,21 @@ const MovieDetails = () => {
 };
 
 const styles = {
-	movie_container: "p-5 rounded-lg my-3 relative",
-	movie_name: "text-4xl font-semibold text-slate-400 text-center p-2",
-	div1_container: "flex space-x-6 p-5",
-	details_container: "w-[35%] flex flex-col justify-center",
+	main: "max-w-[1296px] m-auto",
+	movie_container: "p-0.5 md:p-5 my-3 relative",
+	movie_name: "text-4xl font-semibold text-slate-400 text-center p-2 mt-10 md:mt-5",
+	img_container: "flex justify-center w-full m-auto p-2 md:p-5",
+	img: "rounded-lg w-[100%] h-auto",
+	main_details_container:
+		"flex flex-col md:flex-row items-start md:items-start justify-start md:space-x-10 my-10 p-2 md:p-5",
+	details_container: "flex flex-col justify-center w-full md:w-[50%]",
+	table_container: "flex justify-center items-center my-10 md:my-0 w-full md:w-auto",
 	about_movie: "text-4xl mb-5 text-blue-400 font-semibold",
 	tr: "text-gray-400",
 	table_fields: "border-b-2 border-gray-600 p-3 text-white",
 	table_td: "border-b-2 border-gray-600 p-3",
-	trailer_btn: "bg-purple-600 w-[50%] text-center rounded mt-10 px-5 py-3 text-white",
-	book_btn: "bg-blue-600 w-[50%] text-center rounded mt-5 px-5 py-3 text-white",
+	trailer_btn: "bg-purple-600 w-full text-center rounded mt-10 px-5 py-3 text-white",
+	book_btn: "bg-blue-600 w-full text-center rounded mt-5 px-5 py-3 text-white",
 };
 
 export default MovieDetails;

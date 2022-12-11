@@ -16,7 +16,7 @@ const AdminHome = () => {
 				<Link to={"/admin"} className="text-3xl text-center text-white">
 					uMovies
 				</Link>
-				<div>
+				<div className="w-full">
 					<nav className="flex flex-col justify-start flex-1 mt-6 space-y-3">
 						<NavLink
 							className={(navData) =>
@@ -26,7 +26,7 @@ const AdminHome = () => {
 						>
 							<MovieFilterOutlinedIcon />
 
-							<span className="mx-4 font-medium">Movies</span>
+							<span className="mx-4 w-full font-medium">Movies</span>
 						</NavLink>
 						<NavLink
 							className={(navData) =>
@@ -36,7 +36,7 @@ const AdminHome = () => {
 						>
 							<TheatersOutlinedIcon />
 
-							<span className="mx-4 font-medium">Shows</span>
+							<span className="mx-4 w-full font-medium">Shows</span>
 						</NavLink>
 						<NavLink
 							className={(navData) =>
@@ -46,7 +46,7 @@ const AdminHome = () => {
 						>
 							<DoorSlidingOutlinedIcon />
 
-							<span className="mx-4 font-medium">Cinemahalls</span>
+							<span className="mx-4 w-full font-medium">Cinemahalls</span>
 						</NavLink>
 						<NavLink
 							className={(navData) =>
@@ -56,7 +56,7 @@ const AdminHome = () => {
 						>
 							<RateReviewOutlinedIcon />
 
-							<span className="mx-4 font-medium">Feedbacks</span>
+							<span className="mx-4 w-full font-medium">Feedbacks</span>
 						</NavLink>
 						<div
 							onClick={() => {
@@ -67,7 +67,7 @@ const AdminHome = () => {
 						>
 							<LogoutOutlinedIcon />
 
-							<span className="mx-4 font-medium">Logout</span>
+							<span className="mx-4 w-full font-medium">Logout</span>
 						</div>
 					</nav>
 				</div>

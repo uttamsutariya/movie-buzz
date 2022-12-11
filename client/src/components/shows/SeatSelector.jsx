@@ -138,13 +138,12 @@ const SeatSelector = () => {
 };
 
 const styles = {
-	main_container:
-		"max-w-[1296px] my-10 mx-auto w-[1100px] p-10 bg-slate-800 rounded-2xl relative flex flex-col items-center",
+	main_container: "w-full md:w-[1100px] my-10 mx-auto p-10 bg-slate-800 relative flex flex-col items-center",
 	price: "text-xl absolute top-12 left-5 text-blue-400",
 	price_p: "text-white ml-2",
-	seat_map_container: "w-[50%] m-auto flex flex-col justify-center items-center",
-	seat_map: "text-3xl font-bold text-blue-400 text-center mb-5",
-	screen: "h-[40px] w-[100%] shadow-white shadow bg-white rounded-lg mb-3 flex justify-center items-center",
+	seat_map_container: "w-full md:w-[50%] mt-14 m-auto flex flex-col justify-center items-center",
+	seat_map: "text-2xl font-bold text-blue-400 text-center mb-5",
+	screen: "h-[30px] w-[100%] shadow-white shadow bg-white rounded-lg mb-3 flex justify-center items-center",
 	screen_p: "text-black font-bold px-10",
 	selected_options_span: "ml-2 text-blue-400",
 	availability: "my-3 flex justify-between",

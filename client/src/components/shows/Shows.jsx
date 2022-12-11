@@ -63,67 +63,65 @@ const Shows = () => {
 	else if (loading) return <Loader msg="loading" />;
 
 	const show = (
-		<div className="max-w-[1296px] my-2 mx-auto w-full p-10 bg-slate-800 rounded-2xl relative">
+		<div className={styles.main}>
 			<BackButton />
-			<div className="text-xl text-white text-center">{movie}</div>
-			<div className="mx-auto px-4 sm:px-8 max-w-2xl">
+			<div className="text-3xl text-white text-center mt-8">{movie}</div>
+			<div className="mx-auto md:max-w-3xl">
 				<form onSubmit={handleSubmit}>
-					<div className="py-2">
-						<div className="py-4 overflow-x-auto">
-							<div className={styles.table_container}>
-								<table className="min-w-full">
-									<thead>
-										<tr>
-											<th scope="col" className={styles.th}></th>
-											<th scope="col" className={styles.th}>
-												Date
-												<SwapVertRoundedIcon fontSize="small" className="ml-2" />
-											</th>
-											<th scope="col" className={styles.th}>
-												Time
-												<SwapVertRoundedIcon fontSize="small" className="ml-2" />
-											</th>
-											<th scope="col" className={styles.th}>
-												Price
-												<SwapVertRoundedIcon fontSize="small" className="ml-2" />
-											</th>
-											<th scope="col" className={styles.th}>
-												Cinema Hall
-											</th>
+					<div className="py-4 overflow-x-auto">
+						<div className={styles.table_container}>
+							<table className="min-w-full">
+								<thead>
+									<tr>
+										<th scope="col" className={styles.th}></th>
+										<th scope="col" className={styles.th}>
+											Date
+											<SwapVertRoundedIcon fontSize="small" className="ml-2" />
+										</th>
+										<th scope="col" className={styles.th}>
+											Time
+											<SwapVertRoundedIcon fontSize="small" className="ml-2" />
+										</th>
+										<th scope="col" className={styles.th}>
+											Price
+											<SwapVertRoundedIcon fontSize="small" className="ml-2" />
+										</th>
+										<th scope="col" className={styles.th}>
+											Cinema Hall
+										</th>
+									</tr>
+								</thead>
+								<tbody>
+									{shows?.map((show, index) => (
+										<tr className={styles.tr} key={index}>
+											<td className={styles.td}>
+												<input
+													type="radio"
+													name="show"
+													radioGroup="show"
+													value={show._id}
+													className="w-[100%]"
+													required
+													onChange={handleRadioOnChange}
+													checked={radioValue == `${show._id}`}
+												/>
+											</td>
+											<td className={styles.td}>
+												<p className={styles.td_p}>{<Date date={show.date} />}</p>
+											</td>
+											<td className={styles.td}>
+												<p className={styles.td_p}>{<Time date={show.startTime} />}</p>
+											</td>
+											<td className={styles.td}>
+												<p className={styles.td_p}>{show.price} INR</p>
+											</td>
+											<td className={styles.td}>
+												<p className={styles.td_p}>{show.cinemaHall.screenName}</p>
+											</td>
 										</tr>
-									</thead>
-									<tbody>
-										{shows?.map((show, index) => (
-											<tr className={styles.tr} key={index}>
-												<td className={styles.td}>
-													<input
-														type="radio"
-														name="show"
-														radioGroup="show"
-														value={show._id}
-														className="w-[100%]"
-														required
-														onChange={handleRadioOnChange}
-														checked={radioValue == `${show._id}`}
-													/>
-												</td>
-												<td className={styles.td}>
-													<p className={styles.td_p}>{<Date date={show.date} />}</p>
-												</td>
-												<td className={styles.td}>
-													<p className={styles.td_p}>{<Time date={show.startTime} />}</p>
-												</td>
-												<td className={styles.td}>
-													<p className={styles.td_p}>{show.price} INR</p>
-												</td>
-												<td className={styles.td}>
-													<p className={styles.td_p}>{show.cinemaHall.screenName}</p>
-												</td>
-											</tr>
-										))}
-									</tbody>
-								</table>
-							</div>
+									))}
+								</tbody>
+							</table>
 						</div>
 					</div>
 					<button type="submit" className="bg-blue-600 w-full rounded-md font-medium my-6 p-2 text-white">
@@ -135,13 +133,10 @@ const Shows = () => {
 	);
 
 	const noShow = (
-		<div className="max-w-[1296px] w-[100vw] relative flex justify-center items-center m-auto">
+		<div className={styles.noshow}>
 			<BackButton />
-			<p className="text-center font-extrabold text-gray-400 mt-48">
-				<span className="text-5xl">Sorry 🙇‍♂️</span>
-				<br />
-				<br />
-				<span className="text-5xl">Show is not available for this movie</span>
+			<p className={styles.noshow_p}>
+				<span className="text-3xl md:text-5xl">❌ No available shows ❌</span>
 			</p>
 		</div>
 	);
@@ -155,11 +150,14 @@ const Shows = () => {
 };
 
 const styles = {
-	th: "px-5 py-3 bg-black text-gray-200 text-left text-md font-light",
-	td: "px-5 py-4 border-b border-gray-500 text-sm",
+	main: "max-w-[1296px] my-2 mx-auto w-full p-2 md:p-10 bg-slate-800 relative",
+	th: "px-2 md:px-5 py-2 md:py-3 bg-black text-gray-200 text-left text-sm md:text-md font-light",
+	td: "px-2 md:px-5 py-2 md:py-3 border-b border-gray-500 text-sm",
 	tr: "bg-gray-300 hover:bg-gray-100",
 	td_p: "text-black whitespace-no-wrap",
 	table_container: "inline-block min-w-full rounded-lg max-h-[70vh] overflow-auto scroll-smooth",
+	noshow: "max-w-[1296px] w-[100vw] relative flex justify-center items-center m-auto",
+	noshow_p: "text-center font-extrabold text-gray-400 mt-48",
 };
 
 export default Shows;

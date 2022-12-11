@@ -56,10 +56,10 @@ const Booking = () => {
 	return (
 		<>
 			<Navbar />
-			<div className="max-w-[1296px] my-2 mx-auto w-full p-10 bg-slate-800 rounded-2xl relative">
+			<div className="w-full md:max-w-[1296px] my-2 mx-auto p-2 md:p-10 bg-slate-800 relative">
 				<BackButton />
-				<div className="text-4xl text-white text-center mb-3">My Bookings</div>
-				<div className="flex justify-center items-center flex-wrap">
+				<div className="text-3xl text-white text-center mt-10 mb-3">My Bookings</div>
+				<div className="flex justify-start items-center flex-wrap">
 					{bookings?.map((booking, index) => (
 						<Ticket booking={booking} key={booking._id} />
 					))}

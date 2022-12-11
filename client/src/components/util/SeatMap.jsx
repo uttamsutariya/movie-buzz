@@ -69,7 +69,7 @@ const SeatMap = (props) => {
 			const myIndex = cols * (seat.row - 1) + (seat.col - 1);
 			tr.push(
 				<input
-					className="w-[17px] h-[17px]"
+					className="w-[15px] h-[15px]"
 					type="checkbox"
 					checked={checkedSeats[myIndex]}
 					disabled={seat?.isBooked}
@@ -86,13 +86,13 @@ const SeatMap = (props) => {
 	if (props.loading) return <Loader msg="loading" />;
 
 	return (
-		<div className="p-1 bg-blue-400 rounded-lg w-auto">
+		<div className="p-1.5 overflow-hidden bg-blue-400 rounded-lg w-auto">
 			<table>
 				<thead>
 					{myRows.map((row, index) => (
 						<tr key={index}>
 							{row.map((element, index) => (
-								<td className=" bg-white text-black text-sm p-[2px]" key={index}>
+								<td className=" bg-white text-black text-sm p-[1px]" key={index}>
 									{element}
 								</td>
 							))}
@@ -102,7 +102,7 @@ const SeatMap = (props) => {
 				<tbody>
 					<tr>
 						{myCols.map((col, index) => (
-							<th key={index} className="bg-black p-1 text-gray-200 text-center text-sm font-light">
+							<th key={index} className="bg-black text-gray-200 text-center text-sm font-light">
 								{col}
 							</th>
 						))}

@@ -45,7 +45,7 @@ const Ticket = ({ booking }) => {
 	return (
 		<div className={styles.container}>
 			<div className={styles.image_container}>
-				<img src={poster} alt={title} />
+				<img className="w-[100%] h-auto" src={poster} alt={title} />
 			</div>
 			<div className={styles.details_container}>
 				<h1 className={styles.h1}>{title}</h1>
@@ -54,25 +54,22 @@ const Ticket = ({ booking }) => {
 						<li key={index}>
 							<p className="text-sm">
 								<span className="text-black">{item.name}</span>
-								<span className="text-gray-500">{item.value}</span>
+								<span className="text-gray-700">{item.value}</span>
 							</p>
 						</li>
 					))}
 				</ul>
-				<div className={styles.btn_container}>
-					<button className={styles.btn}>Download Ticket</button>
-				</div>
 			</div>
 		</div>
 	);
 };
 
 const styles = {
-	container: "flex max-w-md mx-2 my-3 bg-white shadow-lg rounded shadow-lg overflow-hidden",
-	image_container: "w-1/3 bg-cover bg-landscape",
-	details_container: "w-2/3 p-4",
-	h1: "text-gray-900 font-bold text-2xl",
-	btn_container: "flex item-center justify-start mt-4",
+	container: "flex max-w-sm mx-2 my-2 bg-white rounded overflow-hidden",
+	image_container: "w-1/3",
+	details_container: "w-2/3 p-1 md:p-2",
+	h1: "text-gray-900 font-bold text-xl md:text-2xl",
+	btn_container: "flex item-center justify-start",
 	btn: "px-3 py-2 w-full mr-3 bg-blue-600 text-white text-xs rounded",
 };
 
