@@ -21,7 +21,7 @@ const MovieCard = ({ movie }) => {
 const styles = {
 	book_show_btn: "w-full h-[35px] inline-block px-4 py-1.5 bg-blue-600 text-white font text-xs",
 	view_details_btn: "w-full h-[35px] inline-block px-4 py-1.5 bg-mygray text-white font text-xs rounded-sm",
-	image_container: "w-[180px] md:w-[230px] h-auto relative cursor-pointer",
+	image_container: "w-[130px] md:w-[230px] h-auto relative cursor-pointer",
 	img: "object-cover rounded-xl hover:opacity-70",
 	movie_title: "text-blue-300 text-xl md:text-2xl my-1",
 };

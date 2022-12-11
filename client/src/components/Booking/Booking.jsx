@@ -53,20 +53,33 @@ const Booking = () => {
 	if (error) return <Loader msg="error" />;
 	else if (loading) return <Loader msg="loading" />;
 
+	const noBookings = (
+		<div className={styles.nobooking}>
+			<p className={styles.nobookings_p}>
+				<span className="text-3xl md:text-5xl">❌ You don't have any bookings yet ❌</span>
+			</p>
+		</div>
+	);
+
 	return (
 		<>
 			<Navbar />
-			<div className="w-full md:max-w-[1296px] my-2 mx-auto p-2 md:p-10 bg-slate-800 relative">
+			<div className="w-full h-[75vh] md:max-w-[1296px] my-2 mx-auto p-2 md:p-10 bg-slate-800 relative">
 				<BackButton />
 				<div className="text-3xl text-white text-center mt-10 mb-3">My Bookings</div>
 				<div className="flex justify-start items-center flex-wrap">
-					{bookings?.map((booking, index) => (
-						<Ticket booking={booking} key={booking._id} />
-					))}
+					{bookings?.length > 0
+						? bookings?.map((booking, index) => <Ticket booking={booking} key={booking._id} />)
+						: noBookings}
 				</div>
 			</div>
 		</>
 	);
+};
+
+const styles = {
+	nobooking: "max-w-[1296px] w-[100vw] relative flex justify-center items-center m-auto",
+	nobookings_p: "text-center font-extrabold text-gray-400 mt-48",
 };
 
 export default Booking;
