@@ -10,6 +10,8 @@ import Navbar from "../Navbar";
 import Time from "../util/Time";
 import Date from "../util/Date";
 
+import { SORT_OPTION } from "../../../constants";
+
 const initialState = {
 	loading: true,
 	error: "",
@@ -39,16 +41,20 @@ const Shows = () => {
 
 	const [state, dispatch] = useReducer(reducer, initialState);
 
+	const [sortOption, setSortOption] = useState(SORT_OPTION.DATE);
+
+	const [sortOrder, setSortOrder] = useState(1);
+
 	const { loading, error, shows, movie } = state;
 
 	useEffect(() => {
 		axios
-			.get(`/api/shows/${id}`)
+			.get(`/api/shows/${id}?sortBy=${sortOption}&order=${sortOrder}`)
 			.then((res) => {
 				dispatch({ type: "FETCH_SUCCESS", payload: res.data.data });
 			})
 			.catch(() => dispatch({ type: "FETCH_ERROR", payload: "Something went wrong" }));
-	}, []);
+	}, [sortOption, sortOrder]);
 
 	const handleSubmit = (e) => {
 		e.preventDefault();
@@ -57,6 +63,11 @@ const Shows = () => {
 
 	const handleRadioOnChange = (e) => {
 		setRadioValue(e.target.value);
+	};
+
+	const handleSortOptionChange = (sortOption) => {
+		sortOrder == 1 ? setSortOrder(-1) : setSortOrder(1);
+		setSortOption(sortOption);
 	};
 
 	if (error) return <Loader msg="error" />;
@@ -73,22 +84,23 @@ const Shows = () => {
 							<table className="min-w-full">
 								<thead>
 									<tr>
-										<th scope="col" className={styles.th}></th>
-										<th scope="col" className={styles.th}>
+										<th className={styles.th}></th>
+										<th
+											onClick={() => handleSortOptionChange(SORT_OPTION.DATE)}
+											className={`${styles.th} cursor-pointer`}
+										>
 											Date
 											<SwapVertRoundedIcon fontSize="small" className="ml-2" />
 										</th>
-										<th scope="col" className={styles.th}>
-											Time
-											<SwapVertRoundedIcon fontSize="small" className="ml-2" />
-										</th>
-										<th scope="col" className={styles.th}>
+										<th className={styles.th}>Time</th>
+										<th
+											onClick={() => handleSortOptionChange(SORT_OPTION.PRICE)}
+											className={`${styles.th} cursor-pointer`}
+										>
 											Price
 											<SwapVertRoundedIcon fontSize="small" className="ml-2" />
 										</th>
-										<th scope="col" className={styles.th}>
-											Cinema Hall
-										</th>
+										<th className={styles.th}>Cinema Hall</th>
 									</tr>
 								</thead>
 								<tbody>

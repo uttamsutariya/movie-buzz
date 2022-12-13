@@ -20,6 +20,10 @@ const cinemaHallSchema = new Schema(
 			type: Number,
 			required: [true, "total number of cinema hall columns is required"],
 		},
+		deleted: {
+			type: Boolean,
+			default: false,
+		},
 	},
 	{ timestamps: true, versionKey: false }
 );

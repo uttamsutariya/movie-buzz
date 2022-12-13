@@ -8,6 +8,7 @@ const {
 	getShowDetails,
 	getCinemaHalls,
 	populateShowForm,
+	deleteCinemaHall,
 } = require("../controllers/admin");
 
 const { addMovie, deleteMovie, getAllMovies, getAllReleasedMovies } = require("../controllers/movie");
@@ -32,6 +33,9 @@ router.delete("/movies/:movieId", authToken, authorizeRole(1), deleteMovie);
 
 // add new cinema hall
 router.post("/cinemaHall", authToken, authorizeRole(1), addCinemaHall);
+
+// delete cinema hall
+router.delete("/cinemaHall/:id", authToken, authorizeRole(1), deleteCinemaHall);
 
 // get all cinema hall
 router.get("/cinemaHall", authToken, authorizeRole(1), getCinemaHalls);

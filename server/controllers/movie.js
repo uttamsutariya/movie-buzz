@@ -125,9 +125,21 @@ exports.deleteMovie = asyncHandler(async (req, res, next) => {
 
 // get all added movies
 exports.getAllMovies = asyncHandler(async (req, res, next) => {
-	const movies = await Movie.find({ status: { $ne: "deleted" } }, { title: 1, status: 1, release_date: 1 }).sort({
-		createdAt: -1,
-	});
+	let { sortBy, order, page, perPage } = req.query;
+
+	sortBy = sortBy || "title";
+	order = order || 1;
+	page = page || 1;
+	perPage = perPage || 5;
+
+	const totalMovies = await Movie.countDocuments({ status: { $ne: "deleted" } });
+
+	const movies = await Movie.find({ status: { $ne: "deleted" } }, { title: 1, status: 1, release_date: 1 })
+		.sort({
+			[`${sortBy}`]: order,
+		})
+		.skip(page * parseInt(perPage))
+		.limit(perPage);
 
 	let releasedMovies = 0;
 	let comingSoonMovies = 0;
@@ -141,7 +153,7 @@ exports.getAllMovies = asyncHandler(async (req, res, next) => {
 		status: "success",
 		message: "movies list fetched",
 		data: {
-			totalMovies: movies.length,
+			totalMovies,
 			releasedMovies,
 			comingSoonMovies,
 			movies,

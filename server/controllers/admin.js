@@ -1,109 +1,11 @@
 const asyncHandler = require("../middlewares/asyncHandler");
-const { cookieToken } = require("../utils/cookieToken");
 const CustomError = require("../utils/customError");
 
-const { s3_upload } = require("../helper/imageUploader");
-
 // models
-const User = require("../models/user");
-const Movie = require("../models/movie");
 const CinemaHall = require("../models/cinemaHall");
 const Feedback = require("../models/feedback");
 const Show = require("../models/show");
 const Booking = require("../models/booking");
-
-// add movie
-exports.addMovie = asyncHandler(async (req, res, next) => {
-	let { title, description, release_date, status, language, duration, genre, actors, adult, trailer_link } = req.body;
-
-	if (!req.files) return next(new CustomError("Please upload poster and banner image", 400));
-
-	const { poster, banner } = req.files;
-
-	if (!poster || !banner) return next(new CustomError("Please upload poster and banner image", 400));
-
-	genre = genre.split(",");
-	language = language.split(",");
-	actors = actors.split(",");
-
-	const posterURL = await s3_upload(poster, "movies/poster", false);
-	const bannerURL = await s3_upload(banner, "movies/banner", true);
-
-	const movieData = {
-		title,
-		description,
-		release_date,
-		status,
-		language,
-		duration,
-		genre,
-		actors,
-		adult,
-		trailer_link,
-		images: { poster: posterURL, banner: bannerURL },
-	};
-
-	const movie = await Movie.create(movieData);
-
-	res.status(201).json({
-		status: "success",
-		message: "movie added successfully",
-		data: { movie },
-	});
-});
-
-// delete movie
-exports.deleteMovie = asyncHandler(async (req, res, next) => {
-	const { movieId } = req.params;
-
-	if (!movieId) return next(new CustomError("Provide MovieId", 400));
-
-	await Movie.updateOne({ _id: movieId }, { $set: { status: "deleted" } });
-
-	return res.status(200).json({
-		status: "success",
-		message: "Movie deleted successfully",
-		data: {},
-	});
-});
-
-// view all added movies
-exports.getAllMovies = asyncHandler(async (req, res, next) => {
-	const { searchKey } = req.query;
-
-	const regex = new RegExp(searchKey, "i");
-
-	const movies = await Movie.find(
-		{ title: regex, status: { $ne: "deleted" } },
-		{ title: 1, status: 1, release_date: 1 }
-	).sort({
-		createdAt: -1,
-	});
-
-	let releasedMovies = 0;
-	let comingSoonMovies = 0;
-
-	for (let movie of movies) {
-		const isAnyShow = await Show.findOne({ movie: movie._id, status: { $ne: "ended" } }, { _id: 1 });
-
-		if (isAnyShow) movie._doc.inAnyShow = true;
-		else movie._doc.inAnyShow = false;
-
-		if (movie.status === "released") ++releasedMovies;
-		if (movie.status === "coming soon") ++comingSoonMovies;
-	}
-
-	return res.status(200).json({
-		status: "success",
-		message: "movies list fetched",
-		data: {
-			totalMovies: movies.length,
-			releasedMovies,
-			comingSoonMovies,
-			movies,
-		},
-	});
-});
 
 // add new cinema hall
 exports.addCinemaHall = asyncHandler(async (req, res, next) => {
@@ -135,9 +37,33 @@ exports.addCinemaHall = asyncHandler(async (req, res, next) => {
 	});
 });
 
+// delete cinema hall
+exports.deleteCinemaHall = asyncHandler(async (req, res, next) => {
+	const { id } = req.params;
+
+	if (!id) return next(new CustomError("Please provide cinemahall id"));
+
+	await CinemaHall.updateOne({ _id: id }, { $set: { deleted: true } });
+
+	res.status(201).json({
+		status: "success",
+		message: "cinemaHall deleted successfully",
+		data: {
+			cinemaHall: id,
+		},
+	});
+});
+
 // get all cinema hall
 exports.getCinemaHalls = asyncHandler(async (req, res, next) => {
-	const halls = await CinemaHall.find({}, { createdAt: 0, updatedAt: 0 });
+	let { sortBy, order } = req.query;
+
+	sortBy = sortBy || "screenName";
+	order = order || 1;
+
+	const halls = await CinemaHall.find({ deleted: false }, { createdAt: 0, updatedAt: 0 }).sort({
+		[`${sortBy}`]: order,
+	});
 
 	res.status(201).json({
 		status: "success",
@@ -151,56 +77,85 @@ exports.getCinemaHalls = asyncHandler(async (req, res, next) => {
 
 // view all feedbacks
 exports.viewFeedback = asyncHandler(async (req, res, next) => {
-	const feedbacks = await Feedback.find({}, { updatedAt: 0 }).sort({ createdAt: -1 }).populate({
-		path: "user",
-		model: "User",
-		select: "username email",
-	});
+	let { page, limit } = req.query;
+
+	page = page || 1;
+	limit = limit || 5;
+
+	const count = await Feedback.countDocuments({});
+
+	const feedbacks = await Feedback.find({}, { updatedAt: 0 })
+		.sort({ createdAt: -1 })
+		.limit(page * limit)
+		.populate({
+			path: "user",
+			model: "User",
+			select: "username email",
+		});
 
 	return res.status(200).json({
 		status: "success",
 		message: "feedback list fetched",
 		data: {
-			totalFeedbacks: feedbacks.length,
+			hasNext: count > page * limit,
+			totalFeedbacks: count,
 			feedbacks,
 		},
 	});
 });
 
-// virew show analytics
+// view show analytics
 exports.getAllShowsAndAnalytics = asyncHandler(async (req, res, next) => {
-	let shows = await Show.find({}, { createdAt: 0, updatedAt: 0, endTime: 0 })
-		.sort({ date: 1 })
-		.populate([
-			{
-				path: "cinemaHall",
-				model: "CinemaHall",
-				select: "screenName",
+	let { sortBy, order, page, perPage } = req.query;
+
+	sortBy = sortBy || "date";
+	order = order || 1;
+	page = page || 1;
+	perPage = perPage || 5;
+
+	const skipCount = page * parseInt(perPage);
+	const limitCount = parseInt(perPage);
+
+	const totalShows = await Show.countDocuments({});
+
+	const shows = await Show.aggregate([
+		{
+			$lookup: {
+				from: "cinemahalls",
+				localField: "cinemaHall",
+				foreignField: "_id",
+				as: "cinemaHall",
 			},
-			{
-				path: "movie",
-				model: "Movie",
-				select: "title",
+		},
+		{
+			$lookup: {
+				from: "movies",
+				localField: "movie",
+				foreignField: "_id",
+				as: "movie",
 			},
-		]);
+		},
+		{
+			$unwind: { path: "$cinemaHall" },
+		},
+		{
+			$unwind: { path: "$movie" },
+		},
+		{
+			$sort: { [`${sortBy}`]: parseInt(order) },
+		},
+		{
+			$skip: skipCount,
+		},
+		{
+			$limit: limitCount,
+		},
+	]);
 
 	let todaysShows = 0;
 
 	shows.forEach((show) => {
-		show._doc.totalEarningns = show.bookedSeats.length * show.price;
-		show._doc.totalBookings = show.bookedSeats.length;
-		show._doc.screen = show.cinemaHall.screenName;
-		show._doc.movie = show.movie.title;
-
-		const showDate = new Date(show.date);
-		const todaysDate = new Date();
-
-		const sd = showDate.getDate() + "-" + showDate.getMonth() + "-" + showDate.getFullYear();
-		const td = todaysDate.getDate() + "-" + todaysDate.getMonth() + "-" + todaysDate.getFullYear();
-
-		if (sd == td) ++todaysShows;
-
-		show.cinemaHall = undefined;
+		show.totalBookings = show.bookedSeats.length;
 		show.availableSeats = undefined;
 		show.bookedSeats = undefined;
 	});
@@ -210,7 +165,7 @@ exports.getAllShowsAndAnalytics = asyncHandler(async (req, res, next) => {
 		message: "show analytics fetched",
 		data: {
 			todaysShows,
-			totalShows: shows.length,
+			totalShows,
 			shows,
 		},
 	});

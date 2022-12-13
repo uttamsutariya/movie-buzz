@@ -284,6 +284,11 @@ exports.updateShowDetails = asyncHandler(async (req, res, next) => {
 exports.getShowByMovie = asyncHandler(async (req, res, next) => {
 	const { movieId } = req.params;
 
+	let { sortBy, order } = req.query;
+
+	sortBy = sortBy || "date";
+	order = order || 1;
+
 	if (!movieId) return next(new CustomError("Please add movie id", 400));
 
 	const movie = await Movie.findOne({ _id: movieId }, { title: 1, _id: 0 });
@@ -294,7 +299,7 @@ exports.getShowByMovie = asyncHandler(async (req, res, next) => {
 		{ movie: movieId },
 		{ movie: 0, endTime: 0, status: 0, availableSeats: 0, bookedSeats: 0, createdAt: 0, updatedAt: 0 }
 	)
-		.sort({ createdAt: -1 })
+		.sort({ [`${sortBy}`]: order })
 		.populate([
 			{
 				path: "cinemaHall",

@@ -1,4 +1,4 @@
-import { useReducer, useEffect } from "react";
+import { useReducer, useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import SwapVertRoundedIcon from "@mui/icons-material/SwapVertRounded";
 import { Link } from "react-router-dom";
@@ -6,6 +6,10 @@ import Navbar from "../navigation/Navbar";
 import Loader from "../../util/Loader";
 import axios from "axios";
 import Date from "../../util/Date";
+import TablePagination from "@mui/material/TablePagination";
+
+import { SORT_OPTION } from "../../../../constants";
+import { toast } from "react-toastify";
 
 const initialState = {
 	loading: true,
@@ -36,11 +40,28 @@ const Movies = () => {
 	const location = useLocation();
 	const navigate = useNavigate();
 
+	const [sortOption, setSortOption] = useState(SORT_OPTION.TITLE);
+	const [sortOrder, setSortOrder] = useState(1);
+	const [page, setPage] = useState(0);
+	const [rowsPerPage, setRowsPerPage] = useState(5);
+
+	const handleSortOptionChange = (sortOption) => {
+		sortOrder == 1 ? setSortOrder(-1) : setSortOrder(1);
+		setSortOption(sortOption);
+	};
+
+	const handleChangePage = (e, newPage) => setPage(newPage);
+
+	const handleChangeRowsPerPage = (e) => {
+		setRowsPerPage(parseInt(e.target.value, 10));
+		setPage(0);
+	};
+
 	const { movies, totalMovies, releasedMovies, comingSoonMovies, loading, error } = state;
 
 	const fetchMovies = () => {
 		axios
-			.get(`/api/admin/movies`)
+			.get(`/api/admin/movies?sortBy=${sortOption}&order=${sortOrder}&page=${page}&perPage=${rowsPerPage}`)
 			.then((res) => {
 				dispatch({ type: "FETCH_SUCCESS", payload: { ...res.data.data, loading: false, error: "" } });
 			})
@@ -52,7 +73,7 @@ const Movies = () => {
 
 	useEffect(() => {
 		fetchMovies();
-	}, []);
+	}, [sortOption, sortOrder, page, rowsPerPage]);
 
 	const deleteMovie = (e) => {
 		const sure = window.confirm("Are you sure want to delete ?");
@@ -61,6 +82,7 @@ const Movies = () => {
 			axios
 				.delete(`/api/admin/movies/${e.target.id}`)
 				.then(() => {
+					toast.success("Deleted succesfully");
 					fetchMovies();
 				})
 				.catch((error) => {
@@ -76,30 +98,31 @@ const Movies = () => {
 		<table className="min-w-full">
 			<thead className="sticky top-0 z-50">
 				<tr>
-					<th scope="col" className={styles.th}>
+					<th className={styles.th}>
 						<p>Sr.</p>
 					</th>
-					<th scope="col" className={styles.th}>
-						<p className="cursor-pointer">
+					<th
+						onClick={() => handleSortOptionChange(SORT_OPTION.TITLE)}
+						className={`${styles.th} cursor-pointer`}
+					>
+						<p>
 							Name
 							<SwapVertRoundedIcon fontSize="small" className="ml-2" />
 						</p>
 					</th>
-					<th scope="col" className={styles.th}>
-						<p className="cursor-pointer">
+					<th
+						onClick={() => handleSortOptionChange(SORT_OPTION.RELEASE_DATE)}
+						className={`${styles.th} cursor-pointer`}
+					>
+						<p>
 							Release Date
 							<SwapVertRoundedIcon fontSize="small" className="ml-2" />
 						</p>
 					</th>
-					<th scope="col" className={styles.th}>
-						<p className="cursor-pointer">
-							Released
-							<SwapVertRoundedIcon fontSize="small" className="ml-2" />
-						</p>
+					<th className={styles.th}>
+						<p>Released</p>
 					</th>
-					<th scope="col" className={styles.th}>
-						Action
-					</th>
+					<th className={styles.th}>Action</th>
 				</tr>
 			</thead>
 			<tbody>
@@ -139,6 +162,28 @@ const Movies = () => {
 						</td>
 					</tr>
 				))}
+				<tr className="bg-gray-300">
+					<td colSpan={5} className="px-24">
+						<TablePagination
+							onPageChange={handleChangePage}
+							onRowsPerPageChange={handleChangeRowsPerPage}
+							component="div"
+							count={totalMovies}
+							page={page}
+							rowsPerPage={rowsPerPage}
+							rowsPerPageOptions={[5, 10, 25, 50, 100]}
+							sx={{
+								backgroundColor: "#d1d5db",
+							}}
+							labelRowsPerPage={<div>Rows per page</div>}
+							labelDisplayedRows={({ from, to, count }) => (
+								<div>
+									{from} - {to} of {count != -1 ? count : `more than ${to}`}
+								</div>
+							)}
+						/>
+					</td>
+				</tr>
 			</tbody>
 		</table>
 	);
@@ -173,10 +218,8 @@ const Movies = () => {
 			</div>
 
 			<div className="mx-auto px-4 sm:px-8">
-				<div className="py-2">
-					<div className="py-4 overflow-x-auto">
-						<div className={styles.table_container}>{movies.length > 0 ? movieTable : null}</div>
-					</div>
+				<div className="overflow-x-auto">
+					<div className={styles.table_container}>{movies.length > 0 ? movieTable : null}</div>
 				</div>
 			</div>
 		</div>
@@ -193,7 +236,7 @@ const styles = {
 	stat_main: "mx-5 my-1 flex  justify-start items-center",
 	stat_h1: "text-3xl font-extrabold mb-2",
 	stat_p: "text-blue-400 text-3xl font-semibold",
-	table_container: "inline-block min-w-full rounded-lg max-h-[70vh] overflow-auto scroll-smooth",
+	table_container: "inline-block min-w-full rounded-lg overflow-auto scroll-smooth",
 };
 
 export default Movies;

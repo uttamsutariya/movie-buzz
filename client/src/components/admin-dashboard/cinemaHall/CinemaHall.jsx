@@ -1,4 +1,4 @@
-import { useEffect, useReducer } from "react";
+import { useEffect, useReducer, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
 
@@ -6,6 +6,9 @@ import axios from "axios";
 import SwapVertRoundedIcon from "@mui/icons-material/SwapVertRounded";
 import Navbar from "../navigation/Navbar";
 import Loader from "../../util/Loader";
+
+import { SORT_OPTION } from "../../../../constants";
+import { toast } from "react-toastify";
 
 const initialState = {
 	loading: true,
@@ -34,11 +37,20 @@ const CinemaHall = () => {
 	const navigate = useNavigate();
 	const location = useLocation();
 
+	const [sortOption, setSortOption] = useState(SORT_OPTION.SCREEN);
+
+	const [sortOrder, setSortOrder] = useState(1);
+
+	const handleSortOptionChange = (sortOption) => {
+		sortOrder == 1 ? setSortOrder(-1) : setSortOrder(1);
+		setSortOption(sortOption);
+	};
+
 	const { totalHalls, cinemaHalls, loading, error } = state;
 
 	const fetchCinemaHalls = () => {
 		axios
-			.get(`/api/admin/cinemaHall`)
+			.get(`/api/admin/cinemaHall?sortBy=${sortOption}&order=${sortOrder}`)
 			.then((res) => {
 				dispatch({ type: "FETCH_SUCCESS", payload: { ...res.data.data, loading: false, error: "" } });
 			})
@@ -50,7 +62,23 @@ const CinemaHall = () => {
 
 	useEffect(() => {
 		fetchCinemaHalls();
-	}, []);
+	}, [sortOption, sortOrder]);
+
+	const handleDelete = (e) => {
+		const sure = window.confirm("Are you sure want to delete ?");
+
+		if (sure) {
+			axios
+				.delete(`/api/admin/cinemaHall/${e.target.id}`)
+				.then(() => {
+					toast.success("Deleted succesfully");
+					fetchCinemaHalls();
+				})
+				.catch((error) => {
+					if (error.response.status == 403) navigate("/login", { state: { from: location } });
+				});
+		}
+	};
 
 	if (error) return <Loader msg="error" />;
 	else if (loading) return <Loader msg="loading" />;
@@ -85,32 +113,47 @@ const CinemaHall = () => {
 							<table className="min-w-full">
 								<thead className="sticky top-0 z-50">
 									<tr>
-										<th scope="col" className={styles.th}>
+										<th className={styles.th}>
 											<p>Sr.</p>
 										</th>
-										<th scope="col" className={styles.th}>
-											<p className="cursor-pointer">
+										<th
+											onClick={() => handleSortOptionChange(SORT_OPTION.SCREEN)}
+											className={`${styles.th} cursor-pointer`}
+										>
+											<p>
 												Screen Name
 												<SwapVertRoundedIcon fontSize="small" className="ml-2" />
 											</p>
 										</th>
-										<th scope="col" className={styles.th}>
-											<p className="cursor-pointer">
+										<th
+											onClick={() => handleSortOptionChange(SORT_OPTION.TOTAL_SEATS)}
+											className={`${styles.th} cursor-pointer`}
+										>
+											<p>
 												Total Seats
 												<SwapVertRoundedIcon fontSize="small" className="ml-2" />
 											</p>
 										</th>
-										<th scope="col" className={styles.th}>
-											<p className="cursor-pointer">
+										<th
+											onClick={() => handleSortOptionChange(SORT_OPTION.TOTAL_ROWS)}
+											className={`${styles.th} cursor-pointer`}
+										>
+											<p>
 												Rows
 												<SwapVertRoundedIcon fontSize="small" className="ml-2" />
 											</p>
 										</th>
-										<th scope="col" className={styles.th}>
-											<p className="cursor-pointer">
+										<th
+											onClick={() => handleSortOptionChange(SORT_OPTION.TOTAL_COLS)}
+											className={`${styles.th} cursor-pointer`}
+										>
+											<p>
 												Columns
 												<SwapVertRoundedIcon fontSize="small" className="ml-2" />
 											</p>
+										</th>
+										<th className={styles.th}>
+											<p>Action</p>
 										</th>
 									</tr>
 								</thead>
@@ -131,6 +174,16 @@ const CinemaHall = () => {
 											</td>
 											<td className={styles.td}>
 												<p className={styles.td_p}>{screen.totalColumns}</p>
+											</td>
+											<td className={styles.td}>
+												<button
+													onClick={handleDelete}
+													id={screen._id}
+													type="button"
+													className="py-0.5 px-3 bg-red-700 text-white text-center font-medium rounded-md"
+												>
+													Delete
+												</button>
 											</td>
 										</tr>
 									))}
