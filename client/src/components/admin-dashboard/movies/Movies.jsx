@@ -175,11 +175,11 @@ const Movies = () => {
 							sx={{
 								backgroundColor: "#d1d5db",
 							}}
-							labelRowsPerPage={<div>Rows per page</div>}
+							labelRowsPerPage={<>Rows per page</>}
 							labelDisplayedRows={({ from, to, count }) => (
-								<div>
+								<>
 									{from} - {to} of {count != -1 ? count : `more than ${to}`}
-								</div>
+								</>
 							)}
 						/>
 					</td>

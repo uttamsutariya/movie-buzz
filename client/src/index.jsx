@@ -22,7 +22,7 @@ ReactDOM.createRoot(document.getElementById("root")).render(
 					newestOnTop={true}
 					closeOnClick={true}
 					closeButton={false}
-					limit={1}
+					limit={2}
 				/>
 				<App />
 			</HashRouter>

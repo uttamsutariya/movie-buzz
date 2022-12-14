@@ -24,16 +24,17 @@ const MovieForm = () => {
 		duration: "",
 		language: [],
 		genre: [],
-		status: "released",
 		adult: false,
 	};
 
 	const [formData, setFormData] = useState(defaultFormData);
 	const [loading, setLoading] = useState(false);
+	const [isDisabled, setIsDisabled] = useState(true);
 	const location = useLocation();
 	const navigate = useNavigate();
 
 	const handleChange = (e) => {
+		setIsDisabled(false);
 		const { target } = e;
 
 		const name = target.name;
@@ -65,6 +66,8 @@ const MovieForm = () => {
 			else uploadData.set(key, formData[key]);
 		}
 
+		console.log(formData);
+
 		axios
 			.post(`/api/admin/movies`, uploadData)
 			.then((res) => {
@@ -74,6 +77,7 @@ const MovieForm = () => {
 			.catch((error) => {
 				if (error?.response?.status == 403) navigate("/login", { state: { from: location } });
 				else toast.error(error?.response?.data?.message);
+				setLoading(false);
 			});
 	};
 
@@ -262,35 +266,6 @@ const MovieForm = () => {
 
 					{/* radio & checkbox */}
 					<div className="my-5 flex justify-start">
-						<div className="mr-10">
-							<div className="flex items-center mb-4">
-								<input
-									onChange={handleChange}
-									id="released"
-									type="radio"
-									value="released"
-									name="status"
-									className={styles.radio_input}
-									defaultChecked
-								/>
-								<label htmlFor="released" className={styles.radio_label}>
-									Released
-								</label>
-							</div>
-							<div className="flex items-center">
-								<input
-									onChange={handleChange}
-									id="coming-soon"
-									type="radio"
-									value="coming soon"
-									name="status"
-									className={styles.radio_input}
-								/>
-								<label htmlFor="coming-soon" className={styles.radio_label}>
-									Coming soon
-								</label>
-							</div>
-						</div>
 						<div>
 							<div className="flex items-center mb-4">
 								<input
@@ -313,8 +288,8 @@ const MovieForm = () => {
 
 					<button
 						type="submit"
-						className="
-                        w-full px-6 py-2.5 bg-blue-600 text-white font-medium text-md rounded hover:bg-blue-700"
+						disabled={isDisabled}
+						className={!isDisabled ? `${styles.btn}` : `${styles.btn_disabled}`}
 					>
 						<FileUploadOutlinedIcon /> Add movie
 					</button>
@@ -330,6 +305,8 @@ const styles = {
 	radio_label: "ml-2 text-sm font-medium text-gray-900 dark:text-gray-300",
 	input: "block w-full mb-5 text-sm text-gray-400 border border-gray-500 rounded-lg cursor-pointer bg-gray-800",
 	label: "block mb-2 font-extralight text-blue-400",
+	btn: "w-full px-6 py-2.5 bg-blue-600 text-white font-medium text-md rounded hover:bg-blue-700",
+	btn_disabled: "w-full px-6 py-2.5 bg-blue-400 cursor-not-allowed text-white font-medium text-md rounded",
 };
 
 export default MovieForm;

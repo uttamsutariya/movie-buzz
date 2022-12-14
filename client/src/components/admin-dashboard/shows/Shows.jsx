@@ -175,11 +175,11 @@ const Shows = () => {
 							sx={{
 								backgroundColor: "#d1d5db",
 							}}
-							labelRowsPerPage={<div>Rows per page</div>}
+							labelRowsPerPage={<>Rows per page</>}
 							labelDisplayedRows={({ from, to, count }) => (
-								<div>
+								<>
 									{from} - {to} of {count != -1 ? count : `more than ${to}`}
-								</div>
+								</>
 							)}
 						/>
 					</td>
@@ -212,28 +212,6 @@ const Shows = () => {
 			<div className="mx-auto px-4 sm:px-8">
 				<div className="overflow-x-auto">
 					<div className={styles.table_container}>{showTable}</div>
-					{/* <div className="mt-2 mb-16">
-						<TablePagination
-							onPageChange={handleChangePage}
-							onRowsPerPageChange={handleChangeRowsPerPage}
-							component="div"
-							count={totalShows}
-							page={page}
-							rowsPerPage={rowsPerPage}
-							rowsPerPageOptions={[5, 10, 25, 100]}
-							sx={{
-								backgroundColor: "white",
-								width: "40%",
-								borderRadius: "10px",
-							}}
-							labelRowsPerPage={<div>Rows per page</div>}
-							labelDisplayedRows={({ from, to, count }) => (
-								<div>
-									{from}-{to} of {count != -1 ? count : `more than ${to}`}
-								</div>
-							)}
-						/>
-					</div> */}
 				</div>
 			</div>
 		</div>

@@ -16,11 +16,3 @@ body {
 ::-webkit-scrollbar {
 	display: none;
 }
-/* 
-::-webkit-scrollbar-track {
-	background: #0f172a;
-}
-
-::-webkit-scrollbar-thumb {
-	background: white;
-} */

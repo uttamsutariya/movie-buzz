@@ -35,6 +35,8 @@ const reducer = (state, action) => {
 
 const ShowForm = ({ update }) => {
 	const [state, dispatch] = useReducer(reducer, initialState);
+
+	const [isDisabled, setIsDisabled] = useState(true);
 	const { id } = useParams();
 	const navigate = useNavigate();
 	const location = useLocation();
@@ -122,7 +124,8 @@ const ShowForm = ({ update }) => {
 		const { movie, cinemaHall, price, dateTime } = formData;
 
 		if (!movie || !cinemaHall || !price || !dateTime) {
-			return alert("Please select all fields");
+			toast.error("Please select all fields");
+			return;
 		}
 
 		if (update) {
@@ -151,6 +154,7 @@ const ShowForm = ({ update }) => {
 	};
 
 	const handleChange = (e) => {
+		setIsDisabled(false);
 		setFormData((prevState) => ({ ...prevState, [e.target.name]: e.target.value }));
 	};
 
@@ -172,7 +176,7 @@ const ShowForm = ({ update }) => {
 			/>
 
 			<div className="m-5 p-5 bg-slate-800 rounded-lg">
-				<form onSubmit={handleSubmit} className="w-[60%] m-auto" autoComplete="off">
+				<form className="w-[60%] m-auto" autoComplete="off">
 					{/* Movie */}
 					<div className="mb-6">
 						<label htmlFor="lang" className={styles.label}>
@@ -246,9 +250,10 @@ const ShowForm = ({ update }) => {
 						</div>
 					</div>
 					<button
-						type="submit"
-						className="
-                        w-full px-6 py-2.5 bg-blue-600 text-white font-medium text-md rounded hover:bg-blue-700"
+						onClick={handleSubmit}
+						disabled={isDisabled}
+						type="button"
+						className={!isDisabled ? `${styles.btn}` : `${styles.btn_disabled}`}
 					>
 						{update ? (
 							<>
@@ -270,6 +275,8 @@ const styles = {
 	nav_h1: "text-2xl font-semibold text-blue-400",
 	input: "block w-full mb-5 text-sm text-gray-400 border border-gray-500 rounded-lg cursor-pointer bg-gray-800",
 	label: "block mb-2 font-extralight text-blue-400",
+	btn: "w-full px-6 py-2.5 bg-blue-600 text-white font-medium text-md rounded hover:bg-blue-700",
+	btn_disabled: "w-full px-6 py-2.5 bg-blue-400 cursor-not-allowed text-white font-medium text-md rounded",
 };
 
 export default ShowForm;

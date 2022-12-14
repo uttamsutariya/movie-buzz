@@ -1,10 +1,11 @@
 import BackButton from "./BackButton";
+import LoaderSvg from "../../assets/images/loading.svg";
 
 const Loader = ({ msg }) => {
 	return (
 		<div className="h-[100vh] flex justify-center items-center relative">
 			{msg === "loading" ? (
-				<h1 className="text-4xl font-extrabold">Loading . . .</h1>
+				<img src={LoaderSvg} alt="" />
 			) : (
 				<>
 					<BackButton />
