@@ -10,6 +10,8 @@ const Booking = require("../models/booking");
 // mail sender
 const { sendMail } = require("../helper/mailer");
 
+const { formatDate, formatTime, formatSeats } = require("../helper/formater");
+
 // booking id generater
 const { generateBookingID } = require("../helper/generateBookingID");
 
@@ -130,6 +132,11 @@ exports.bookShow = asyncHandler(async (req, res, next) => {
 			model: "CinemaHall",
 			select: "screenName",
 		},
+		{
+			path: "movie",
+			model: "Movie",
+			select: "images title",
+		},
 	]);
 
 	if (!showDoc) return next(new CustomError("Show not found", 400));
@@ -185,8 +192,20 @@ exports.bookShow = asyncHandler(async (req, res, next) => {
 	const booking = await Booking.create(bookingDoc);
 
 	// send mail & sms after booking
+
 	if (booking) {
-		sendMail(req.user.email, "uMovies Show Booked", `Your ticket are booked. Your seats are : ${userSeats}`);
+		const mailDetails = {
+			banner: showDoc.movie.images.banner,
+			title: showDoc.movie.title,
+			date: formatDate(showDoc.date),
+			startTime: formatTime(showDoc.startTime),
+			bookingId: booking.bookingId,
+			screenName: showDoc.cinemaHall.screenName,
+			seats: formatSeats(booking.seats),
+			totalAmount: booking.totalAmount,
+		};
+
+		sendMail(req.user.email, "Show Booked", mailDetails);
 	}
 
 	res.status(201).json({

@@ -67,11 +67,17 @@ exports.getMovieById = asyncHandler(async (req, res, next) => {
 
 // add movie
 exports.addMovie = asyncHandler(async (req, res, next) => {
-	let { title, description, release_date, status, language, duration, genre, actors, adult, trailer_link } = req.body;
+	let { title, description, release_date, language, duration, genre, actors, adult, trailer_link } = req.body;
 
 	if (!req.files) return next(new CustomError("Please upload poster and banner image", 400));
 
 	const { poster, banner } = req.files;
+
+	const fileSize = process.env.MAX_FILE_SIZE;
+
+	if (poster.size / (1024 * 1024) > fileSize || banner.size / (1024 * 1024) > fileSize) {
+		return next(new CustomError(`Maximum image size is ${process.env.MAX_FILE_SIZE} MB`));
+	}
 
 	if (!poster || !banner) return next(new CustomError("Please upload poster and banner image", 400));
 
@@ -81,6 +87,11 @@ exports.addMovie = asyncHandler(async (req, res, next) => {
 
 	const time = duration.split(":");
 	duration = Number(time[0]) * 60 + Number(time[1]);
+
+	let status = new Date(release_date) <= Date.now() ? "released" : "coming soon";
+
+	console.log(status);
+	console.log(new Date(release_date) <= Date.now());
 
 	const posterURL = await s3_upload(poster, "movies/poster", false);
 	const bannerURL = await s3_upload(banner, "movies/banner", true);
@@ -133,6 +144,8 @@ exports.getAllMovies = asyncHandler(async (req, res, next) => {
 	perPage = perPage || 5;
 
 	const totalMovies = await Movie.countDocuments({ status: { $ne: "deleted" } });
+	const releasedMovies = await Movie.countDocuments({ status: "released" });
+	const comingSoonMovies = await Movie.countDocuments({ status: "coming soon" });
 
 	const movies = await Movie.find({ status: { $ne: "deleted" } }, { title: 1, status: 1, release_date: 1 })
 		.sort({
@@ -140,14 +153,6 @@ exports.getAllMovies = asyncHandler(async (req, res, next) => {
 		})
 		.skip(page * parseInt(perPage))
 		.limit(perPage);
-
-	let releasedMovies = 0;
-	let comingSoonMovies = 0;
-
-	for (let movie of movies) {
-		if (movie.status === "released") ++releasedMovies;
-		if (movie.status === "coming soon") ++comingSoonMovies;
-	}
 
 	return res.status(200).json({
 		status: "success",
