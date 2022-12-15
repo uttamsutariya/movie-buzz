@@ -54,26 +54,21 @@ const Login = () => {
 							required
 						/>
 					</div>
-					<div className={styles.utils_div}>
-						<div>
-							<input type="checkbox" className={styles.checkbox_input} id="exampleCheck2" />
-							<label className={styles.checkbox_label} htmlFor="exampleCheck2">
-								Remember me
-							</label>
-						</div>
-						<a href="#!" className="text-blue-400">
-							Forgot password?
-						</a>
-					</div>
+
 					<button type="submit" className={styles.login_btn}>
 						Login
 					</button>
 					<p className={styles.signup_link}>
-						Don't have account ?{" "}
+						New user ?{" "}
 						<Link to="../signup" replace={true} className="text-blue-400">
 							SignUp
 						</Link>
 					</p>
+					<div className={styles.utils_div}>
+						<Link to="/user/forgot-password" className="text-blue-400">
+							Forgot password ?
+						</Link>
+					</div>
 				</form>
 			</div>
 		</div>
@@ -86,9 +81,7 @@ const styles = {
 	formGroup: "form-group mb-6",
 	inputItem:
 		"text-sm rounded-lg  block w-full p-2.5 bg-gray-700 placeholder-gray-200 text-white focus:outline-blue-600",
-	utils_div: "flex justify-between items-center mb-6",
-	checkbox_input: "h-4 w-4 border border-gray-300 rounded-sm bg-white checked:bg-blue-600  mr-2 cursor-pointer",
-	checkbox_label: "form-check-label inline-block text-gray-200",
+	utils_div: "flex justify-center items-center my-2",
 	login_btn: "w-full px-6 py-2.5 bg-blue-600 text-white font-medium text-sm rounded hover:bg-blue-700",
 	signup_link: "text-gray-200 mt-6 text-center",
 };

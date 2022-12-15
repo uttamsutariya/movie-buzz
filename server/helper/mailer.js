@@ -25,12 +25,12 @@ const handlebarsOptions = {
 
 transporter.use("compile", hbs(handlebarsOptions));
 
-exports.sendMail = async (reciever, sub, mailDetails) => {
+exports.sendMail = async (reciever, sub, mailDetails, isTicketMail = true) => {
 	let mailOptions = {
 		from: process.env.MAIL_AUTH_CREDENTIAL_USER,
 		to: reciever,
 		subject: sub,
-		template: "email",
+		template: isTicketMail ? "email" : "reset-password",
 		context: {
 			...mailDetails,
 		},

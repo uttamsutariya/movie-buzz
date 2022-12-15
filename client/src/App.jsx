@@ -24,6 +24,8 @@ import AdminWelcome from "./components/admin-dashboard/AdminWelcome";
 import SeatSelector from "./components/shows/SeatSelector";
 import PrivateRoute from "./components/PrivateRoute";
 import PersistLogin from "./components/PersistLogin";
+import ForgotPass from "./components/auth/ForgotPass";
+import ResetPass from "./components/auth/ResetPass";
 
 const App = () => {
 	return (
@@ -36,6 +38,8 @@ const App = () => {
 				<Route path="/movies" element={<Movies />} />
 				<Route path="/movies/details/:id" element={<MovieDetails />} />
 				<Route path="/shows/:id" element={<Shows />} />
+				<Route path="/user/forgot-password" element={<ForgotPass />} />
+				<Route path="/user/reset-password/:userId/:token" element={<ResetPass />} />
 
 				{/* protected routes for user */}
 				<Route element={<PrivateRoute allowedRoles={[0, 1]} />}>

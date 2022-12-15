@@ -123,16 +123,21 @@ exports.forgotPassword = asyncHandler(async (req, res, next) => {
 
 	/**
 	 * send mail to user
-	 * http://{{url}}/api/user/resetPassword/:userId/:token
+	 * form url =  http://{{url}}/#/user/reset-password/:userId/:token
+	 * api url = http://{{url}}/api/user/resetPassword/:userId/:token
 	 */
 
-	const url = `${process.env.BASE_URL}/api/user/resetPassword/${user._id}/${token}`;
+	const url = `${process.env.BASE_URL}/#/user/reset-password/${user._id}/${token}`;
 
-	sendMail(email, "Reset Your Password", url);
+	const mailDetails = {
+		link: url,
+	};
+
+	sendMail(email, "Password reset", mailDetails, false);
 
 	return res.status(200).json({
 		status: "success",
-		message: "Password reset link sent on mail",
+		message: "Reset link set to your email, please check your inbox to continue",
 		data: {
 			email,
 			url,

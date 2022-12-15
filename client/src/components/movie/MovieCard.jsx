@@ -8,7 +8,9 @@ const MovieCard = ({ movie }) => {
 		<div className="flex justify-center">
 			<div>
 				<div className={styles.image_container} onClick={() => navigate(`details/${movie._id}`)}>
-					<img className={styles.img} src={movie.images.poster} alt="" />
+					<div>
+						<img className={styles.img} src={movie.images.poster} alt={movie.title} />
+					</div>
 					<p className={styles.movie_title}>
 						{movie?.title?.length > 35 ? `${movie?.title?.substr(0, 35)} . . .` : movie?.title}
 					</p>
