@@ -1,17 +1,19 @@
-import { useEffect, useReducer } from "react";
+import { useEffect, useReducer, useState } from "react";
 import { useParams, useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
 
 // components
-import SwapVertRoundedIcon from "@mui/icons-material/SwapVertRounded";
 import Navbar from "../navigation/Navbar";
 import Loader from "../../util/Loader";
 import Date from "../../util/Date";
+import Time from "../../util/Time";
 import ArrayString from "../../util/ArrayString";
+import TablePagination from "@mui/material/TablePagination";
 
 const initialState = {
 	loading: true,
 	error: "",
+	totalBookings: 0,
 	totalSeats: 0,
 	bookedSeats: 0,
 	availableSeats: 0,
@@ -42,11 +44,27 @@ const ShowDetails = () => {
 
 	const [state, dispatch] = useReducer(reducer, initialState);
 
-	const { loading, error, totalSeats, bookedSeats, availableSeats, price, bookings, totalEarningns } = state;
+	const { loading, error, totalBookings, totalSeats, bookedSeats, availableSeats, price, bookings, totalEarningns } =
+		state;
+
+	const [page, setPage] = useState(0);
+	const [rowsPerPage, setRowsPerPage] = useState(5);
+
+	const handleSortOptionChange = (sortOption) => {
+		sortOrder == 1 ? setSortOrder(-1) : setSortOrder(1);
+		setSortOption(sortOption);
+	};
+
+	const handleChangePage = (e, newPage) => setPage(newPage);
+
+	const handleChangeRowsPerPage = (e) => {
+		setRowsPerPage(parseInt(e.target.value, 10));
+		setPage(0);
+	};
 
 	const fetchShowDetails = () => {
 		axios
-			.get(`/api/admin/shows/${id}`)
+			.get(`/api/admin/shows/${id}?page=${page}&perPage=${rowsPerPage}`)
 			.then((res) => {
 				dispatch({ type: "FETCH_SUCCESS", payload: { ...res.data.data, loading: false, error: "" } });
 			})
@@ -58,7 +76,7 @@ const ShowDetails = () => {
 
 	useEffect(() => {
 		fetchShowDetails();
-	}, []);
+	}, [page, rowsPerPage]);
 
 	if (error) return <Loader msg="error" />;
 	else if (loading) return <Loader msg="loading" />;
@@ -71,38 +89,35 @@ const ShowDetails = () => {
 						<table className="min-w-full">
 							<thead className="sticky top-0 z-50">
 								<tr>
-									<th scope="col" className={styles.th}>
+									<th className={styles.th}>
 										<p>Sr.</p>
 									</th>
-									<th scope="col" className={styles.th}>
-										<p className="cursor-pointer">
-											Email
-											<SwapVertRoundedIcon fontSize="small" className="ml-2" />
-										</p>
+									<th className={styles.th}>
+										<p>Email</p>
 									</th>
-									<th scope="col" className={styles.th}>
-										<p className="cursor-pointer">
-											Booking ID
-											<SwapVertRoundedIcon fontSize="small" className="ml-2" />
-										</p>
+									<th className={styles.th}>
+										<p>Booking ID</p>
 									</th>
-									<th scope="col" className={styles.th}>
-										<p className="cursor-pointer">
-											Seats
-											<SwapVertRoundedIcon fontSize="small" className="ml-2" />
-										</p>
+									<th className={styles.th}>
+										<p>Seats</p>
 									</th>
-									<th scope="col" className={styles.th}>
-										<p className="cursor-pointer">
-											Booking Date
-											<SwapVertRoundedIcon fontSize="small" className="ml-2" />
-										</p>
+									<th
+										onClick={() => handleSortOptionChange(SORT_OPTION.BOOKING_DATE)}
+										className={styles.th}
+									>
+										<p>Booking Date</p>
 									</th>
-									<th scope="col" className={styles.th}>
-										<p>
-											Amount Paid
-											<SwapVertRoundedIcon fontSize="small" className="ml-2" />
-										</p>
+									<th
+										onClick={() => handleSortOptionChange(SORT_OPTION.BOOKING_DATE)}
+										className={styles.th}
+									>
+										<p>Time</p>
+									</th>
+									<th
+										onClick={() => handleSortOptionChange(SORT_OPTION.AMOUNT_PAID)}
+										className={styles.th}
+									>
+										<p>Amount Paid</p>
 									</th>
 								</tr>
 							</thead>
@@ -129,10 +144,37 @@ const ShowDetails = () => {
 											</p>
 										</td>
 										<td className={styles.td}>
+											<p className={styles.td_p}>
+												<Time date={booking.createdAt} />
+											</p>
+										</td>
+										<td className={styles.td}>
 											<p className={styles.td_p}>{booking.totalAmount} INR.</p>
 										</td>
 									</tr>
 								))}
+								<tr className="bg-gray-300">
+									<td colSpan={7} className="px-24">
+										<TablePagination
+											onPageChange={handleChangePage}
+											onRowsPerPageChange={handleChangeRowsPerPage}
+											component="div"
+											count={totalBookings}
+											page={page}
+											rowsPerPage={rowsPerPage}
+											rowsPerPageOptions={[5, 10, 25, 50, 100]}
+											sx={{
+												backgroundColor: "#d1d5db",
+											}}
+											labelRowsPerPage={<>Rows per page</>}
+											labelDisplayedRows={({ from, to, count }) => (
+												<>
+													{from} - {to} of {count != -1 ? count : `more than ${to}`}
+												</>
+											)}
+										/>
+									</td>
+								</tr>
 							</tbody>
 						</table>
 					</div>
@@ -183,7 +225,7 @@ const styles = {
 	stat_main: "mx-5 my-1 flex  justify-start items-center",
 	stat_h1: "text-3xl font-extrabold mb-2",
 	stat_p: "text-blue-400 text-3xl font-semibold",
-	table_container: "inline-block min-w-full rounded-lg max-h-[70vh] overflow-auto scroll-smooth",
+	table_container: "inline-block min-w-full rounded-lg overflow-auto scroll-smooth",
 };
 
 export default ShowDetails;

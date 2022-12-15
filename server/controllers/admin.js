@@ -1,5 +1,6 @@
 const asyncHandler = require("../middlewares/asyncHandler");
 const CustomError = require("../utils/customError");
+const mongoose = require("mongoose");
 
 // models
 const CinemaHall = require("../models/cinemaHall");
@@ -174,6 +175,13 @@ exports.getAllShowsAndAnalytics = asyncHandler(async (req, res, next) => {
 // get show details
 exports.getShowDetails = asyncHandler(async (req, res, next) => {
 	const { showId } = req.params;
+	let { page, perPage } = req.query;
+
+	page = page || 1;
+	perPage = perPage || 5;
+
+	const skipCount = page * parseInt(perPage);
+	const limitCount = parseInt(perPage);
 
 	if (!showId) return next(new CustomError("Provide showId", 400));
 
@@ -181,16 +189,44 @@ exports.getShowDetails = asyncHandler(async (req, res, next) => {
 
 	if (!show) return next(new CustomError("Show not found", 400));
 
-	const bookings = await Booking.find({ "show.id": showId }, { show: 0, updatedAt: 0 }).populate({
-		path: "user",
-		model: "User",
-		select: "username email -_id",
-	});
+	const totalBookings = await Booking.countDocuments({ "show.id": showId });
+
+	const bookings = await Booking.aggregate([
+		{
+			$match: { "show.id": mongoose.Types.ObjectId(showId) },
+		},
+		{
+			$lookup: {
+				from: "users",
+				localField: "user",
+				foreignField: "_id",
+				as: "user",
+				pipeline: [
+					{
+						$project: { email: 1 },
+					},
+				],
+			},
+		},
+		{
+			$unwind: "$user",
+		},
+		{
+			$sort: { createdAt: -1 },
+		},
+		{
+			$skip: skipCount,
+		},
+		{
+			$limit: limitCount,
+		},
+	]);
 
 	return res.status(200).json({
 		status: "success",
 		message: "show booking history fetched",
 		data: {
+			totalBookings,
 			totalSeats: show.availableSeats.length + show.bookedSeats.length,
 			bookedSeats: show.bookedSeats.length,
 			availableSeats: show.availableSeats.length,
