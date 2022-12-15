@@ -105,8 +105,14 @@ const Shows = () => {
 							<SwapVertRoundedIcon fontSize="small" className="ml-2" />
 						</p>
 					</th>
-					<th className={styles.th}>
-						<p>Total Bookings</p>
+					<th
+						onClick={() => handleSortOptionChange(SORT_OPTION.TOTAL_BOOKINGS)}
+						className={`${styles.th} cursor-pointer`}
+					>
+						<p>
+							Total Bookings
+							<SwapVertRoundedIcon fontSize="small" className="ml-2" />
+						</p>
 					</th>
 
 					<th

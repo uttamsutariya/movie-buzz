@@ -29,10 +29,12 @@ const CinemaHallForm = () => {
 			.then((res) => {
 				setLoading(false);
 				toast.success("Cinemahall added succesfully");
+				window.history.back();
 			})
 			.catch((error) => {
 				if (error?.response?.status == 403) navigate("/login", { state: { from: location } });
 				else toast.error(error?.response?.data?.message);
+				setLoading(false);
 			});
 	};
 

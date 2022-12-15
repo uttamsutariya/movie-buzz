@@ -40,7 +40,7 @@ const Booking = () => {
 			.then((res) => {
 				dispatch({ type: "FETCH_SUCCESS", payload: res.data.data.bookings });
 			})
-			.catch(() => {
+			.catch((error) => {
 				if (error.response.status == 403) navigate("/login", { state: { from: location } });
 				dispatch({ type: "FETCH_ERROR", payload: "Something went wrong" });
 			});
@@ -64,7 +64,7 @@ const Booking = () => {
 	return (
 		<>
 			<Navbar />
-			<div className="w-full h-[75vh] md:max-w-[1296px] my-2 mx-auto p-2 md:p-10 bg-slate-800 relative">
+			<div className="w-full md:max-w-[1296px] my-2 mx-auto p-2 md:p-10 bg-slate-800 relative">
 				<BackButton />
 				<div className="text-3xl text-white text-center mt-10 mb-3">My Bookings</div>
 				<div className="flex justify-start items-center flex-wrap">

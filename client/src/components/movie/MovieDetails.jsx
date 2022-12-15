@@ -46,7 +46,7 @@ const MovieDetails = () => {
 			.then((res) => {
 				dispatch({ type: "FETCH_SUCCESS", payload: res.data.data.movie });
 			})
-			.catch(() => dispatch({ type: "FETCH_ERROR", payload: "Something went wrong" }));
+			.catch((error) => dispatch({ type: "FETCH_ERROR", payload: "Something went wrong" }));
 	}, []);
 
 	if (error) return <Loader msg="error" />;
@@ -67,7 +67,7 @@ const MovieDetails = () => {
 		},
 		{
 			key: "Duration",
-			value: duration,
+			value: `${parseInt(duration / 60)}h, ${parseInt(duration % 60)}m`,
 		},
 		{
 			key: "Genres",

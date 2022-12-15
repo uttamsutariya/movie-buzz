@@ -107,15 +107,15 @@ const SeatSelector = () => {
 					<div className={styles.availability}>
 						<div className={styles.avail_div}>
 							<p className="text-sm">Booked </p>
-							<input type="checkbox" defaultChecked disabled />
+							<input type="checkbox" checked={true} disabled />
 						</div>
 						<div className={styles.avail_div}>
 							<p className="text-sm">Available </p>
-							<input type="checkbox" readOnly={true} />
+							<input type="checkbox" checked={false} readOnly={true} />
 						</div>
 						<div className={styles.avail_div}>
 							<p className="text-sm">Selected </p>
-							<input type="checkbox" defaultChecked readOnly />
+							<input type="checkbox" checked={true} readOnly />
 						</div>
 					</div>
 

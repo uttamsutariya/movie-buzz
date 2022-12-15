@@ -3,7 +3,6 @@ import { useParams } from "react-router-dom";
 import axios from "axios";
 
 // components
-import BackButton from "../util/BackButton";
 import Loader from "../util/Loader";
 import { toast } from "react-toastify";
 
@@ -38,8 +37,6 @@ const ResetPass = () => {
 
 	return (
 		<div className={styles.parent}>
-			<BackButton />
-
 			<div className={styles.formContainer}>
 				<form onSubmit={handleSubmit} autoComplete="off">
 					<div className={styles.formGroup}>

@@ -27,6 +27,9 @@ const reducer = (state, action) => {
 		case "FETCH_ERROR":
 			return { ...state, error: payload };
 
+		case "SET_LOADING":
+			return { ...state, loading: payload };
+
 		default:
 			return state;
 	}
@@ -54,7 +57,7 @@ const CinemaHall = () => {
 			.then((res) => {
 				dispatch({ type: "FETCH_SUCCESS", payload: { ...res.data.data, loading: false, error: "" } });
 			})
-			.catch(() => {
+			.catch((error) => {
 				if (error?.response?.status == 403) navigate("/login", { state: { from: location } });
 				dispatch({ type: "FETCH_ERROR", payload: "Something went wrong" });
 			});
@@ -68,13 +71,16 @@ const CinemaHall = () => {
 		const sure = window.confirm("Are you sure want to delete ?");
 
 		if (sure) {
+			dispatch({ type: "SET_LOADING", payload: true });
 			axios
 				.delete(`/api/admin/cinemaHall/${e.target.id}`)
 				.then(() => {
 					toast.success("Deleted succesfully");
 					fetchCinemaHalls();
+					dispatch({ type: "SET_LOADING", payload: false });
 				})
 				.catch((error) => {
+					dispatch({ type: "SET_LOADING", payload: false });
 					if (error.response.status == 403) navigate("/login", { state: { from: location } });
 				});
 		}

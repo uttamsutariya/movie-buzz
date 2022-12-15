@@ -16,7 +16,7 @@ exports.addCinemaHall = asyncHandler(async (req, res, next) => {
 
 	const nameRegex = new RegExp(name, "i");
 
-	let hall = await CinemaHall.findOne({ screenName: nameRegex });
+	let hall = await CinemaHall.findOne({ screenName: nameRegex, deleted: false });
 
 	if (hall) return next(new CustomError("Cinema Hall already exist with this name"));
 
@@ -119,7 +119,7 @@ exports.getAllShowsAndAnalytics = asyncHandler(async (req, res, next) => {
 
 	const totalShows = await Show.countDocuments({});
 
-	const shows = await Show.aggregate([
+	let shows = await Show.aggregate([
 		{
 			$lookup: {
 				from: "cinemahalls",
@@ -160,6 +160,12 @@ exports.getAllShowsAndAnalytics = asyncHandler(async (req, res, next) => {
 		show.availableSeats = undefined;
 		show.bookedSeats = undefined;
 	});
+
+	if (sortBy == "totalBookings") {
+		shows = shows.sort((a, b) => {
+			return order == 1 ? b.totalBookings - a.totalBookings : a.totalBookings - b.totalBookings;
+		});
+	}
 
 	return res.status(200).json({
 		status: "success",

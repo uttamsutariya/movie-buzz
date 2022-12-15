@@ -53,7 +53,7 @@ const Movies = () => {
 			.then((res) => {
 				dispatch({ type: "FETCH_SUCCESS", payload: res.data.data.movies });
 			})
-			.catch(() => dispatch({ type: "FETCH_ERROR", payload: "Something went wrong" }));
+			.catch((error) => dispatch({ type: "FETCH_ERROR", payload: "Something went wrong" }));
 	};
 
 	const handleSearch = (e) => {

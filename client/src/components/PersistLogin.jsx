@@ -21,7 +21,6 @@ const PersistLogin = () => {
 
 			dispatch({ type: "LOGIN_SUCCESS", payload: user });
 		} catch (error) {
-			console.log(error);
 			if (error?.response?.status == 403) navigate("/login", { state: { from: location } });
 		} finally {
 			setLoading(false);

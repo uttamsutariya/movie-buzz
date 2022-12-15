@@ -24,8 +24,8 @@ const reducer = (state, action) => {
 		case "FETCH_ERROR":
 			return { ...state, error: payload };
 
-		case "RESET":
-			return { ...initialState };
+		case "SET_LOADING":
+			return { ...initialState, loading: payload };
 
 		default:
 			return state;
@@ -41,13 +41,13 @@ const Feedback = () => {
 	const { feedbacks, hasNext, loading, error } = state;
 
 	const fetchFeedbacks = () => {
-		dispatch({ type: "RESET" });
+		dispatch({ type: "SET_LOADING", payload: true });
 		axios
 			.get(`/api/admin/feedback?page=${page}`)
 			.then((res) => {
 				dispatch({ type: "FETCH_SUCCESS", payload: { ...res.data.data, loading: false, error: "" } });
 			})
-			.catch(() => {
+			.catch((error) => {
 				if (error?.response?.status == 403) navigate("/login", { state: { from: location } });
 				dispatch({ type: "FETCH_ERROR", payload: "Something went wrong" });
 			});
