@@ -25,7 +25,7 @@ const styles = {
 	view_details_btn: "w-full h-[35px] inline-block px-4 py-1.5 bg-mygray text-white font text-xs rounded-sm",
 	image_container: "w-[130px] md:w-[230px] h-auto relative cursor-pointer",
 	img: "object-cover rounded-xl hover:opacity-70",
-	movie_title: "text-blue-300 text-xl md:text-2xl my-1",
+	movie_title: "text-blue-300 text-lg px-2 md:text-xl my-1",
 };
 
 export default MovieCard;

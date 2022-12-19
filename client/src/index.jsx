@@ -17,7 +17,7 @@ ReactDOM.createRoot(document.getElementById("root")).render(
 		<AuthProvider>
 			<HashRouter>
 				<ToastContainer
-					autoClose={2000}
+					autoClose={3000}
 					hideProgressBar={true}
 					newestOnTop={true}
 					closeOnClick={true}

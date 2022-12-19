@@ -24,13 +24,12 @@ const Ticket = ({ booking }) => {
 			value: screenName,
 		},
 		{
-			name: "Date & Time : ",
-			value: (
-				<>
-					<Date date={date} /> {", "}
-					<Time date={startTime} />
-				</>
-			),
+			name: "Date : ",
+			value: <Date date={date} />,
+		},
+		{
+			name: "Time : ",
+			value: <Time date={date} />,
 		},
 		{
 			name: "Seats : ",
@@ -48,12 +47,12 @@ const Ticket = ({ booking }) => {
 				<img className="w-[100%] h-auto" src={poster} alt={title} />
 			</div>
 			<div className={styles.details_container}>
-				<h1 className={styles.h1}>{title}</h1>
-				<ul className="my-2">
+				<h1 className={styles.h1}>{title.length > 15 ? `${title?.substr(0, 15)} . . .` : title}</h1>
+				<ul>
 					{LIST_ITEMS.map((item, index) => (
 						<li key={index}>
 							<p className="text-sm">
-								<span className="text-black">{item.name}</span>
+								<span className="text-black font-semibold">{item.name}</span>
 								<span className="text-gray-700">{item.value}</span>
 							</p>
 						</li>

@@ -9,6 +9,8 @@ import Loader from "../../util/Loader";
 import Date from "../../util/Date";
 import Time from "../../util/Time";
 import TablePagination from "@mui/material/TablePagination";
+import VisibilityOutlinedIcon from "@mui/icons-material/VisibilityOutlined";
+import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
 
 import { SORT_OPTION } from "../../../../constants";
 
@@ -60,7 +62,9 @@ const Shows = () => {
 
 	const fetchShows = () => {
 		axios
-			.get(`/api/admin/shows?sortBy=${sortOption}&order=${sortOrder}&page=${page}&perPage=${rowsPerPage}`)
+			.get(
+				`/api/admin/shows/scheduled?sortBy=${sortOption}&order=${sortOrder}&page=${page}&perPage=${rowsPerPage}`
+			)
 			.then((res) => {
 				dispatch({ type: "FETCH_SUCCESS", payload: { ...res.data.data, loading: false, error: "" } });
 			})
@@ -115,14 +119,8 @@ const Shows = () => {
 						</p>
 					</th>
 
-					<th
-						onClick={() => handleSortOptionChange(SORT_OPTION.MOVIE_NAME)}
-						className={`${styles.th} cursor-pointer`}
-					>
-						<p>
-							Screen Name
-							<SwapVertRoundedIcon fontSize="small" className="ml-2" />
-						</p>
+					<th className={styles.th}>
+						<p>Screen Name</p>
 					</th>
 					<th className={styles.th}>Action</th>
 				</tr>
@@ -153,18 +151,30 @@ const Shows = () => {
 							<p className={styles.td_p}>{show?.cinemaHall?.screenName}</p>
 						</td>
 						<td className={styles.td}>
-							<Link to={`${show._id}`} type="button" className={styles.view_details_btn}>
-								View Details
+							<Link
+								to={`${show._id}`}
+								title="view details"
+								type="button"
+								className={styles.view_details_btn}
+							>
+								<VisibilityOutlinedIcon />
 							</Link>
-							{show.totalBookings !== 0 ? (
-								<button type="button" className={styles.update_disabled_btn}>
-									Update
-								</button>
-							) : (
-								<Link to={`update/${show._id}`} type="button" className={styles.update_btn}>
-									Update
-								</Link>
-							)}
+
+							<button
+								onClick={() => navigate(`update/${show._id}`)}
+								disabled={show.totalBookings !== 0}
+								type="button"
+								className={
+									show.totalBookings !== 0 ? `${styles.update_disabled_btn}` : `${styles.update_btn}`
+								}
+								title={
+									show.totalBookings !== 0
+										? "can't update show for more than one booking"
+										: "update show"
+								}
+							>
+								<EditOutlinedIcon />
+							</button>
 						</td>
 					</tr>
 				))}
@@ -200,9 +210,14 @@ const Shows = () => {
 				child={
 					<>
 						<h1 className={styles.nav_h1}>All Shows</h1>
-						<Link to={"add"} className={styles.nav_link}>
-							Add new show
-						</Link>
+						<div className="flex space-x-4">
+							<Link to={"add"} className={`${styles.nav_link} bg-blue-600`}>
+								Add new show
+							</Link>
+							<Link to={"history"} className={`${styles.nav_link} bg-purple-600`}>
+								view history
+							</Link>
+						</div>
 					</>
 				}
 			/>
@@ -210,7 +225,7 @@ const Shows = () => {
 			{/* statistics */}
 			<div className={styles.stat_main}>
 				<div className="m-5">
-					<h1 className={styles.stat_h1}>Total Shows</h1>
+					<h1 className={styles.stat_h1}>Total scheduled shows</h1>
 					<p className={styles.stat_p}>{totalShows}</p>
 				</div>
 			</div>
@@ -230,15 +245,14 @@ const styles = {
 	tr: "bg-gray-300 hover:bg-gray-100",
 	td_p: "text-black whitespace-no-wrap",
 	nav_h1: "text-2xl font-semibold",
-	nav_link: "py-1 px-4 bg-blue-600 text-white text-center font-medium rounded-md",
+	nav_link: "py-1 px-4 text-white text-center font-medium rounded-md",
 	stat_main: "mx-5 my-1 flex  justify-start items-center",
 	stat_h1: "text-3xl font-extrabold mb-2",
 	stat_p: "text-blue-400 text-3xl font-semibold",
 	table_container: "inline-block min-w-full rounded-lg overflow-auto scroll-smooth",
-	view_details_btn: "py-0.5 px-3 mx-1 bg-green-700 cursor-pointer text-white text-center font-medium rounded-md",
-	update_disabled_btn:
-		"py-0.5 px-3 mx-1 cursor-not-allowed bg-purple-400 text-white text-center font-medium rounded-md",
-	update_btn: "py-0.5 px-3 mx-1 bg-purple-700 cursor-pointer text-white text-center font-medium rounded-md",
+	view_details_btn: "p-0.5 mx-1 bg-orange-600 cursor-pointer text-white text-center font-medium rounded-md",
+	update_disabled_btn: "p-0.5 mx-1 cursor-not-allowed bg-purple-400 text-white text-center font-medium rounded-md",
+	update_btn: "p-0.5 mx-1 bg-purple-700 cursor-pointer text-white text-center font-medium rounded-md",
 };
 
 export default Shows;

@@ -1,23 +1,24 @@
-import { useReducer, useEffect, useState } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useEffect, useReducer, useState } from "react";
 import SwapVertRoundedIcon from "@mui/icons-material/SwapVertRounded";
-import { Link } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import axios from "axios";
+
+// components
 import Navbar from "../navigation/Navbar";
 import Loader from "../../util/Loader";
-import axios from "axios";
 import Date from "../../util/Date";
+import Time from "../../util/Time";
 import TablePagination from "@mui/material/TablePagination";
+import VisibilityOutlinedIcon from "@mui/icons-material/VisibilityOutlined";
+import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
 
 import { SORT_OPTION } from "../../../../constants";
-import { toast } from "react-toastify";
 
 const initialState = {
 	loading: true,
 	error: "",
-	totalMovies: 0,
-	releasedMovies: 0,
-	comingSoonMovies: 0,
-	movies: [],
+	totalShows: 0,
+	shows: [],
 };
 
 const reducer = (state, action) => {
@@ -35,13 +36,13 @@ const reducer = (state, action) => {
 	}
 };
 
-const Movies = () => {
+const Shows = () => {
 	const [state, dispatch] = useReducer(reducer, initialState);
 	const location = useLocation();
 	const navigate = useNavigate();
 
-	const [sortOption, setSortOption] = useState(SORT_OPTION.TITLE);
-	const [sortOrder, setSortOrder] = useState(1);
+	const [sortOption, setSortOption] = useState(SORT_OPTION.DATE);
+	const [sortOrder, setSortOrder] = useState(-1);
 	const [page, setPage] = useState(0);
 	const [rowsPerPage, setRowsPerPage] = useState(5);
 
@@ -57,11 +58,11 @@ const Movies = () => {
 		setPage(0);
 	};
 
-	const { movies, totalMovies, releasedMovies, comingSoonMovies, loading, error } = state;
+	const { shows, loading, error, totalShows } = state;
 
-	const fetchMovies = () => {
+	const fetchShows = () => {
 		axios
-			.get(`/api/admin/movies?sortBy=${sortOption}&order=${sortOrder}&page=${page}&perPage=${rowsPerPage}`)
+			.get(`/api/admin/shows/history?sortBy=${sortOption}&order=${sortOrder}&page=${page}&perPage=${rowsPerPage}`)
 			.then((res) => {
 				dispatch({ type: "FETCH_SUCCESS", payload: { ...res.data.data, loading: false, error: "" } });
 			})
@@ -72,29 +73,13 @@ const Movies = () => {
 	};
 
 	useEffect(() => {
-		fetchMovies();
+		fetchShows();
 	}, [sortOption, sortOrder, page, rowsPerPage]);
-
-	const deleteMovie = (e) => {
-		const sure = window.confirm("Are you sure want to delete ?");
-
-		if (sure) {
-			axios
-				.delete(`/api/admin/movies/${e.target.id}`)
-				.then(() => {
-					toast.success("Deleted succesfully");
-					fetchMovies();
-				})
-				.catch((error) => {
-					if (error.response.status == 403) navigate("/login", { state: { from: location } });
-				});
-		}
-	};
 
 	if (error) return <Loader msg="error" />;
 	else if (loading) return <Loader msg="loading" />;
 
-	const movieTable = (
+	const showTable = (
 		<table className="min-w-full">
 			<thead className="sticky top-0 z-50">
 				<tr>
@@ -102,73 +87,86 @@ const Movies = () => {
 						<p>Sr.</p>
 					</th>
 					<th
-						onClick={() => handleSortOptionChange(SORT_OPTION.TITLE)}
+						onClick={() => handleSortOptionChange(SORT_OPTION.DATE)}
 						className={`${styles.th} cursor-pointer`}
 					>
 						<p>
-							Name
-							<SwapVertRoundedIcon fontSize="small" className="ml-2" />
-						</p>
-					</th>
-					<th
-						onClick={() => handleSortOptionChange(SORT_OPTION.RELEASE_DATE)}
-						className={`${styles.th} cursor-pointer`}
-					>
-						<p>
-							Release Date
+							Date
 							<SwapVertRoundedIcon fontSize="small" className="ml-2" />
 						</p>
 					</th>
 					<th className={styles.th}>
-						<p>Released</p>
+						<p>Time</p>
 					</th>
-					<th className={styles.th}>Action</th>
+					<th
+						onClick={() => handleSortOptionChange(SORT_OPTION.MOVIE_NAME)}
+						className={`${styles.th} cursor-pointer`}
+					>
+						<p>
+							Movie
+							<SwapVertRoundedIcon fontSize="small" className="ml-2" />
+						</p>
+					</th>
+					<th
+						onClick={() => handleSortOptionChange(SORT_OPTION.TOTAL_BOOKINGS)}
+						className={`${styles.th} cursor-pointer`}
+					>
+						<p>
+							Total Bookings
+							<SwapVertRoundedIcon fontSize="small" className="ml-2" />
+						</p>
+					</th>
+					<th
+						onClick={() => handleSortOptionChange(SORT_OPTION.TOTAL_EARNINGS)}
+						className={`${styles.th} cursor-pointer`}
+					>
+						<p>
+							Total Earnings
+							<SwapVertRoundedIcon fontSize="small" className="ml-2" />
+						</p>
+					</th>
+					<th className={styles.th}>
+						<p>Screen Name</p>
+					</th>
 				</tr>
 			</thead>
 			<tbody>
-				{movies.map((movie, index) => (
-					<tr className={styles.tr} key={movie._id}>
+				{shows.map((show, index) => (
+					<tr className={styles.tr} key={index}>
 						<td className={styles.td}>
 							<p className={styles.td_p}>{index + 1}</p>
 						</td>
 						<td className={styles.td}>
-							<p className={styles.td_p}>{movie.title}</p>
+							<p className={styles.td_p}>
+								<Date date={show.date} />
+							</p>
 						</td>
 						<td className={styles.td}>
-							<p className={styles.td_p}>{<Date date={movie.release_date} />}</p>
+							<p className={styles.td_p}>
+								<Time date={show.startTime} />
+							</p>
 						</td>
 						<td className={styles.td}>
-							<div className={styles.td_p}>
-								{movie.status === "released" ? (
-									<div className="inline-block py-0.5 px-3 mx-1 bg-green-400 text-black text-center font-medium rounded-full">
-										yes
-									</div>
-								) : (
-									<div className="inline-block py-0.5 px-3 mx-1 bg-orange-400 text-black text-center font-medium rounded-full">
-										no
-									</div>
-								)}
-							</div>
+							<p className={styles.td_p}>{show?.movie?.title}</p>
 						</td>
 						<td className={styles.td}>
-							<button
-								onClick={deleteMovie}
-								id={movie._id}
-								type="button"
-								className="py-0.5 px-3 bg-red-700 text-white text-center font-medium rounded-md"
-							>
-								delete
-							</button>
+							<p className={styles.td_p}>{show?.totalBookings}</p>
+						</td>
+						<td className={styles.td}>
+							<p className={styles.td_p}>{show?.totalEarnings} INR.</p>
+						</td>
+						<td className={styles.td}>
+							<p className={styles.td_p}>{show?.cinemaHall?.screenName}</p>
 						</td>
 					</tr>
 				))}
 				<tr className="bg-gray-300">
-					<td colSpan={5} className="px-24">
+					<td colSpan={7} className="px-24">
 						<TablePagination
 							onPageChange={handleChangePage}
 							onRowsPerPageChange={handleChangeRowsPerPage}
 							component="div"
-							count={totalMovies}
+							count={totalShows}
 							page={page}
 							rowsPerPage={rowsPerPage}
 							rowsPerPageOptions={[5, 10, 25, 50, 100]}
@@ -193,10 +191,7 @@ const Movies = () => {
 			<Navbar
 				child={
 					<>
-						<h1 className={styles.nav_h1}>All Movies</h1>
-						<Link to={"add"} className={styles.nav_link}>
-							Add new movie
-						</Link>
+						<h1 className={styles.nav_h1}>Show History</h1>
 					</>
 				}
 			/>
@@ -204,22 +199,14 @@ const Movies = () => {
 			{/* statistics */}
 			<div className={styles.stat_main}>
 				<div className="m-5">
-					<h1 className={styles.stat_h1}>Total Movies</h1>
-					<p className={styles.stat_p}>{totalMovies}</p>
-				</div>
-				<div className="m-5">
-					<h1 className={styles.stat_h1}>Released</h1>
-					<p className={styles.stat_p}>{releasedMovies}</p>
-				</div>
-				<div className="m-5">
-					<h1 className={styles.stat_h1}>Coming Soon</h1>
-					<p className={styles.stat_p}>{comingSoonMovies}</p>
+					<h1 className={styles.stat_h1}>Total Shows</h1>
+					<p className={styles.stat_p}>{totalShows}</p>
 				</div>
 			</div>
 
 			<div className="mx-auto px-4 sm:px-8">
 				<div className="overflow-x-auto">
-					<div className={styles.table_container}>{movies.length > 0 ? movieTable : null}</div>
+					<div className={styles.table_container}>{showTable}</div>
 				</div>
 			</div>
 		</div>
@@ -232,11 +219,14 @@ const styles = {
 	tr: "bg-gray-300 hover:bg-gray-100",
 	td_p: "text-black whitespace-no-wrap",
 	nav_h1: "text-2xl font-semibold",
-	nav_link: "py-1 px-4 bg-blue-600 text-white text-center font-medium rounded-md",
+	nav_link: "py-1 px-4 text-white text-center font-medium rounded-md",
 	stat_main: "mx-5 my-1 flex  justify-start items-center",
 	stat_h1: "text-3xl font-extrabold mb-2",
 	stat_p: "text-blue-400 text-3xl font-semibold",
 	table_container: "inline-block min-w-full rounded-lg overflow-auto scroll-smooth",
+	view_details_btn: "p-1 mx-1 bg-orange-600 cursor-pointer text-white text-center font-medium rounded-md",
+	update_disabled_btn: "p-1 mx-1 cursor-not-allowed bg-purple-400 text-white text-center font-medium rounded-md",
+	update_btn: "p-1 mx-1 bg-purple-700 cursor-pointer text-white text-center font-medium rounded-md",
 };
 
-export default Movies;
+export default Shows;

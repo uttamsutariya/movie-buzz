@@ -18,6 +18,7 @@ import AdminFeedback from "./components/admin-dashboard/feedback/Feedback";
 import MovieForm from "./components/admin-dashboard/movies/MovieForm";
 import ShowForm from "./components/admin-dashboard/shows/ShowForm";
 import ShowDetails from "./components/admin-dashboard/shows/ShowDetails";
+import ShowHistory from "./components/admin-dashboard/shows/ShowHistory";
 import CinemaHall from "./components/admin-dashboard/cinemaHall/CinemaHall";
 import CinemaHallForm from "./components/admin-dashboard/cinemaHall/CinemaHallForm";
 import AdminWelcome from "./components/admin-dashboard/AdminWelcome";
@@ -55,6 +56,7 @@ const App = () => {
 						<Route path="movies" element={<AdminMovies />} />
 						<Route path="movies/add" element={<MovieForm />} />
 						<Route path="shows" element={<AdminShows />} />
+						<Route path="shows/history" element={<ShowHistory />} />
 						<Route path="shows/add" element={<ShowForm />} />
 						<Route path="shows/update/:id" element={<ShowForm update={true} />} />
 						<Route path="shows/:id" element={<ShowDetails />} />

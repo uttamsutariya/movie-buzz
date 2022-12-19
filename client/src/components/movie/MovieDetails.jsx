@@ -133,9 +133,9 @@ const styles = {
 	movie_container: "p-0.5 md:p-5 my-3 relative",
 	movie_name: "text-4xl font-semibold text-slate-400 text-center p-2 mt-10 md:mt-5",
 	img_container: "flex justify-center w-full m-auto p-2 md:p-5",
-	img: "rounded-lg w-[100%] h-auto",
+	img: "rounded-lg w-[70%] h-auto",
 	main_details_container:
-		"flex flex-col md:flex-row items-start md:items-start justify-start md:space-x-10 my-10 p-2 md:p-5",
+		"flex flex-col md:flex-row items-start md:items-start justify-center md:space-x-10 my-10 p-2 md:p-5",
 	details_container: "flex flex-col justify-center w-full md:w-[50%]",
 	table_container: "flex justify-center items-center my-10 md:my-0 w-full md:w-auto",
 	about_movie: "text-4xl mb-5 text-blue-400 font-semibold",

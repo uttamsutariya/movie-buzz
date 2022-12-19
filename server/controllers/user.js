@@ -155,7 +155,7 @@ exports.resetPassword = asyncHandler(async (req, res, next) => {
 
 	if (!user) return next(new CustomError("Something went wrong, try again after sometime", 400));
 
-	if (user.forgotPasswordTokenExpiry < Date.now()) return next(new CustomError("Link expired, try again", 400));
+	if (user.forgotPasswordTokenExpiry < Date.now()) return next(new CustomError("This link is expired 💥", 400));
 
 	const { password } = req.body;
 

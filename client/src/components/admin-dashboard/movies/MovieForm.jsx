@@ -66,12 +66,11 @@ const MovieForm = () => {
 			else uploadData.set(key, formData[key]);
 		}
 
-		console.log(formData);
-
 		axios
 			.post(`/api/admin/movies`, uploadData)
 			.then((res) => {
 				setLoading(false);
+				window.history.back();
 				toast.success("Movie added successfully");
 			})
 			.catch((error) => {

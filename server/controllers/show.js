@@ -15,8 +15,6 @@ const { formatDate, formatTime, formatSeats } = require("../helper/formater");
 // booking id generater
 const { generateBookingID } = require("../helper/generateBookingID");
 
-const cron = require("node-schedule");
-
 // add new show
 exports.addNewShow = asyncHandler(async (req, res, next) => {
 	/**
@@ -67,7 +65,7 @@ exports.addNewShow = asyncHandler(async (req, res, next) => {
 	});
 
 	// if show exist => can't create a new show
-	if (show) return next(new CustomError("In between show for selected time", 400));
+	if (show) return next(new CustomError("There is already a show for selected time & cinema hall 💥", 400));
 
 	// create show
 	show = await Show.create(showData);
@@ -95,22 +93,6 @@ exports.addNewShow = asyncHandler(async (req, res, next) => {
 		status: "success",
 		message: "new show added",
 		data: { show },
-	});
-
-	// schedule job for show start & show end
-
-	cron.scheduleJob(show.startTime, async () => {
-		show.status = "started";
-		await show.save();
-
-		console.log(`show cron ran at: ${new Date().toUTCString()} for ${movieDoc.title}`);
-	});
-
-	cron.scheduleJob(show.endTime, async () => {
-		show.status = "ended";
-		await show.save();
-
-		console.log(`show cron ran at: ${new Date().toUTCString()} for ${movieDoc.title}`);
 	});
 });
 
@@ -303,19 +285,31 @@ exports.updateShowDetails = asyncHandler(async (req, res, next) => {
 exports.getShowByMovie = asyncHandler(async (req, res, next) => {
 	const { movieId } = req.params;
 
-	let { sortBy, order } = req.query;
-
-	sortBy = sortBy || "date";
-	order = order || 1;
-
 	if (!movieId) return next(new CustomError("Please add movie id", 400));
 
 	const movie = await Movie.findOne({ _id: movieId }, { title: 1, _id: 0 });
 
 	if (!movie) return next(new CustomError("Movie not found with this id", 400));
 
-	const shows = await Show.find(
-		{ movie: movieId },
+	/**
+	 * 	show expiry logic
+	 */
+
+	let shows = await Show.find({ status: "starting soon", movie: movieId });
+
+	for (let show of shows) {
+		if (show.endTime <= Date.now()) show.status = "ended";
+		else if (show.startTime <= Date.now()) show.status = "started";
+		await show.save();
+	}
+
+	let { sortBy, order } = req.query;
+
+	sortBy = sortBy || "date";
+	order = order || 1;
+
+	shows = await Show.find(
+		{ movie: movieId, status: "starting soon" },
 		{ movie: 0, endTime: 0, status: 0, availableSeats: 0, bookedSeats: 0, createdAt: 0, updatedAt: 0 }
 	)
 		.sort({ [`${sortBy}`]: order })
@@ -327,14 +321,9 @@ exports.getShowByMovie = asyncHandler(async (req, res, next) => {
 			},
 		]);
 
-	let message;
-
-	if (shows.length === 0) message = "No available show for this movie !";
-	else message = "Show list fetched";
-
 	res.status(200).json({
 		status: "success",
-		message,
+		message: "Show list fetched",
 		data: {
 			movie: movie.title,
 			totalShows: shows.length,

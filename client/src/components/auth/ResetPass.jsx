@@ -19,6 +19,9 @@ const ResetPass = () => {
 
 		if (password !== confirmPassword) {
 			toast.error("Password doesn't match");
+			setPassword("");
+			setConfirmPassword("");
+			setLoading(false);
 			return;
 		}
 

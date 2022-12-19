@@ -105,8 +105,20 @@ exports.viewFeedback = asyncHandler(async (req, res, next) => {
 	});
 });
 
-// view show analytics
-exports.getAllShowsAndAnalytics = asyncHandler(async (req, res, next) => {
+// view scheduled shows analytics
+exports.getScheduledShowsAndAnalytics = asyncHandler(async (req, res, next) => {
+	/**
+	 * 	show expiry logic
+	 */
+
+	let shows = await Show.find({ status: "starting soon" });
+
+	for (let show of shows) {
+		if (show.endTime <= Date.now()) show.status = "ended";
+		else if (show.startTime <= Date.now()) show.status = "started";
+		await show.save();
+	}
+
 	let { sortBy, order, page, perPage } = req.query;
 
 	sortBy = sortBy || "date";
@@ -117,9 +129,14 @@ exports.getAllShowsAndAnalytics = asyncHandler(async (req, res, next) => {
 	const skipCount = page * parseInt(perPage);
 	const limitCount = parseInt(perPage);
 
-	const totalShows = await Show.countDocuments({});
+	const totalShows = await Show.countDocuments({ status: "starting soon" });
 
-	let shows = await Show.aggregate([
+	shows = await Show.aggregate([
+		{
+			$match: {
+				status: "starting soon",
+			},
+		},
 		{
 			$lookup: {
 				from: "cinemahalls",
@@ -153,8 +170,6 @@ exports.getAllShowsAndAnalytics = asyncHandler(async (req, res, next) => {
 		},
 	]);
 
-	let todaysShows = 0;
-
 	shows.forEach((show) => {
 		show.totalBookings = show.bookedSeats.length;
 		show.availableSeats = undefined;
@@ -171,7 +186,85 @@ exports.getAllShowsAndAnalytics = asyncHandler(async (req, res, next) => {
 		status: "success",
 		message: "show analytics fetched",
 		data: {
-			todaysShows,
+			totalShows,
+			shows,
+		},
+	});
+});
+
+// view show history and analytics
+exports.getShowsHistoryAndAnalytics = asyncHandler(async (req, res, next) => {
+	let { sortBy, order, page, perPage } = req.query;
+
+	sortBy = sortBy || "date";
+	order = order || -1;
+	page = page || 1;
+	perPage = perPage || 5;
+
+	const skipCount = page * parseInt(perPage);
+	const limitCount = parseInt(perPage);
+
+	const totalShows = await Show.countDocuments({ status: { $ne: "starting soon" } });
+
+	let shows = await Show.aggregate([
+		{
+			$match: {
+				status: { $ne: "starting soon" },
+			},
+		},
+		{
+			$lookup: {
+				from: "cinemahalls",
+				localField: "cinemaHall",
+				foreignField: "_id",
+				as: "cinemaHall",
+			},
+		},
+		{
+			$lookup: {
+				from: "movies",
+				localField: "movie",
+				foreignField: "_id",
+				as: "movie",
+			},
+		},
+		{
+			$unwind: { path: "$cinemaHall" },
+		},
+		{
+			$unwind: { path: "$movie" },
+		},
+		{
+			$sort: { [`${sortBy}`]: parseInt(order) },
+		},
+		{
+			$skip: skipCount,
+		},
+		{
+			$limit: limitCount,
+		},
+	]);
+
+	shows.forEach((show) => {
+		show.totalBookings = show.bookedSeats.length;
+		show.totalEarnings = show.price * show.bookedSeats.length;
+		show.bookedSeats = undefined;
+	});
+
+	if (sortBy == "totalBookings") {
+		shows = shows.sort((a, b) => {
+			return order == 1 ? b.totalBookings - a.totalBookings : a.totalBookings - b.totalBookings;
+		});
+	} else if (sortBy == "totalEarnings") {
+		shows = shows.sort((a, b) => {
+			return order == 1 ? b.totalEarnings - a.totalEarnings : a.totalEarnings - b.totalEarnings;
+		});
+	}
+
+	return res.status(200).json({
+		status: "success",
+		message: "show analytics fetched",
+		data: {
 			totalShows,
 			shows,
 		},
@@ -237,7 +330,7 @@ exports.getShowDetails = asyncHandler(async (req, res, next) => {
 			bookedSeats: show.bookedSeats.length,
 			availableSeats: show.availableSeats.length,
 			price: show.price,
-			totalEarningns: show.price * show.bookedSeats.length,
+			totalEarnings: show.price * show.bookedSeats.length,
 			bookings,
 		},
 	});

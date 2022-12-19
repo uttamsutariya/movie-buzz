@@ -4,11 +4,12 @@ const router = require("express").Router();
 const {
 	addCinemaHall,
 	viewFeedback,
-	getAllShowsAndAnalytics,
 	getShowDetails,
 	getCinemaHalls,
 	populateShowForm,
 	deleteCinemaHall,
+	getScheduledShowsAndAnalytics,
+	getShowsHistoryAndAnalytics,
 } = require("../controllers/admin");
 
 const { addMovie, deleteMovie, getAllMovies, getAllReleasedMovies } = require("../controllers/movie");
@@ -46,8 +47,11 @@ router.post("/show", authToken, authorizeRole(1), addNewShow);
 // update show
 router.patch("/show/:showId", authToken, authorizeRole(1), updateShowDetails);
 
-// get all added shows
-router.get("/shows", authToken, authorizeRole(1), getAllShowsAndAnalytics);
+// get all scheduled shows
+router.get("/shows/scheduled", authToken, authorizeRole(1), getScheduledShowsAndAnalytics);
+
+// get shows history
+router.get("/shows/history", authToken, authorizeRole(1), getShowsHistoryAndAnalytics);
 
 // populate show form with defaut values
 router.get("/shows/populate/:showId", authToken, authorizeRole(1), populateShowForm);

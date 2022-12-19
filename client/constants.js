@@ -39,5 +39,6 @@ export const SORT_OPTION = {
 	MOVIE_NAME: "movie.title",
 	SCREEN_NAME: "cinemaHall.screenName",
 	TOTAL_BOOKINGS: "totalBookings",
+	TOTAL_EARNINGS: "totalEarnings",
 	SCREEN: "screenName",
 };

@@ -27,17 +27,6 @@ const reducer = (state, action) => {
 	}
 };
 
-const styles = {
-	main_div: "flex flex-col justify-center items-center w-full",
-	search_input: "p-3 text-center border-blue-600 focus:outline-blue-400 bg-slate-800 text-white",
-	search_btn: " ml-2 p-1.5 bg-blue-600 rounded-full",
-	movies_container: "w-full py-10 px-2 bg-slate-800 my-5",
-	movies_heading: "mx-2 mb-8 text-3xl text-white font-semibold text-center",
-	movies_grid: "grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 mx-1",
-	nomovies_container: "max-w-[1296px] w-[100vw] relative flex justify-center items-center m-auto",
-	nomovies_p: "text-center font-extrabold text-gray-400 mt-48",
-};
-
 const Movies = () => {
 	const [state, dispatch] = useReducer(reducer, initialState);
 
@@ -70,6 +59,27 @@ const Movies = () => {
 
 	if (error) return <Loader msg="error" />;
 	else if (loading) return <Loader msg="loading" />;
+
+	const DisplayMovies = ({ movies, heading }) => (
+		<>
+			<div className={styles.movies_container}>
+				<h1 className={styles.movies_heading}>⭐ {heading} ⭐</h1>
+				<div className={styles.movies_grid}>
+					{movies.map((movie, index) => (
+						<MovieCard movie={movie} key={index} />
+					))}
+				</div>
+			</div>
+		</>
+	);
+
+	const noMovies = (
+		<div className={styles.nomovies_container}>
+			<p className={styles.nomovies_p}>
+				<span className="text-5xl">❌ No movies ❌</span>
+			</p>
+		</div>
+	);
 
 	return (
 		<>
@@ -105,25 +115,15 @@ const Movies = () => {
 	);
 };
 
-const DisplayMovies = ({ movies, heading }) => (
-	<>
-		<div className={styles.movies_container}>
-			<h1 className={styles.movies_heading}>⭐ {heading} ⭐</h1>
-			<div className={styles.movies_grid}>
-				{movies.map((movie, index) => (
-					<MovieCard movie={movie} key={index} />
-				))}
-			</div>
-		</div>
-	</>
-);
-
-const noMovies = (
-	<div className={styles.nomovies_container}>
-		<p className={styles.nomovies_p}>
-			<span className="text-5xl">❌ No movies ❌</span>
-		</p>
-	</div>
-);
+const styles = {
+	main_div: "flex flex-col justify-center items-center w-full",
+	search_input: "p-3 text-center border-blue-600 focus:outline-blue-400 bg-slate-800 text-white",
+	search_btn: " ml-2 p-1.5 bg-blue-600 rounded-full",
+	movies_container: "w-full py-10 px-2 bg-slate-800 my-5",
+	movies_heading: "mx-2 mb-8 text-3xl text-white font-semibold text-center",
+	movies_grid: "grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 mx-1",
+	nomovies_container: "max-w-[1296px] w-[100vw] relative flex justify-center items-center m-auto",
+	nomovies_p: "text-center font-extrabold text-gray-400 mt-48",
+};
 
 export default Movies;
