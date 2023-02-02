@@ -96,6 +96,11 @@ exports.getMyBookings = asyncHandler(async (req, res, next) => {
 		})
 		.sort({ createdAt: -1 });
 
+	for (let booking of bookings) {
+		if (booking.show.startTime < Date.now()) booking._doc.isExpired = true;
+		else booking._doc.isExpired = false;
+	}
+
 	return res.status(200).json({
 		status: "success",
 		message: "booking list fetched",

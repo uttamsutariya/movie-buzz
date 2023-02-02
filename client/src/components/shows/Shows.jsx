@@ -9,6 +9,7 @@ import Loader from "../util/Loader";
 import Navbar from "../Navbar";
 import Time from "../util/Time";
 import Date from "../util/Date";
+import NoItem from "../util/NoItem";
 
 import { SORT_OPTION } from "../../../constants";
 
@@ -147,9 +148,9 @@ const Shows = () => {
 	const noShow = (
 		<div className={styles.noshow}>
 			<BackButton />
-			<p className={styles.noshow_p}>
-				<span className="text-3xl md:text-5xl">❌ No available shows ❌</span>
-			</p>
+			<div className="my-20">
+				<NoItem item={"No available shows"} />
+			</div>
 		</div>
 	);
 

@@ -21,6 +21,11 @@ const Home = () => {
 					</button>
 				</Link>
 			</div>
+
+			{/* footer */}
+			<div className="fixed bottom-0 flex justify-center w-full">
+				<p className="text-gray-500">🤩 use chrome for enhanced performance</p>
+			</div>
 		</>
 	);
 };

@@ -1,11 +1,13 @@
 import { useReducer, useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import SwapVertRoundedIcon from "@mui/icons-material/SwapVertRounded";
 import { Link } from "react-router-dom";
 import Navbar from "../navigation/Navbar";
 import Loader from "../../util/Loader";
 import axios from "axios";
 import Date from "../../util/Date";
+import NoItem from "../../util/NoItem";
+
+import SwapVertRoundedIcon from "@mui/icons-material/SwapVertRounded";
 import TablePagination from "@mui/material/TablePagination";
 
 import { SORT_OPTION } from "../../../../constants";
@@ -110,6 +112,9 @@ const Movies = () => {
 							<SwapVertRoundedIcon fontSize="small" className="ml-2" />
 						</p>
 					</th>
+					<th className={styles.th}>
+						<p>Shows</p>
+					</th>
 					<th
 						onClick={() => handleSortOptionChange(SORT_OPTION.RELEASE_DATE)}
 						className={`${styles.th} cursor-pointer`}
@@ -133,6 +138,9 @@ const Movies = () => {
 						</td>
 						<td className={styles.td}>
 							<p className={styles.td_p}>{movie.title}</p>
+						</td>
+						<td className={styles.td}>
+							<p className={styles.td_p}>{movie.shows}</p>
 						</td>
 						<td className={styles.td}>
 							<p className={styles.td_p}>{<Date date={movie.release_date} />}</p>
@@ -163,7 +171,7 @@ const Movies = () => {
 					</tr>
 				))}
 				<tr className="bg-gray-300">
-					<td colSpan={5} className="px-24">
+					<td colSpan={6} className="px-24">
 						<TablePagination
 							onPageChange={handleChangePage}
 							onRowsPerPageChange={handleChangeRowsPerPage}
@@ -219,7 +227,13 @@ const Movies = () => {
 
 			<div className="mx-auto px-4 sm:px-8">
 				<div className="overflow-x-auto">
-					<div className={styles.table_container}>{movies.length > 0 ? movieTable : null}</div>
+					<div className={styles.table_container}>
+						{movies.length > 0 ? (
+							movieTable
+						) : (
+							<NoItem item={"Currently we don't have any movies, add one"} />
+						)}
+					</div>
 				</div>
 			</div>
 		</div>

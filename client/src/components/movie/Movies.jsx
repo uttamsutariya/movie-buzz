@@ -1,4 +1,4 @@
-import { useEffect, useReducer } from "react";
+import { useState, useEffect, useReducer } from "react";
 import axios from "axios";
 
 // components
@@ -6,7 +6,7 @@ import MovieCard from "./MovieCard";
 import Navbar from "../Navbar";
 import Loader from "../util/Loader";
 import SearchIcon from "@mui/icons-material/Search";
-import { useState } from "react";
+import NoItem from "../util/NoItem";
 
 const initialState = {
 	loading: true,
@@ -54,6 +54,10 @@ const Movies = () => {
 		fetchMovies();
 	}, []);
 
+	useEffect(() => {
+		fetchMovies(searchKey);
+	}, [searchKey]);
+
 	const releasedMovies = movies?.filter((movie) => movie.status === "released");
 	const comingSoonMovies = movies?.filter((movie) => movie.status !== "released");
 
@@ -71,14 +75,6 @@ const Movies = () => {
 				</div>
 			</div>
 		</>
-	);
-
-	const noMovies = (
-		<div className={styles.nomovies_container}>
-			<p className={styles.nomovies_p}>
-				<span className="text-5xl">❌ No movies ❌</span>
-			</p>
-		</div>
 	);
 
 	return (
@@ -108,7 +104,9 @@ const Movies = () => {
 						</div>
 					</>
 				) : (
-					noMovies
+					<div className="mt-10">
+						<NoItem item={"💥 No movie search match"} />
+					</div>
 				)}
 			</div>
 		</>

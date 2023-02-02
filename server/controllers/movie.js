@@ -154,6 +154,10 @@ exports.getAllMovies = asyncHandler(async (req, res, next) => {
 		.skip(page * parseInt(perPage))
 		.limit(perPage);
 
+	for (let movie of movies) {
+		movie._doc.shows = await Show.countDocuments({ movie: movie._id, status: "starting soon" });
+	}
+
 	return res.status(200).json({
 		status: "success",
 		message: "movies list fetched",

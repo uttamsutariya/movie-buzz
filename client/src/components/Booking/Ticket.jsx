@@ -12,6 +12,7 @@ const Ticket = ({ booking }) => {
 			images: { poster },
 			title,
 		},
+		isExpired,
 	} = booking;
 
 	const LIST_ITEMS = [
@@ -43,6 +44,11 @@ const Ticket = ({ booking }) => {
 
 	return (
 		<div className={styles.container}>
+			{isExpired ? (
+				<div className="absolute top-5 right-[-30px] bg-red-500 px-8 rotate-[45deg]">
+					<p className="text-white font-semibold">Expired</p>
+				</div>
+			) : null}
 			<div className={styles.image_container}>
 				<img className="w-[100%] h-auto" src={poster} alt={title} />
 			</div>
@@ -64,7 +70,7 @@ const Ticket = ({ booking }) => {
 };
 
 const styles = {
-	container: "flex max-w-sm mx-2 my-2 bg-white rounded overflow-hidden",
+	container: "flex max-w-sm mx-2 my-2 bg-white rounded overflow-hidden relative",
 	image_container: "w-1/3",
 	details_container: "w-2/3 p-1 md:p-2",
 	h1: "text-gray-900 font-bold text-xl md:text-2xl",

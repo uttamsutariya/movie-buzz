@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import Avatar from "@mui/material/Avatar";
 import LogoutRoundedIcon from "@mui/icons-material/LogoutRounded";
 import StyleOutlinedIcon from "@mui/icons-material/StyleOutlined";
@@ -7,15 +7,35 @@ import { Link, useNavigate } from "react-router-dom";
 
 import { logout, useAuthDispatch } from "../context";
 
+let useClickOutside = (handler) => {
+	let domNode = useRef();
+
+	useEffect(() => {
+		let menuCloseHandler = (e) => {
+			if (!domNode.current.contains(e.target)) handler();
+		};
+
+		document.addEventListener("mousedown", menuCloseHandler);
+
+		return () => {
+			document.removeEventListener("mousedown", menuCloseHandler);
+		};
+	});
+
+	return domNode;
+};
+
 const User = ({ icon }) => {
 	const [isOpen, setIsOpen] = useState(false);
 	const dispatch = useAuthDispatch();
 	const navigate = useNavigate();
 
+	let menuRef = useClickOutside(() => setIsOpen(false));
+
 	return (
 		<div>
-			<div className="relative inline-block text-left">
-				<div onClick={() => setIsOpen((prev) => !prev)} className="cursor-pointer">
+			<div ref={menuRef} className="relative inline-block text-left">
+				<div onClick={() => setIsOpen(!isOpen)} className="cursor-pointer">
 					<Avatar
 						sx={{
 							backgroundColor: "#2563EB",

@@ -11,6 +11,7 @@ import Time from "../../util/Time";
 import TablePagination from "@mui/material/TablePagination";
 import VisibilityOutlinedIcon from "@mui/icons-material/VisibilityOutlined";
 import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
+import NoItem from "../../util/NoItem";
 
 import { SORT_OPTION } from "../../../../constants";
 
@@ -232,7 +233,9 @@ const Shows = () => {
 
 			<div className="mx-auto px-4 sm:px-8">
 				<div className="overflow-x-auto">
-					<div className={styles.table_container}>{showTable}</div>
+					<div className={styles.table_container}>
+						{shows.length > 0 ? showTable : <NoItem item={"We don't have any running shows, add one !"} />}
+					</div>
 				</div>
 			</div>
 		</div>

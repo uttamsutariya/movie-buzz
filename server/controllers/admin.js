@@ -21,7 +21,7 @@ exports.addCinemaHall = asyncHandler(async (req, res, next) => {
 	if (hall) return next(new CustomError("Cinema Hall already exist with this name"));
 
 	const cinemaHallData = {
-		screenName: name,
+		screenName: name.toUpperCase(),
 		totalRows: rows,
 		totalColumns: columns,
 		totalSeats: rows * columns,

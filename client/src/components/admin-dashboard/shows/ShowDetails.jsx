@@ -18,7 +18,7 @@ const initialState = {
 	bookedSeats: 0,
 	availableSeats: 0,
 	price: 0,
-	totalEarningns: 0,
+	totalEarnings: 0,
 	bookings: [],
 };
 
@@ -44,16 +44,11 @@ const ShowDetails = () => {
 
 	const [state, dispatch] = useReducer(reducer, initialState);
 
-	const { loading, error, totalBookings, totalSeats, bookedSeats, availableSeats, price, bookings, totalEarningns } =
+	const { loading, error, totalBookings, totalSeats, bookedSeats, availableSeats, price, bookings, totalEarnings } =
 		state;
 
 	const [page, setPage] = useState(0);
 	const [rowsPerPage, setRowsPerPage] = useState(5);
-
-	const handleSortOptionChange = (sortOption) => {
-		sortOrder == 1 ? setSortOrder(-1) : setSortOrder(1);
-		setSortOption(sortOption);
-	};
 
 	const handleChangePage = (e, newPage) => setPage(newPage);
 
@@ -207,7 +202,7 @@ const ShowDetails = () => {
 				</div>
 				<div className="m-5">
 					<h1 className={styles.stat_h1}>Earnings</h1>
-					<p className={styles.stat_p}>{totalEarningns} INR.</p>
+					<p className={styles.stat_p}>{totalEarnings} INR.</p>
 				</div>
 			</div>
 

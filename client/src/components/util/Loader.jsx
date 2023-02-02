@@ -1,5 +1,5 @@
 import BackButton from "./BackButton";
-import LoaderSvg from "../../assets/images/loading3.svg";
+import LoaderSvg from "../../assets/images/loading.svg";
 
 const Loader = ({ msg }) => {
 	return (

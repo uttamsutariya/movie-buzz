@@ -6,6 +6,7 @@ import axios from "axios";
 import SwapVertRoundedIcon from "@mui/icons-material/SwapVertRounded";
 import Navbar from "../navigation/Navbar";
 import Loader from "../../util/Loader";
+import NoItem from "../../util/NoItem";
 
 import { SORT_OPTION } from "../../../../constants";
 import { toast } from "react-toastify";
@@ -89,6 +90,88 @@ const CinemaHall = () => {
 	if (error) return <Loader msg="error" />;
 	else if (loading) return <Loader msg="loading" />;
 
+	const cinemaHallTable = (
+		<table className="min-w-full">
+			<thead className="sticky top-0 z-50">
+				<tr>
+					<th className={styles.th}>
+						<p>Sr.</p>
+					</th>
+					<th
+						onClick={() => handleSortOptionChange(SORT_OPTION.SCREEN)}
+						className={`${styles.th} cursor-pointer`}
+					>
+						<p>
+							Screen Name
+							<SwapVertRoundedIcon fontSize="small" className="ml-2" />
+						</p>
+					</th>
+					<th
+						onClick={() => handleSortOptionChange(SORT_OPTION.TOTAL_SEATS)}
+						className={`${styles.th} cursor-pointer`}
+					>
+						<p>
+							Total Seats
+							<SwapVertRoundedIcon fontSize="small" className="ml-2" />
+						</p>
+					</th>
+					<th
+						onClick={() => handleSortOptionChange(SORT_OPTION.TOTAL_ROWS)}
+						className={`${styles.th} cursor-pointer`}
+					>
+						<p>
+							Rows
+							<SwapVertRoundedIcon fontSize="small" className="ml-2" />
+						</p>
+					</th>
+					<th
+						onClick={() => handleSortOptionChange(SORT_OPTION.TOTAL_COLS)}
+						className={`${styles.th} cursor-pointer`}
+					>
+						<p>
+							Columns
+							<SwapVertRoundedIcon fontSize="small" className="ml-2" />
+						</p>
+					</th>
+					<th className={styles.th}>
+						<p>Action</p>
+					</th>
+				</tr>
+			</thead>
+			<tbody>
+				{cinemaHalls.map((screen, index) => (
+					<tr className={styles.tr} key={screen._id}>
+						<td className={styles.td}>
+							<p className={styles.td_p}>{index + 1}</p>
+						</td>
+						<td className={styles.td}>
+							<p className={styles.td_p}>{screen.screenName}</p>
+						</td>
+						<td className={styles.td}>
+							<p className={styles.td_p}>{screen.totalSeats}</p>
+						</td>
+						<td className={styles.td}>
+							<p className={styles.td_p}>{screen.totalRows}</p>
+						</td>
+						<td className={styles.td}>
+							<p className={styles.td_p}>{screen.totalColumns}</p>
+						</td>
+						<td className={styles.td}>
+							<button
+								onClick={handleDelete}
+								id={screen._id}
+								type="button"
+								className="py-0.5 px-3 bg-red-700 text-white text-center font-medium rounded-md"
+							>
+								Delete
+							</button>
+						</td>
+					</tr>
+				))}
+			</tbody>
+		</table>
+	);
+
 	return (
 		<div className="h-[100vh] overflow-auto">
 			<Navbar
@@ -113,89 +196,13 @@ const CinemaHall = () => {
 			{/* table */}
 
 			<div className="mx-auto px-4 sm:px-8">
-				<div className="py-2">
-					<div className="py-4 overflow-x-auto">
-						<div className={styles.table_container}>
-							<table className="min-w-full">
-								<thead className="sticky top-0 z-50">
-									<tr>
-										<th className={styles.th}>
-											<p>Sr.</p>
-										</th>
-										<th
-											onClick={() => handleSortOptionChange(SORT_OPTION.SCREEN)}
-											className={`${styles.th} cursor-pointer`}
-										>
-											<p>
-												Screen Name
-												<SwapVertRoundedIcon fontSize="small" className="ml-2" />
-											</p>
-										</th>
-										<th
-											onClick={() => handleSortOptionChange(SORT_OPTION.TOTAL_SEATS)}
-											className={`${styles.th} cursor-pointer`}
-										>
-											<p>
-												Total Seats
-												<SwapVertRoundedIcon fontSize="small" className="ml-2" />
-											</p>
-										</th>
-										<th
-											onClick={() => handleSortOptionChange(SORT_OPTION.TOTAL_ROWS)}
-											className={`${styles.th} cursor-pointer`}
-										>
-											<p>
-												Rows
-												<SwapVertRoundedIcon fontSize="small" className="ml-2" />
-											</p>
-										</th>
-										<th
-											onClick={() => handleSortOptionChange(SORT_OPTION.TOTAL_COLS)}
-											className={`${styles.th} cursor-pointer`}
-										>
-											<p>
-												Columns
-												<SwapVertRoundedIcon fontSize="small" className="ml-2" />
-											</p>
-										</th>
-										<th className={styles.th}>
-											<p>Action</p>
-										</th>
-									</tr>
-								</thead>
-								<tbody>
-									{cinemaHalls.map((screen, index) => (
-										<tr className={styles.tr} key={screen._id}>
-											<td className={styles.td}>
-												<p className={styles.td_p}>{index + 1}</p>
-											</td>
-											<td className={styles.td}>
-												<p className={styles.td_p}>{screen.screenName}</p>
-											</td>
-											<td className={styles.td}>
-												<p className={styles.td_p}>{screen.totalSeats}</p>
-											</td>
-											<td className={styles.td}>
-												<p className={styles.td_p}>{screen.totalRows}</p>
-											</td>
-											<td className={styles.td}>
-												<p className={styles.td_p}>{screen.totalColumns}</p>
-											</td>
-											<td className={styles.td}>
-												<button
-													onClick={handleDelete}
-													id={screen._id}
-													type="button"
-													className="py-0.5 px-3 bg-red-700 text-white text-center font-medium rounded-md"
-												>
-													Delete
-												</button>
-											</td>
-										</tr>
-									))}
-								</tbody>
-							</table>
-						</div>
+				<div className="py-4 overflow-x-auto">
+					<div className={styles.table_container}>
+						{cinemaHalls.length > 0 ? (
+							cinemaHallTable
+						) : (
+							<NoItem item={"We don't have any cinemahalls, add one !"} />
+						)}
 					</div>
 				</div>
 			</div>

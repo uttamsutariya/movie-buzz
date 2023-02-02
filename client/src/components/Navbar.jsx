@@ -18,8 +18,8 @@ const Navbar = () => {
 								<GitHubIcon fontSize="large" />
 							</button>
 						</a>
-						<Link className="font-bold text-2xl" to="/">
-							uMovies
+						<Link className="font-bold text-4xl" to="/">
+							<p className="main-title">Movie-Buzz</p>
 						</Link>
 						<div>
 							<div className=" flex space-x-4 items-center">
