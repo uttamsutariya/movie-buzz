@@ -15,10 +15,10 @@ const Booking = require("../models/booking");
 // sign up
 exports.signUp = asyncHandler(async (req, res, next) => {
 	// distructure data from request body
-	let { username, email, password } = req.body;
+	let { email, password } = req.body;
 
-	if (!email || !password || !username) {
-		return next(new CustomError("Username, email & password are required", 400));
+	if (!email || !password) {
+		return next(new CustomError("Email & password are required", 400));
 	}
 
 	let user = await User.findOne({ email });
@@ -29,7 +29,6 @@ exports.signUp = asyncHandler(async (req, res, next) => {
 
 	// create user
 	user = await User.create({
-		username,
 		email,
 		password,
 	});

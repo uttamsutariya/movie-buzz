@@ -5,10 +5,6 @@ const { Schema } = mongoose;
 
 const userSchema = new Schema(
 	{
-		username: {
-			type: String,
-			lowercase: true,
-		},
 		email: {
 			type: String,
 			lowercase: true,

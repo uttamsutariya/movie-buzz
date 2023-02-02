@@ -8,10 +8,12 @@ const Home = () => {
 		<>
 			<Navbar />
 			<div className="w-full h-[85vh] p-2 mx-auto text-center flex flex-col justify-center items-center">
-				<h1 className="text-4xl sm:text-6xl md:text-7xl md:py-6 font-bold">Welcome to uMovies</h1>
-				<div className="flex justify-center items-center py-4">
-					<p className="text-3xl  font-bold text-gray-600">
-						Get Easy and fastest movie booking experience with us
+				<h1 className="text-5xl md:text-7xl md:py-6 font-bold text-center">
+					<span className="text-7xl">👋</span> <br /> Welcome
+				</h1>
+				<div className="flex justify-center items-center my-5 px-4 md:w-[900px]">
+					<p className="text-[30px] md:text-3xl font-bold text-gray-600 text-center">
+						Experience the easy and fastest movie ticket booking experience with Movie-Buzz
 					</p>
 				</div>
 

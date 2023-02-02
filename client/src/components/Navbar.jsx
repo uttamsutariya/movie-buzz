@@ -24,7 +24,7 @@ const Navbar = () => {
 						<div>
 							<div className=" flex space-x-4 items-center">
 								{user != null ? (
-									<User icon={user.username[0].toUpperCase()} />
+									<User icon={user.email[0].toUpperCase()} />
 								) : (
 									<Link to="/login">
 										<button

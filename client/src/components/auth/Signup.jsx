@@ -11,7 +11,6 @@ import { toast } from "react-toastify";
 import { signupUser, useAuthDispatch, useAuthState } from "../../context";
 
 const defaultFormData = {
-	username: "",
 	email: "",
 	password: "",
 	confirmPassword: "",
@@ -49,16 +48,6 @@ const Signup = () => {
 
 			<div className={styles.form_container}>
 				<form onSubmit={handleSubmit} autoComplete="off">
-					<div className={styles.form_group}>
-						<input
-							onChange={handleChange}
-							type="name"
-							name="username"
-							className={styles.form_input}
-							placeholder="Name"
-							required
-						/>
-					</div>
 					<div className={styles.form_group}>
 						<input
 							onChange={handleChange}
