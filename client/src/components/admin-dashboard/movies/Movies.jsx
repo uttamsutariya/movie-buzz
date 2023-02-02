@@ -98,7 +98,7 @@ const Movies = () => {
 
 	const movieTable = (
 		<table className="min-w-full">
-			<thead className="sticky top-0 z-50">
+			<thead>
 				<tr>
 					<th className={styles.th}>
 						<p>Sr.</p>

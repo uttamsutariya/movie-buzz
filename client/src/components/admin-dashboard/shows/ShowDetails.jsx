@@ -82,7 +82,7 @@ const ShowDetails = () => {
 				<div className="py-4 overflow-x-auto">
 					<div className={styles.table_container}>
 						<table className="min-w-full">
-							<thead className="sticky top-0 z-50">
+							<thead>
 								<tr>
 									<th className={styles.th}>
 										<p>Sr.</p>

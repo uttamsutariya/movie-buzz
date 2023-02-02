@@ -9,8 +9,8 @@ const Navbar = () => {
 	const { user } = useAuthState();
 
 	return (
-		<nav className="bg-slate-800 mb-5 mx-auto w-[100vw] shadow-xl sticky top-0 z-50">
-			<div className="mx-auto px-8 max-w-[1400px]">
+		<nav className="bg-slate-800 mb-5 mx-auto w-[100vw] shadow-lg shadow-gray-800 sticky top-0 z-50">
+			<div className="mx-auto px-4 md:px-8 max-w-[1400px]">
 				<div className="flex items-center justify-between">
 					<div className="w-full justify-between flex items-center py-5">
 						<a href="https://github.com/uttamsutariya">
@@ -18,7 +18,7 @@ const Navbar = () => {
 								<GitHubIcon fontSize="large" />
 							</button>
 						</a>
-						<Link className="font-bold text-4xl" to="/">
+						<Link className="font-bold text-3xl md:text-4xl" to="/">
 							<p className="main-title">Movie-Buzz</p>
 						</Link>
 						<div>
