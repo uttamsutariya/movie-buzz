@@ -22,7 +22,7 @@ app.use(cookieParser());
 app.use(fileUpload());
 
 // middleware for access frontend
-const buildPath = path.normalize(path.join(__dirname, "../client/dist"));
+const buildPath = path.normalize(path.join(__dirname, "/client/dist"));
 app.use(express.static(buildPath));
 
 // logger
