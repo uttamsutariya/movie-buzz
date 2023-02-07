@@ -13,7 +13,7 @@ const Navbar = () => {
 			<div className="mx-auto px-4 md:px-8 max-w-[1400px]">
 				<div className="flex items-center justify-between">
 					<div className="w-full justify-between flex items-center py-5">
-						<a href="https://github.com/uttamsutariya" target="_blank">
+						<a href="https://github.com/uttamsutariya/movie-buzz" target="_blank" title="Code Repository">
 							<button type="button" className=" text-white text-center font-medium rounded-md">
 								<GitHubIcon fontSize="large" />
 							</button>

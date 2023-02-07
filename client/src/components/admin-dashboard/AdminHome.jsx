@@ -13,8 +13,8 @@ const AdminHome = () => {
 	return (
 		<div className="flex">
 			<div className="h-[100vh] flex flex-col w-[18%] px-4 py-8 bg-slate-800 border-r ">
-				<Link to={"/admin"} className="text-3xl text-center text-white">
-					uMovies
+				<Link to={"/admin"} className="text-3xl font-semibold text-center text-white">
+					<p className="main-title">Movie-Buzz</p>
 				</Link>
 				<div className="w-full">
 					<nav className="flex flex-col justify-start flex-1 mt-6 space-y-3">
