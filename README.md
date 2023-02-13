@@ -7,7 +7,7 @@
 
 <h2 align="center">⬇️ Live project link ⬇️
 <br>
-<a href="http://65.2.151.247/">https://movie-buzz.me</a>
+<a href="http://65.2.151.247/" target="_blank">https://movie-buzz.me</a>
 </h1>
 
 <br>
