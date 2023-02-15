@@ -1,11 +1,11 @@
 <h1 align="center">Movie-Buzz <img src="./client/src/assets/images/favicon.png" width="40" height="40"/></h1>
-<h4 align="center">
+<p align="center">
     An online movie ticket booking web application with full admin support and having all real time booking functionalities like real booking apps & also interactive and beautiful user interface built with <a href="https://www.mongodb.com/mern-stack" target="_blank">MERN</a> stack
-</h4>
+</p>
 
 <br>
 
-<h2 align="center">⬇️ Live project link ⬇️
+<h3 align="center">⬇️ Live project link ⬇️
 <br>
 <a href="http://65.2.151.247/" target="_blank">https://movie-buzz.me</a>
 </h1>
@@ -70,7 +70,7 @@ The suggested application allows users to reserve a movie from a theatre for a s
 
 <br>
 
-# Backend
+## Backend
 
 <br>
 
@@ -85,7 +85,7 @@ The suggested application allows users to reserve a movie from a theatre for a s
 -   [Express.js](https://expressjs.com/) for building REST API.
 -   [MongoDB](https://www.mongodb.com/docs/) as a database to store user information & chats.
 
-# Frontend
+## Frontend
 
 <br>
 <div align="left">
@@ -104,7 +104,7 @@ The suggested application allows users to reserve a movie from a theatre for a s
 
 <br>
 
-# Deployment 🌨️
+## Deployment 🌨️
 
 <br>
 <div align="left">
@@ -120,7 +120,7 @@ The suggested application allows users to reserve a movie from a theatre for a s
 
 <br>
 
-## FAQ
+# FAQ
 
 #### How can I see admin panel ?
 
