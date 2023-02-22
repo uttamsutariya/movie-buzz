@@ -34,7 +34,6 @@ The suggested application allows users to reserve a movie from a theatre for a s
 -   [x] Sort list of shows price & date wise
 -   [x] View available & booked seats from seatmap (seat configuration)
 -   [x] Select seat from available seats & get total price.
--   [ ] Real payment with razorpay or stripe (not implemented due to issues with razorpay testing card information)
 -   [x] Get ticket on mail after booking
 -   [x] View booking history
 -   [x] Give their feedback
