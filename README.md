@@ -7,7 +7,7 @@
 
 <h3 align="center">⬇️ Live project link ⬇️
 <br>
-<a href="http://65.2.151.247/" target="_blank">https://movie-buzz.me</a>
+<a href="http://uttamsutariya.me:3030" target="_blank">http://uttamsutariya.me/moviebuzz</a>
 </h1>
 
 <br>
