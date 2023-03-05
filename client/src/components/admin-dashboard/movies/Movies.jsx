@@ -159,14 +159,24 @@ const Movies = () => {
 							</div>
 						</td>
 						<td className={styles.td}>
-							<button
-								onClick={deleteMovie}
-								id={movie._id}
-								type="button"
-								className="py-0.5 px-3 bg-red-700 text-white text-center font-medium rounded-md"
-							>
-								delete
-							</button>
+							{movie.shows == 0 ? (
+								<button
+									onClick={deleteMovie}
+									id={movie._id}
+									type="button"
+									className="py-0.5 px-3 bg-red-700 text-white text-center font-medium rounded-md"
+								>
+									delete
+								</button>
+							) : (
+								<button
+									id={movie._id}
+									type="button"
+									className="py-0.5 px-3 bg-red-400 cursor-not-allowed text-white text-center font-medium rounded-md"
+								>
+									delete
+								</button>
+							)}
 						</td>
 					</tr>
 				))}
