@@ -28,8 +28,8 @@ app.use(mongoSanitize());
 // data sanitization against XSS(cross site scripting)
 app.use(xss());
 
-// accept cross origin request
-app.use(cors());
+// // accept cross origin request
+// app.use(cors());
 
 // cookies & file upload middlewares
 app.use(cookieParser());
