@@ -8,11 +8,25 @@ const cors = require("cors");
 const path = require("path");
 const globalErrorHandler = require("./middlewares/globalErrorHandler");
 
+// security packages
+const helmet = require("helmet");
+const mongoSanitize = require("express-mongo-sanitize");
+const xss = require("xss-clean");
+
 const app = express();
 
-// regular middlewares
+// set security HTTP headers
+app.use(helmet());
+
+// middlewares to parse body
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
+// data sanitization against NoSQL query injection
+app.use(mongoSanitize());
+
+// data sanitization against XSS(cross site scripting)
+app.use(xss());
 
 // accept cross origin request
 app.use(cors());
