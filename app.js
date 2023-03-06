@@ -15,9 +15,6 @@ const xss = require("xss-clean");
 
 const app = express();
 
-// set security HTTP headers
-app.use(helmet());
-
 // middlewares to parse body
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -28,8 +25,8 @@ app.use(mongoSanitize());
 // data sanitization against XSS(cross site scripting)
 app.use(xss());
 
-// // accept cross origin request
-// app.use(cors());
+// accept cross origin request
+app.use(cors());
 
 // cookies & file upload middlewares
 app.use(cookieParser());
