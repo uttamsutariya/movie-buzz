@@ -24,9 +24,9 @@ The suggested application allows users to reserve a movie from a theatre for a s
 
 ## Customer Features 🪄
 
--   [x] Register them selves
+-   [x] Register themselves
 -   [x] Login to the application
--   [x] View currenlty released & coming soon movies
+-   [x] View currently released & coming soon movies
 -   [x] Search movie
 -   [x] Get movie details
 -   [x] Watch movie trailer
