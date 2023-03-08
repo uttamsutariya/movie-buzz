@@ -41,6 +41,7 @@ const SeatSelector = () => {
 	const location = useLocation();
 
 	const [state, dispatch] = useReducer(reducer, initialState);
+	const [multipleSeatConflict, setMultipleSeatConflict] = useState(false);
 
 	const { loading, error, availableSeats, bookedSeats, cinemaHall, price } = state;
 
@@ -58,7 +59,7 @@ const SeatSelector = () => {
 
 	useEffect(() => {
 		fetchSeats();
-	}, []);
+	}, [multipleSeatConflict]);
 
 	const [seats, setSeats] = useState([]);
 
@@ -83,6 +84,10 @@ const SeatSelector = () => {
 			navigate("/movies");
 		} catch (error) {
 			if (error.response.status == 403) navigate("/login", { state: { from: location } });
+			else {
+				setMultipleSeatConflict(true);
+				toast.error(error?.response?.data?.message);
+			}
 		}
 	};
 
