@@ -58,7 +58,7 @@ app.use("/api/movies", movieRoute);
 app.get("/api", (req, res) => {
 	res.status(200).json({
 		status: "success",
-		message: "Welcome to uMovies backend",
+		message: "Welcome to movie buzz backend",
 	});
 });
 
