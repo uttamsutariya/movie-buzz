@@ -3,6 +3,8 @@ const CustomError = require("../utils/customError");
 
 const { s3_upload } = require("../helper/imageUploader");
 
+const { MAX_FILE_SIZE } = require("../config");
+
 // models
 const Movie = require("../models/movie");
 const Show = require("../models/show");
@@ -73,10 +75,10 @@ exports.addMovie = asyncHandler(async (req, res, next) => {
 
 	const { poster, banner } = req.files;
 
-	const fileSize = process.env.MAX_FILE_SIZE;
+	const fileSize = MAX_FILE_SIZE;
 
 	if (poster.size / (1024 * 1024) > fileSize || banner.size / (1024 * 1024) > fileSize) {
-		return next(new CustomError(`Maximum image size is ${process.env.MAX_FILE_SIZE} MB`));
+		return next(new CustomError(`Maximum image size is ${MAX_FILE_SIZE} MB`));
 	}
 
 	if (!poster || !banner) return next(new CustomError("Please upload poster and banner image", 400));

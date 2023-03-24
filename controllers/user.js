@@ -4,6 +4,8 @@ const { cookieToken } = require("../utils/cookieToken");
 const CustomError = require("../utils/customError");
 const jwt = require("jsonwebtoken");
 
+const { FORGOT_PASSWORD_TOKEN_EXPIRY_MINUTE, BASE_URL, JWT_SECRET } = require("../config");
+
 // mail sender
 const { sendMail } = require("../helper/mailer");
 
@@ -121,7 +123,7 @@ exports.forgotPassword = asyncHandler(async (req, res, next) => {
 	if (!user) return next(new CustomError("User not found with this email", 400));
 
 	const token = crypto.randomBytes(32).toString("hex");
-	const expiry = Date.now() + process.env.FORGOT_PASSWORD_TOKEN_EXPIRY_MINUTE * 60 * 1000;
+	const expiry = Date.now() + FORGOT_PASSWORD_TOKEN_EXPIRY_MINUTE * 60 * 1000;
 
 	await User.updateOne({ email }, { $set: { forgotPasswordToken: token, forgotPasswordTokenExpiry: expiry } });
 
@@ -131,7 +133,7 @@ exports.forgotPassword = asyncHandler(async (req, res, next) => {
 	 * api url = http://{{url}}/api/user/resetPassword/:userId/:token
 	 */
 
-	const url = `${process.env.BASE_URL}/#/user/reset-password/${user._id}/${token}`;
+	const url = `${BASE_URL}/#/user/reset-password/${user._id}/${token}`;
 
 	const mailDetails = {
 		link: url,
@@ -189,7 +191,7 @@ exports.loadUser = asyncHandler(async (req, res, next) => {
 			},
 		});
 
-	const decode = jwt.verify(token, process.env.JWT_SECRET);
+	const decode = jwt.verify(token, JWT_SECRET);
 
 	// token invalid or expired
 	if (!decode) return next(new CustomError("Login again", 403));

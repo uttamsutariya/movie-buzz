@@ -1,12 +1,14 @@
 const AWS = require("aws-sdk");
 const sharp = require("sharp");
 
+const { AWS_ACCESS_KEY, AWS_BUCKET_NAME, AWS_BUCKET_REGION, AWS_SECRET_ACCESS_KEY } = require("../config");
+
 const asyncHandler = require("../middlewares/asyncHandler");
 
-const bucketName = process.env.AWS_BUCKET_NAME;
-const bucketRegion = process.env.AWS_BUCKET_REGION;
-const accessKey = process.env.AWS_ACCESS_KEY;
-const secretAccessKey = process.env.AWS_SECRET_ACCESS_KEY;
+const bucketName = AWS_BUCKET_NAME;
+const bucketRegion = AWS_BUCKET_REGION;
+const accessKey = AWS_ACCESS_KEY;
+const secretAccessKey = AWS_SECRET_ACCESS_KEY;
 
 AWS.config = new AWS.Config();
 AWS.config.update({

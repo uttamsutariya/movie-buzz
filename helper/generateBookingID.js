@@ -1,7 +1,9 @@
+const { BOOKING_ID_LENGTH } = require("../config");
+
 exports.generateBookingID = () => {
 	const str = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
 
-	const len = process.env.BOOKING_ID_LENGTH;
+	const len = BOOKING_ID_LENGTH;
 
 	let output = "";
 

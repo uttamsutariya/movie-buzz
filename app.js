@@ -8,6 +8,8 @@ const cors = require("cors");
 const path = require("path");
 const globalErrorHandler = require("./middlewares/globalErrorHandler");
 
+const { NODE_ENV } = require("./config");
+
 // security packages
 const mongoSanitize = require("express-mongo-sanitize");
 const xss = require("xss-clean");
@@ -36,7 +38,7 @@ const buildPath = path.normalize(path.join(__dirname, "/client/dist"));
 app.use(express.static(buildPath));
 
 // logger
-if (process.env.NODE_ENV === "development") {
+if (NODE_ENV === "development") {
 	app.use(morgan("dev"));
 }
 

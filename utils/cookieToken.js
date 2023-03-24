@@ -1,14 +1,16 @@
 const jwt = require("jsonwebtoken");
 
+const { COOKIE_EXPIRE_DAYS, JWT_SECRET, JWT_EXPIRY } = require("../config");
+
 // setting cookie options
 const options = {
-	expires: new Date(Date.now() + process.env.COOKIE_EXPIRE_DAYS * 20 * 60 * 60 * 1000),
+	expires: new Date(Date.now() + COOKIE_EXPIRE_DAYS * 20 * 60 * 60 * 1000),
 	httpOnly: true,
 };
 
 exports.cookieToken = (user, res) => {
-	const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
-		expiresIn: process.env.JWT_EXPIRY,
+	const token = jwt.sign({ id: user._id }, JWT_SECRET, {
+		expiresIn: JWT_EXPIRY,
 	});
 
 	user._doc.password = undefined;

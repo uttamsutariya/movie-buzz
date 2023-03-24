@@ -1,6 +1,6 @@
-const sendError = (err, res) => {
-	const { NODE_ENV } = process.env;
+const { NODE_ENV } = require("../config");
 
+const sendError = (err, res) => {
 	let message = err.message;
 
 	// if operational error don't expose to client
@@ -28,7 +28,7 @@ const sendError = (err, res) => {
 
 const handleCastErrorDB = (err) => {
 	err.statusCode = 500;
-	if (process.env.NODE_ENV === "production") err.message = "something went wrong";
+	if (NODE_ENV === "production") err.message = "something went wrong";
 	else err.message = "Invalid Object ID";
 	return err;
 };
