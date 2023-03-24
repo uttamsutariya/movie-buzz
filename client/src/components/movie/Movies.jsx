@@ -54,10 +54,6 @@ const Movies = () => {
 		fetchMovies();
 	}, []);
 
-	useEffect(() => {
-		fetchMovies(searchKey);
-	}, [searchKey]);
-
 	const releasedMovies = movies?.filter((movie) => movie.status === "released");
 	const comingSoonMovies = movies?.filter((movie) => movie.status !== "released");
 
