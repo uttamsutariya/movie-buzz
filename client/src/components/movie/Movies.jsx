@@ -54,8 +54,22 @@ const Movies = () => {
 		fetchMovies();
 	}, []);
 
-	const releasedMovies = movies?.filter((movie) => movie.status === "released");
-	const comingSoonMovies = movies?.filter((movie) => movie.status !== "released");
+	let releasedMovies = movies
+		?.filter((movie) => movie.status === "released")
+		.sort((a, b) => {
+			let dateA = new Date(a.release_date);
+			let dateB = new Date(b.release_date);
+
+			return dateA > dateB ? -1 : 1;
+		});
+	let comingSoonMovies = movies
+		?.filter((movie) => movie.status !== "released")
+		.sort((a, b) => {
+			let dateA = new Date(a.release_date);
+			let dateB = new Date(b.release_date);
+
+			return dateA > dateB ? 1 : -1;
+		});
 
 	if (error) return <Loader msg="error" />;
 	else if (loading) return <Loader msg="loading" />;

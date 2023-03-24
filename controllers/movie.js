@@ -31,6 +31,7 @@ exports.userGetAllMovies = asyncHandler(async (req, res, next) => {
 			"images.poster": 1,
 			title: 1,
 			status: 1,
+			release_date: 1,
 		}
 	).sort({
 		release_date: -1,
