@@ -2,14 +2,16 @@ const path = require("path");
 const nodemailer = require("nodemailer");
 const hbs = require("nodemailer-express-handlebars");
 
+const { MAIL_HOST, MAIL_PORT, MAIL_AUTH_CREDENTIAL_PASSWORD, MAIL_AUTH_CREDENTIAL_USER } = require("../config");
+
 let transporter = nodemailer.createTransport({
-	host: process.env.MAIL_HOST,
-	port: process.env.MAIL_PORT,
+	host: MAIL_HOST,
+	port: MAIL_PORT,
 	secure: false,
 	requireTLS: true,
 	auth: {
-		user: process.env.MAIL_AUTH_CREDENTIAL_USER,
-		pass: process.env.MAIL_AUTH_CREDENTIAL_PASSWORD,
+		user: MAIL_AUTH_CREDENTIAL_USER,
+		pass: MAIL_AUTH_CREDENTIAL_PASSWORD,
 	},
 });
 
@@ -27,7 +29,7 @@ transporter.use("compile", hbs(handlebarsOptions));
 
 exports.sendMail = async (reciever, sub, mailDetails, isTicketMail = true) => {
 	let mailOptions = {
-		from: process.env.MAIL_AUTH_CREDENTIAL_USER,
+		from: MAIL_AUTH_CREDENTIAL_USER,
 		to: reciever,
 		subject: sub,
 		template: isTicketMail ? "email" : "reset-password",
