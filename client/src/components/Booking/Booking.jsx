@@ -60,7 +60,7 @@ const Booking = () => {
 			<div className="w-full md:max-w-[1296px] my-2 mx-auto p-2 md:p-10 bg-slate-800 relative flex flex-col justify-center items-center">
 				<BackButton />
 				<div className="text-3xl text-white text-center mt-10 mb-3">My Bookings</div>
-				<div className="flex justify-start items-center flex-wrap">
+				<div className="flex justify-center items-center flex-wrap">
 					{bookings?.length > 0 ? (
 						bookings?.map((booking, index) => <Ticket booking={booking} key={booking._id} />)
 					) : (
