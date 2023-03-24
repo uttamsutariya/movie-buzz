@@ -86,13 +86,13 @@ const SeatMap = (props) => {
 	if (props.loading) return <Loader msg="loading" />;
 
 	return (
-		<div className="p-2 border-2 border-blue-400 rounded-md w-auto">
+		<div className="p-2 bg-black border-2 border-blue-400 rounded-md w-auto">
 			<table>
 				<thead>
 					{myRows.map((row, index) => (
 						<tr key={index}>
 							{row.map((element, index) => (
-								<td className=" bg-white text-black text-sm p-[1px]" key={index}>
+								<td className="text-white text-sm p-[1px]" key={index}>
 									{element}
 								</td>
 							))}

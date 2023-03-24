@@ -105,7 +105,7 @@ const SeatSelector = () => {
 				<div className={styles.seat_map_container}>
 					<div>
 						<div className={styles.screen}>
-							<p className={styles.screen_p}>Screen This Side</p>
+							<p className={styles.screen_p}>Screen this side</p>
 						</div>
 					</div>
 					<div className={styles.availability}>

@@ -175,7 +175,7 @@ exports.getAllMovies = asyncHandler(async (req, res, next) => {
 // get all released movies
 exports.getAllReleasedMovies = asyncHandler(async (req, res, next) => {
 	const movies = await Movie.find({ status: "released" }, { title: 1 }).sort({
-		release_date: 1,
+		release_date: -1,
 	});
 
 	return res.status(200).json({
