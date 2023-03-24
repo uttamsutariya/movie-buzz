@@ -103,7 +103,6 @@ const SeatSelector = () => {
 				</p>
 
 				<div className={styles.seat_map_container}>
-					<div className={styles.seat_map}>Seat Map</div>
 					<div>
 						<div className={styles.screen}>
 							<p className={styles.screen_p}>Screen This Side</p>
@@ -147,8 +146,7 @@ const styles = {
 	price: "text-xl absolute top-12 left-5 text-blue-400",
 	price_p: "text-white ml-2",
 	seat_map_container: "w-full md:w-[50%] mt-14 m-auto flex flex-col justify-center items-center",
-	seat_map: "text-2xl font-bold text-blue-400 text-center mb-5",
-	screen: "h-[30px] w-[100%] shadow-white shadow bg-white rounded-lg mb-3 flex justify-center items-center",
+	screen: "h-[30px] w-[100%] bg-white mb-3 flex justify-center items-center",
 	screen_p: "text-black font-bold px-10",
 	selected_options_span: "ml-2 text-blue-400",
 	availability: "my-3 flex justify-between",
