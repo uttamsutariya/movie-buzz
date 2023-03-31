@@ -28,13 +28,35 @@ const MovieForm = () => {
 	};
 
 	const [formData, setFormData] = useState(defaultFormData);
+	const [formErrors, setFormErrors] = useState({});
 	const [loading, setLoading] = useState(false);
-	const [isDisabled, setIsDisabled] = useState(true);
 	const location = useLocation();
 	const navigate = useNavigate();
+	const [isSubmitting, setIsSubmitting] = useState("");
+
+	const validateInput = (values) => {
+		const { title, description, actors, trailer_link, poster, banner, release_date, duration, language, genre } =
+			values;
+
+		const errors = {};
+
+		if (!title) errors.title = "Title is required";
+		if (!description) errors.description = "Description is required";
+		if (!actors) errors.actors = "Cast is required";
+		if (!trailer_link) errors.trailer_link = "Trailer link is required";
+		if (!poster) errors.poster = "Poster is required";
+		if (!banner) errors.banner = "Banner is required";
+		if (!release_date) errors.release_date = "Release date is required";
+		if (!duration) errors.duration = "Movie duration is required";
+		if (language.length == 0) errors.language = "Please select languages";
+		if (genre.length == 0) errors.genre = "Please select genres";
+
+		setFormErrors(errors);
+		if (Object.keys(errors).length > 0) return true;
+		return false;
+	};
 
 	const handleChange = (e) => {
-		setIsDisabled(false);
 		const { target } = e;
 
 		const name = target.name;
@@ -56,16 +78,18 @@ const MovieForm = () => {
 	};
 
 	const handleSubmit = (e) => {
-		setLoading(true);
 		e.preventDefault();
 
 		let uploadData = new FormData();
+
+		if (validateInput(formData)) return;
 
 		for (let key in formData) {
 			if (key == "poster" || key == "banner") uploadData.set(key, formData[key], formData[key].name);
 			else uploadData.set(key, formData[key]);
 		}
 
+		setIsSubmitting("Adding new movie ...");
 		axios
 			.post(`/api/admin/movies`, uploadData)
 			.then((res) => {
@@ -96,7 +120,7 @@ const MovieForm = () => {
 					{/* movie title */}
 					<div className="mb-6">
 						<label className={styles.label} htmlFor="title">
-							Title
+							Title *
 						</label>
 						<input
 							onChange={handleChange}
@@ -105,14 +129,14 @@ const MovieForm = () => {
 							type="text"
 							className={`${styles.input} px-3 py-2 w-[100%]`}
 							placeholder="Movie title"
-							required
 						/>
+						<p className={`${styles.error}`}>{formErrors.title}</p>
 					</div>
 
 					{/* movie description */}
 					<div className="mb-6">
 						<label className={styles.label} htmlFor="desc">
-							Description
+							Description *
 						</label>
 						<textarea
 							onChange={handleChange}
@@ -121,14 +145,14 @@ const MovieForm = () => {
 							className={`${styles.input} px-3 py-2 w-[100%] resize-none`}
 							rows={1}
 							placeholder="Enter Movie Description"
-							required
 						/>
+						<p className={`${styles.error}`}>{formErrors.description}</p>
 					</div>
 
 					{/* actors */}
 					<div className="mb-6">
 						<label className={styles.label} htmlFor="cast">
-							Actors (cast)
+							Actors (cast) *
 						</label>
 						<input
 							onChange={handleChange}
@@ -137,14 +161,14 @@ const MovieForm = () => {
 							name="actors"
 							className={`${styles.input} px-3 py-2 w-[100%]`}
 							placeholder="Enter comma separated values"
-							required
 						/>
+						<p className={`${styles.error}`}>{formErrors.actors}</p>
 					</div>
 
 					{/* trailer link */}
 					<div className="mb-6">
 						<label className={styles.label} htmlFor="trailer">
-							Trailer Link
+							Trailer Link *
 						</label>
 						<input
 							onChange={handleChange}
@@ -153,8 +177,8 @@ const MovieForm = () => {
 							name="trailer_link"
 							className={`${styles.input} px-3 py-2 w-[100%]`}
 							placeholder="Enter youtube trailer link"
-							required
 						/>
+						<p className={`${styles.error}`}>{formErrors.trailer_link}</p>
 					</div>
 
 					{/* image upload */}
@@ -162,7 +186,7 @@ const MovieForm = () => {
 						{/* poster image  */}
 						<div>
 							<label className={styles.label} htmlFor="poster">
-								Poster Image
+								Poster Image *
 							</label>
 							<input
 								onChange={handleChange}
@@ -170,13 +194,13 @@ const MovieForm = () => {
 								id="poster"
 								type="file"
 								name="poster"
-								required
 							/>
+							<p className={`${styles.error}`}>{formErrors.poster}</p>
 						</div>
 						{/* banner image */}
 						<div>
 							<label className={styles.label} htmlFor="banner">
-								Banner Image
+								Banner Image *
 							</label>
 							<input
 								onChange={handleChange}
@@ -184,8 +208,8 @@ const MovieForm = () => {
 								id="banner"
 								type="file"
 								name="banner"
-								required
 							/>
+							<p className={`${styles.error}`}>{formErrors.banner}</p>
 						</div>
 					</div>
 
@@ -194,7 +218,7 @@ const MovieForm = () => {
 						<div className="w-[40%]">
 							<div>
 								<label className={styles.label} htmlFor="release-date">
-									Release Date
+									Release Date *
 								</label>
 								<input
 									onChange={handleChange}
@@ -202,12 +226,12 @@ const MovieForm = () => {
 									id="release-date"
 									name="release_date"
 									type="date"
-									required
 								/>
+								<p className={`${styles.error}`}>{formErrors.release_date}</p>
 							</div>
-							<div>
+							<div className="mt-3">
 								<label className={styles.label} htmlFor="duration">
-									Movie Duration
+									Movie Duration *
 								</label>
 								<input
 									onChange={handleChange}
@@ -215,8 +239,8 @@ const MovieForm = () => {
 									id="duration"
 									name="duration"
 									type="time"
-									required
 								/>
+								<p className={`${styles.error}`}>{formErrors.duration}</p>
 							</div>
 						</div>
 
@@ -224,7 +248,7 @@ const MovieForm = () => {
 						<div className="flex w-[60%]">
 							<div className="mr-2">
 								<label htmlFor="lang" className={styles.label}>
-									Languages
+									Languages *
 								</label>
 								<select
 									id="lang"
@@ -232,7 +256,6 @@ const MovieForm = () => {
 									name="language"
 									multiple
 									className={`${styles.input} p-2`}
-									required
 								>
 									{languages.map((lang) => (
 										<option value={lang} key={lang}>
@@ -240,10 +263,11 @@ const MovieForm = () => {
 										</option>
 									))}
 								</select>
+								<p className={`${styles.error}`}>{formErrors.language}</p>
 							</div>
 							<div>
 								<label htmlFor="genres" className={styles.label}>
-									Genres
+									Genres *
 								</label>
 								<select
 									multiple
@@ -251,7 +275,6 @@ const MovieForm = () => {
 									id="genres"
 									name="genre"
 									className={`${styles.input} p-2`}
-									required
 								>
 									{movieGenres.map((genre) => (
 										<option value={genre} key={genre}>
@@ -259,6 +282,7 @@ const MovieForm = () => {
 										</option>
 									))}
 								</select>
+								<p className={`${styles.error}`}>{formErrors.genre}</p>
 							</div>
 						</div>
 					</div>
@@ -287,10 +311,10 @@ const MovieForm = () => {
 
 					<button
 						type="submit"
-						disabled={isDisabled}
-						className={!isDisabled ? `${styles.btn}` : `${styles.btn_disabled}`}
+						disabled={isSubmitting}
+						className={!isSubmitting ? `${styles.btn}` : `${styles.btn_disabled}`}
 					>
-						<FileUploadOutlinedIcon /> Add movie
+						<FileUploadOutlinedIcon /> {isSubmitting ? isSubmitting : "Add movie"}
 					</button>
 				</form>
 			</div>
@@ -302,10 +326,11 @@ const styles = {
 	nav_h1: "text-2xl font-semibold text-blue-400",
 	radio_input: "w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 ",
 	radio_label: "ml-2 text-sm font-medium text-gray-900 dark:text-gray-300",
-	input: "block w-full mb-5 text-sm text-gray-400 border border-gray-500 rounded-lg cursor-pointer bg-gray-800",
-	label: "block mb-2 font-extralight text-blue-400",
+	input: "block w-full text-sm text-gray-400 border border-gray-500 rounded-lg cursor-pointer bg-gray-800",
+	label: "block mb-1 font-extralight text-blue-400",
 	btn: "w-full px-6 py-2.5 bg-blue-600 text-white font-medium text-md rounded hover:bg-blue-700",
 	btn_disabled: "w-full px-6 py-2.5 bg-blue-400 cursor-not-allowed text-white font-medium text-md rounded",
+	error: "text-xs text-red-400 px-1 pt-1 font-light",
 };
 
 export default MovieForm;

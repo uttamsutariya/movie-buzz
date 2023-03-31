@@ -1,6 +1,6 @@
 import { useEffect, useReducer, useState } from "react";
 import SwapVertRoundedIcon from "@mui/icons-material/SwapVertRounded";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
 
 // components
@@ -9,8 +9,7 @@ import Loader from "../../util/Loader";
 import Date from "../../util/Date";
 import Time from "../../util/Time";
 import TablePagination from "@mui/material/TablePagination";
-import VisibilityOutlinedIcon from "@mui/icons-material/VisibilityOutlined";
-import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
+import LoadingButton from "@mui/lab/LoadingButton";
 
 import { SORT_OPTION } from "../../../../constants";
 
@@ -45,6 +44,7 @@ const Shows = () => {
 	const [sortOrder, setSortOrder] = useState(-1);
 	const [page, setPage] = useState(0);
 	const [rowsPerPage, setRowsPerPage] = useState(5);
+	const [tableLoading, setTableLoading] = useState(false);
 
 	const handleSortOptionChange = (sortOption) => {
 		sortOrder == 1 ? setSortOrder(-1) : setSortOrder(1);
@@ -61,10 +61,12 @@ const Shows = () => {
 	const { shows, loading, error, totalShows } = state;
 
 	const fetchShows = () => {
+		setTableLoading(true);
 		axios
 			.get(`/api/admin/shows/history?sortBy=${sortOption}&order=${sortOrder}&page=${page}&perPage=${rowsPerPage}`)
 			.then((res) => {
 				dispatch({ type: "FETCH_SUCCESS", payload: { ...res.data.data, loading: false, error: "" } });
+				setTableLoading(false);
 			})
 			.catch((error) => {
 				if (error.response.status == 403) navigate("/login", { state: { from: location } });
@@ -161,7 +163,7 @@ const Shows = () => {
 					</tr>
 				))}
 				<tr className="bg-gray-300">
-					<td colSpan={7} className="px-24">
+					<td colSpan={6}>
 						<TablePagination
 							onPageChange={handleChangePage}
 							onRowsPerPageChange={handleChangeRowsPerPage}
@@ -180,6 +182,9 @@ const Shows = () => {
 								</>
 							)}
 						/>
+					</td>
+					<td className="">
+						<LoadingButton loading={tableLoading} />
 					</td>
 				</tr>
 			</tbody>

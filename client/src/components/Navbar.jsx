@@ -5,22 +5,18 @@ import GitHubIcon from "@mui/icons-material/GitHub";
 
 import { useAuthState } from "../context";
 
-const Navbar = () => {
+const Navbar = ({ children }) => {
 	const { user } = useAuthState();
 
 	return (
-		<nav className="bg-slate-800 mb-5 mx-auto w-[100vw] shadow-lg shadow-gray-800 sticky top-0 z-50">
+		<nav className="bg-slate-800 mb-5 mx-auto w-[100vw] shadow-sm shadow-gray-400 sticky top-0 z-50">
 			<div className="mx-auto px-4 md:px-8 max-w-[1400px]">
 				<div className="flex items-center justify-between">
 					<div className="w-full justify-between flex items-center py-5">
-						<a href="https://github.com/uttamsutariya/movie-buzz" target="_blank" title="Code Repository">
-							<button type="button" className=" text-white text-center font-medium rounded-md">
-								<GitHubIcon fontSize="large" />
-							</button>
-						</a>
 						<Link className="font-bold text-3xl md:text-4xl" to="/">
-							<p className="main-title">Movie-Buzz</p>
+							<p className="main-title">MovieBuzz</p>
 						</Link>
+						<>{children}</>
 						<div>
 							<div className=" flex space-x-4 items-center">
 								{user != null ? (
@@ -29,7 +25,7 @@ const Navbar = () => {
 									<Link to="/login">
 										<button
 											type="button"
-											className="py-1 px-4 bg-blue-600 text-white text-center font-medium rounded-lg"
+											className="py-2 px-5 bg-blue-600 text-white text-center font-medium rounded-md"
 										>
 											Login
 										</button>

@@ -51,8 +51,8 @@ const Movies = () => {
 	};
 
 	useEffect(() => {
-		fetchMovies();
-	}, []);
+		fetchMovies(searchKey);
+	}, [searchKey]);
 
 	let releasedMovies = movies
 		?.filter((movie) => movie.status === "released")

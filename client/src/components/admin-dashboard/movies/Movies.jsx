@@ -6,9 +6,12 @@ import Loader from "../../util/Loader";
 import axios from "axios";
 import Date from "../../util/Date";
 import NoItem from "../../util/NoItem";
+import LoadingButton from "@mui/lab/LoadingButton";
 
 import SwapVertRoundedIcon from "@mui/icons-material/SwapVertRounded";
 import TablePagination from "@mui/material/TablePagination";
+
+import Swal from "sweetalert2";
 
 import { SORT_OPTION } from "../../../../constants";
 import { toast } from "react-toastify";
@@ -32,6 +35,9 @@ const reducer = (state, action) => {
 		case "FETCH_ERROR":
 			return { ...state, error: payload };
 
+		case "SET_LOADING":
+			return { ...state, loading: true };
+
 		default:
 			return state;
 	}
@@ -46,6 +52,7 @@ const Movies = () => {
 	const [sortOrder, setSortOrder] = useState(1);
 	const [page, setPage] = useState(0);
 	const [rowsPerPage, setRowsPerPage] = useState(5);
+	const [tableLoading, setTableLoading] = useState(false);
 
 	const handleSortOptionChange = (sortOption) => {
 		sortOrder == 1 ? setSortOrder(-1) : setSortOrder(1);
@@ -62,10 +69,12 @@ const Movies = () => {
 	const { movies, totalMovies, releasedMovies, comingSoonMovies, loading, error } = state;
 
 	const fetchMovies = () => {
+		setTableLoading(true);
 		axios
 			.get(`/api/admin/movies?sortBy=${sortOption}&order=${sortOrder}&page=${page}&perPage=${rowsPerPage}`)
 			.then((res) => {
 				dispatch({ type: "FETCH_SUCCESS", payload: { ...res.data.data, loading: false, error: "" } });
+				setTableLoading(false);
 			})
 			.catch((error) => {
 				if (error.response.status == 403) navigate("/login", { state: { from: location } });
@@ -78,19 +87,29 @@ const Movies = () => {
 	}, [sortOption, sortOrder, page, rowsPerPage]);
 
 	const deleteMovie = (e) => {
-		const sure = window.confirm("Are you sure want to delete ?");
-
-		if (sure) {
-			axios
-				.delete(`/api/admin/movies/${e.target.id}`)
-				.then(() => {
-					toast.success("Deleted succesfully");
-					fetchMovies();
-				})
-				.catch((error) => {
-					if (error.response.status == 403) navigate("/login", { state: { from: location } });
-				});
-		}
+		Swal.fire({
+			title: "Are you sure want to delete it?",
+			text: "You won't be able to revert this!",
+			icon: "question",
+			showCancelButton: true,
+			confirmButtonColor: "#2563eb",
+			cancelButtonColor: "#d33",
+			confirmButtonText: "Yes, delete it!",
+		}).then((result) => {
+			if (result.isConfirmed) {
+				setTableLoading(true);
+				axios
+					.delete(`/api/admin/movies/${e.target.id}`)
+					.then(() => {
+						toast.success("Deleted succesfully");
+						fetchMovies();
+						setTableLoading(false);
+					})
+					.catch((error) => {
+						if (error.response.status == 403) navigate("/login", { state: { from: location } });
+					});
+			}
+		});
 	};
 
 	if (error) return <Loader msg="error" />;
@@ -181,7 +200,7 @@ const Movies = () => {
 					</tr>
 				))}
 				<tr className="bg-gray-300">
-					<td colSpan={6} className="px-24">
+					<td colSpan={5}>
 						<TablePagination
 							onPageChange={handleChangePage}
 							onRowsPerPageChange={handleChangeRowsPerPage}
@@ -200,6 +219,9 @@ const Movies = () => {
 								</>
 							)}
 						/>
+					</td>
+					<td className="">
+						<LoadingButton loading={tableLoading} />
 					</td>
 				</tr>
 			</tbody>

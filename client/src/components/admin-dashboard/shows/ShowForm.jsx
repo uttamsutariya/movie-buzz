@@ -36,10 +36,10 @@ const reducer = (state, action) => {
 const ShowForm = ({ update }) => {
 	const [state, dispatch] = useReducer(reducer, initialState);
 
-	const [isDisabled, setIsDisabled] = useState(true);
 	const { id } = useParams();
 	const navigate = useNavigate();
 	const location = useLocation();
+	const [isSubmitting, setIsSubmitting] = useState("");
 
 	const { movies, cinemaHalls, loading, error } = state;
 
@@ -129,10 +129,12 @@ const ShowForm = ({ update }) => {
 		}
 
 		if (update) {
+			setIsSubmitting("Updating show ...");
 			axios
 				.patch(`/api/admin/show/${id}`, formData)
 				.then((res) => {
 					toast.success("Show updated");
+					setIsSubmitting("");
 					navigate(-1);
 				})
 				.catch((error) => {
@@ -140,10 +142,12 @@ const ShowForm = ({ update }) => {
 					else toast.error(error?.response?.data?.message);
 				});
 		} else {
+			setIsSubmitting("Adding new show ...");
 			axios
 				.post(`/api/admin/show`, formData)
 				.then((res) => {
 					toast.success("Show added succesfully");
+					setIsSubmitting("");
 					navigate(-1);
 				})
 				.catch((error) => {
@@ -154,7 +158,6 @@ const ShowForm = ({ update }) => {
 	};
 
 	const handleChange = (e) => {
-		setIsDisabled(false);
 		setFormData((prevState) => ({ ...prevState, [e.target.name]: e.target.value }));
 	};
 
@@ -241,6 +244,7 @@ const ShowForm = ({ update }) => {
 							<input
 								onChange={handleChange}
 								value={dateTime}
+								min={new Date().toISOString()}
 								id="release-date"
 								type="datetime-local"
 								name="dateTime"
@@ -250,18 +254,18 @@ const ShowForm = ({ update }) => {
 						</div>
 					</div>
 					<button
+						disabled={isSubmitting}
 						onClick={handleSubmit}
-						disabled={isDisabled}
 						type="button"
-						className={!isDisabled ? `${styles.btn}` : `${styles.btn_disabled}`}
+						className={isSubmitting ? `${styles.btn_disabled}` : `${styles.btn}`}
 					>
 						{update ? (
 							<>
-								<DesignServicesOutlinedIcon /> Update show details
+								<DesignServicesOutlinedIcon /> {isSubmitting ? isSubmitting : "Update show details"}
 							</>
 						) : (
 							<>
-								<FileUploadOutlinedIcon /> Add new show
+								<FileUploadOutlinedIcon /> {isSubmitting ? isSubmitting : "Add new show"}
 							</>
 						)}
 					</button>

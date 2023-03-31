@@ -4,7 +4,7 @@
 	"description": "",
 	"main": "index.js",
 	"scripts": {
-		"start": "node index.js",
+		"start": "npm i --prefix client && npm run build --prefix client && node index.js",
 		"dev": "nodemon index.js"
 	},
 	"keywords": [],

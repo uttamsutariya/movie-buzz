@@ -12,6 +12,7 @@ import TablePagination from "@mui/material/TablePagination";
 import VisibilityOutlinedIcon from "@mui/icons-material/VisibilityOutlined";
 import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
 import NoItem from "../../util/NoItem";
+import LoadingButton from "@mui/lab/LoadingButton";
 
 import { SORT_OPTION } from "../../../../constants";
 
@@ -46,6 +47,7 @@ const Shows = () => {
 	const [sortOrder, setSortOrder] = useState(1);
 	const [page, setPage] = useState(0);
 	const [rowsPerPage, setRowsPerPage] = useState(5);
+	const [tableLoading, setTableLoading] = useState(false);
 
 	const handleSortOptionChange = (sortOption) => {
 		sortOrder == 1 ? setSortOrder(-1) : setSortOrder(1);
@@ -62,12 +64,14 @@ const Shows = () => {
 	const { shows, loading, error, totalShows, todaysShows } = state;
 
 	const fetchShows = () => {
+		setTableLoading(true);
 		axios
 			.get(
 				`/api/admin/shows/scheduled?sortBy=${sortOption}&order=${sortOrder}&page=${page}&perPage=${rowsPerPage}`
 			)
 			.then((res) => {
 				dispatch({ type: "FETCH_SUCCESS", payload: { ...res.data.data, loading: false, error: "" } });
+				setTableLoading(false);
 			})
 			.catch((error) => {
 				if (error.response.status == 403) navigate("/login", { state: { from: location } });
@@ -180,7 +184,7 @@ const Shows = () => {
 					</tr>
 				))}
 				<tr className="bg-gray-300">
-					<td colSpan={7} className="px-24">
+					<td colSpan={6}>
 						<TablePagination
 							onPageChange={handleChangePage}
 							onRowsPerPageChange={handleChangeRowsPerPage}
@@ -199,6 +203,9 @@ const Shows = () => {
 								</>
 							)}
 						/>
+					</td>
+					<td className="">
+						<LoadingButton loading={tableLoading} />
 					</td>
 				</tr>
 			</tbody>

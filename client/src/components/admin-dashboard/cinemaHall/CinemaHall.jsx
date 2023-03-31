@@ -8,6 +8,8 @@ import Navbar from "../navigation/Navbar";
 import Loader from "../../util/Loader";
 import NoItem from "../../util/NoItem";
 
+import Swal from "sweetalert2";
+
 import { SORT_OPTION } from "../../../../constants";
 import { toast } from "react-toastify";
 
@@ -69,22 +71,30 @@ const CinemaHall = () => {
 	}, [sortOption, sortOrder]);
 
 	const handleDelete = (e) => {
-		const sure = window.confirm("Are you sure want to delete ?");
-
-		if (sure) {
-			dispatch({ type: "SET_LOADING", payload: true });
-			axios
-				.delete(`/api/admin/cinemaHall/${e.target.id}`)
-				.then(() => {
-					toast.success("Deleted succesfully");
-					fetchCinemaHalls();
-					dispatch({ type: "SET_LOADING", payload: false });
-				})
-				.catch((error) => {
-					dispatch({ type: "SET_LOADING", payload: false });
-					if (error.response.status == 403) navigate("/login", { state: { from: location } });
-				});
-		}
+		Swal.fire({
+			title: "Are you sure want to delete it?",
+			text: "You won't be able to revert this!",
+			icon: "question",
+			showCancelButton: true,
+			confirmButtonColor: "#2563eb",
+			cancelButtonColor: "#d33",
+			confirmButtonText: "Yes, delete it!",
+		}).then((result) => {
+			if (result.isConfirmed) {
+				dispatch({ type: "SET_LOADING", payload: true });
+				axios
+					.delete(`/api/admin/cinemaHall/${e.target.id}`)
+					.then(() => {
+						toast.success("Deleted succesfully");
+						fetchCinemaHalls();
+						dispatch({ type: "SET_LOADING", payload: false });
+					})
+					.catch((error) => {
+						dispatch({ type: "SET_LOADING", payload: false });
+						if (error.response.status == 403) navigate("/login", { state: { from: location } });
+					});
+			}
+		});
 	};
 
 	if (error) return <Loader msg="error" />;

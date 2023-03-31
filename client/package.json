@@ -12,12 +12,16 @@
 		"@emotion/react": "^11.10.5",
 		"@emotion/styled": "^11.10.5",
 		"@mui/icons-material": "^5.10.9",
+		"@mui/lab": "^5.0.0-alpha.124",
 		"@mui/material": "^5.10.17",
 		"axios": "^1.2.0",
+		"movie-ticket-booking-backend": "file:..",
 		"react": "^18.2.0",
 		"react-dom": "^18.2.0",
 		"react-router-dom": "^6.4.3",
-		"react-toastify": "^9.1.1"
+		"react-toastify": "^9.1.1",
+		"sweetalert2": "^11.7.3",
+		"sweetalert2-react-content": "^5.0.7"
 	},
 	"devDependencies": {
 		"@types/react": "^18.0.24",
