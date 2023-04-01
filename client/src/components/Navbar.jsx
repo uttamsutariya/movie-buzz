@@ -1,7 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import User from "./UserProfileButton";
-import GitHubIcon from "@mui/icons-material/GitHub";
 
 import { useAuthState } from "../context";
 

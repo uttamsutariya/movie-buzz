@@ -9,16 +9,25 @@ import axios from "axios";
 
 const Feedback = () => {
 	const [message, setMessage] = useState("");
+	const [formError, setFormError] = useState({});
 	const location = useLocation();
 	const navigate = useNavigate();
+
+	const validateInput = (message) => {
+		const errors = {};
+
+		if (!message) errors.message = "Please write your message";
+
+		setFormError(errors);
+
+		if (Object.keys(errors).length > 0) return true;
+		return false;
+	};
 
 	const handleSubmit = async (e) => {
 		e.preventDefault();
 
-		if (!message) {
-			toast.error("Please write your message");
-			return;
-		}
+		if (validateInput(message)) return;
 
 		try {
 			const res = await axios.post(`/api/user/feedback`, { message });
@@ -43,12 +52,16 @@ const Feedback = () => {
 					<div className="w-full md:w-[50%] m-auto mt-5">
 						<form onSubmit={handleSubmit} autoComplete="off">
 							<textarea
-								onChange={(e) => setMessage(e.target.value)}
+								onChange={(e) => {
+									validateInput(e.target.value);
+									setMessage(e.target.value);
+								}}
 								id="feedback"
 								rows={10}
 								className="resize-none text-sm rounded-lg block w-full p-5 bg-gray-700 placeholder-gray-200 text-white focus:outline-blue-400"
 								placeholder="Write your message here !"
 							></textarea>
+							<p className="text-xs text-red-400 px-1 pt-1 font-light">{formError.message}</p>
 							<button
 								type="submit"
 								className="bg-blue-600 w-full rounded-md font-medium my-6 px-3 py-3 text-white"

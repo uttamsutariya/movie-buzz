@@ -88,7 +88,7 @@ const User = ({ icon }) => {
 
 const styles = {
 	linkItem:
-		"block px-2 p-1 cursor-pointer text-md text-mygray border-b-2 border-solid border-mygray hover:bg-blue-600 hover:text-white",
+		"block px-2 p-1 cursor-pointer text-md text-mygray border-b-2 border-solid border-mygray rounded-md hover:bg-gray-200 hover:overflow-hidden",
 	link_div_container: "origin-top-right absolute right-0 mt-2 w-48 rounded-md bg-white",
 };
 

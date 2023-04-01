@@ -4,6 +4,7 @@ import { useParams, useNavigate, useLocation } from "react-router-dom";
 import SeatMap from "../util/SeatMap";
 import BackButton from "../util/BackButton";
 import Loader from "../util/Loader";
+import Swal from "sweetalert2";
 
 import axios from "axios";
 
@@ -69,7 +70,12 @@ const SeatSelector = () => {
 
 	const handleSubmit = async (e) => {
 		if (seats.length == 0) {
-			toast.error("Please select a seat");
+			Swal.fire({
+				title: "Please select a seat",
+				text: "You haven't selected any seat",
+				icon: "warning",
+				confirmButtonColor: "#2563eb",
+			});
 			return;
 		}
 
@@ -78,17 +84,60 @@ const SeatSelector = () => {
 			seats,
 		};
 
-		try {
-			await axios.post(`/api/user/bookShow`, formData);
-			toast.success("Your tickets are booked and sent on your mail 🤩");
-			navigate("/movies");
-		} catch (error) {
-			if (error.response.status == 403) navigate("/login", { state: { from: location } });
-			else {
-				setMultipleSeatConflict(true);
-				toast.error(error?.response?.data?.message);
+		Swal.fire({
+			title: "Confirm your booking ?",
+			text: "You won't be able to revert this!",
+			icon: "question",
+			showCancelButton: true,
+			confirmButtonColor: "#2563eb",
+			cancelButtonColor: "#d33",
+			confirmButtonText: "Yes, book it!",
+		}).then((result) => {
+			if (result.isConfirmed) {
+				axios
+					.post(`/api/user/bookShow`, formData)
+					.then(() => {
+						Swal.fire({
+							title: "Seats are booked",
+							text: "Congrats, your tickets are sent on your mail",
+							icon: "success",
+							confirmButtonColor: "#2563eb",
+						});
+						// toast.success("Your tickets are booked and sent on your mail 🤩");
+						navigate("/movies");
+					})
+					.catch((error) => {
+						if (error.response.status == 403) navigate("/login", { state: { from: location } });
+						else {
+							setMultipleSeatConflict(true);
+							// toast.error(error?.response?.data?.message);
+							Swal.fire({
+								title: error?.response?.data?.message,
+								text: "Something went wrong, sorry for inconvience !",
+								icon: "error",
+								confirmButtonColor: "#2563eb",
+							});
+						}
+					});
 			}
-		}
+		});
+
+		// const formData = {
+		// 	show: id,
+		// 	seats,
+		// };
+
+		// try {
+		// 	await axios.post(`/api/user/bookShow`, formData);
+		// 	toast.success("Your tickets are booked and sent on your mail 🤩");
+		// 	navigate("/movies");
+		// } catch (error) {
+		// 	if (error.response.status == 403) navigate("/login", { state: { from: location } });
+		// 	else {
+		// 		setMultipleSeatConflict(true);
+		// 		toast.error(error?.response?.data?.message);
+		// 	}
+		// }
 	};
 
 	if (error) return <Loader msg="error" />;
