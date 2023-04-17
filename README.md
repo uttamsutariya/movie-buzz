@@ -7,7 +7,9 @@
 
 <h3 align="center">⬇️ Live project link ⬇️
 <br>
-<a href="https://moviebuzz-uttam1712.vercel.app" target="_blank">https://moviebuzz-uttam1712.vercel.app</a>
+<a href="http://13.126.229.176/" target="_blank">AWS deployment 🔗</a>
+<br>
+<a href="https://moviebuzz-uttam1712.vercel.app" target="_blank">Vercel deployment 🔗</a>
 </h1>
 
 <br>
