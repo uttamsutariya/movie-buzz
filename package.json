@@ -6,7 +6,9 @@
 	"scripts": {
 		"start": "node index.js",
 		"dev": "nodemon index.js",
-		"build-start": "npm i --prefix client && npm run build --prefix client && node index.js"
+		"install-server": "npm install",
+		"install-client": "npm install --prefix client",
+		"react-build": "npm run build --prefix client"
 	},
 	"keywords": [],
 	"author": "",
@@ -15,6 +17,7 @@
 		"aws-sdk": "^2.1258.0",
 		"bcryptjs": "^2.4.3",
 		"cookie-parser": "^1.4.6",
+		"cookie-session": "^2.0.0",
 		"cors": "^2.8.5",
 		"dotenv": "^16.0.3",
 		"express": "^4.18.2",
@@ -26,6 +29,8 @@
 		"node-schedule": "^2.1.0",
 		"nodemailer": "^6.8.0",
 		"nodemailer-express-handlebars": "^6.0.0",
+		"passport": "^0.6.0",
+		"passport-google-oauth20": "^2.0.0",
 		"sharp": "^0.31.2",
 		"xss-clean": "^0.1.1"
 	},
