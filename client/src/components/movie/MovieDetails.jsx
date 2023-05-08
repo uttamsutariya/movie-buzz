@@ -1,6 +1,5 @@
 import { useParams, Link } from "react-router-dom";
-import { useEffect, useReducer } from "react";
-import axios from "axios";
+import { useEffect, useState } from "react";
 
 // components
 import Navbar from "../Navbar";
@@ -9,44 +8,33 @@ import BackButton from "../util/BackButton";
 import Date from "../util/Date";
 import Loader from "../util/Loader";
 import ArrayString from "../util/ArrayString";
-
-const initialState = {
-	loading: true,
-	error: "",
-	movie: {},
-};
-
-const reducer = (state, action) => {
-	const { type, payload } = action;
-
-	switch (type) {
-		case "FETCH_SUCCESS":
-			return { loading: false, error: "", movie: payload };
-		case "FETCH_ERROR":
-			return { ...state, error: payload };
-		default:
-			return state;
-	}
-};
+import { useMoviesContext } from "../../context/hooks";
 
 const MovieDetails = () => {
 	const { id } = useParams();
 
-	const [state, dispatch] = useReducer(reducer, initialState);
-
-	const { loading, error, movie } = state;
+	const { movies } = useMoviesContext();
+	const [movie, setMovie] = useState({});
+	const [loading, setLoading] = useState(false);
+	const [error, setError] = useState(null);
 
 	const { _id, title, images, description, trailer_link, release_date, language, duration, genre, actors, status } =
 		movie;
 
+	function findMovie(movieId) {
+		return movies.find((movie) => movie._id == movieId);
+	}
+
 	useEffect(() => {
-		axios
-			.get(`/api/movies/${id}`)
-			.then((res) => {
-				dispatch({ type: "FETCH_SUCCESS", payload: res.data.data.movie });
-			})
-			.catch((error) => dispatch({ type: "FETCH_ERROR", payload: "Something went wrong" }));
-	}, []);
+		setLoading(true);
+		const foundMovie = findMovie(id);
+		if (!foundMovie) {
+			setError("Something went wrong");
+		} else {
+			setMovie(foundMovie);
+		}
+		setLoading(false);
+	}, [id]);
 
 	if (error) return <Loader msg="error" />;
 	else if (loading) return <Loader msg="loading" />;
@@ -88,7 +76,7 @@ const MovieDetails = () => {
 					<h1 className={styles.movie_name}>{title}</h1>
 
 					<div className={styles.img_container}>
-						<img className={styles.img} src={images.banner} alt={title} />
+						<img className={styles.img} src={images?.banner} alt={title} />
 					</div>
 					<div className={styles.main_details_container}>
 						<div className={styles.details_container}>

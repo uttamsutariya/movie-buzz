@@ -1,5 +1,6 @@
 import { useReducer, useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
+import { useMoviesContext } from "../../../context/hooks";
 import { Link } from "react-router-dom";
 import Navbar from "../navigation/Navbar";
 import Loader from "../../util/Loader";
@@ -48,6 +49,7 @@ const Movies = () => {
 	const location = useLocation();
 	const navigate = useNavigate();
 
+	const { setMovies } = useMoviesContext();
 	const [sortOption, setSortOption] = useState(SORT_OPTION.TITLE);
 	const [sortOrder, setSortOrder] = useState(1);
 	const [page, setPage] = useState(0);
@@ -104,6 +106,10 @@ const Movies = () => {
 						toast.success("Deleted succesfully");
 						fetchMovies();
 						setTableLoading(false);
+
+						const filteredMovies = movies.filter((m) => m._id != e.target.id);
+
+						setMovies(filteredMovies);
 					})
 					.catch((error) => {
 						if (error.response.status == 403) navigate("/login", { state: { from: location } });
