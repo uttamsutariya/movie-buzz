@@ -11,6 +11,7 @@ import Loader from "../../util/Loader";
 import { toast } from "react-toastify";
 
 import { movieGenres, languages } from "../../../../constants";
+import { useMoviesContext } from "../../../context/hooks";
 
 const MovieForm = () => {
 	const defaultFormData = {
@@ -27,6 +28,7 @@ const MovieForm = () => {
 		adult: false,
 	};
 
+	const { setMovies } = useMoviesContext();
 	const [formData, setFormData] = useState(defaultFormData);
 	const [formErrors, setFormErrors] = useState({});
 	const [loading, setLoading] = useState(false);
@@ -77,7 +79,7 @@ const MovieForm = () => {
 		} else setFormData({ ...formData, [name]: value });
 	};
 
-	const handleSubmit = (e) => {
+	const handleSubmit = async (e) => {
 		e.preventDefault();
 
 		let uploadData = new FormData();
@@ -90,18 +92,18 @@ const MovieForm = () => {
 		}
 
 		setIsSubmitting("Adding new movie ...");
-		axios
-			.post(`/api/admin/movies`, uploadData)
-			.then((res) => {
-				setLoading(false);
-				window.history.back();
-				toast.success("Movie added successfully");
-			})
-			.catch((error) => {
-				if (error?.response?.status == 403) navigate("/login", { state: { from: location } });
-				else toast.error(error?.response?.data?.message);
-				setLoading(false);
-			});
+
+		try {
+			const res = await axios.post("/api/admin/movies", uploadData);
+			setMovies(res.data.data.movie);
+			setLoading(false);
+			navigate(-1);
+			toast.success("Movie added successfully");
+		} catch (error) {
+			if (error?.response?.status == 403) navigate("/login", { state: { from: location } });
+			else toast.error(error?.response?.data?.message);
+			setLoading(false);
+		}
 	};
 
 	if (loading) return <Loader msg="loading" />;

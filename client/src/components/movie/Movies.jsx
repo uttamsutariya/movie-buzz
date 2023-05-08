@@ -1,4 +1,4 @@
-import { useState, useEffect, useReducer } from "react";
+import { useState, useEffect } from "react";
 import axios from "axios";
 
 // components
@@ -7,54 +7,48 @@ import Navbar from "../Navbar";
 import Loader from "../util/Loader";
 import SearchIcon from "@mui/icons-material/Search";
 import NoItem from "../util/NoItem";
-
-const initialState = {
-	loading: true,
-	error: null,
-	movies: [],
-};
-
-const reducer = (state, action) => {
-	const { type, payload } = action;
-
-	switch (type) {
-		case "FETCH_SUCCESS":
-			return { loading: false, error: "", movies: payload };
-		case "FETCH_ERROR":
-			return { ...state, error: payload };
-		default:
-			return state;
-	}
-};
+import { useMoviesContext } from "../../context/hooks";
 
 const Movies = () => {
-	const [state, dispatch] = useReducer(reducer, initialState);
-
+	const { movies, setMovies } = useMoviesContext();
+	const [searchedMovies, setSearchedMovies] = useState(movies);
+	const [loading, setLoading] = useState(false);
+	const [error, setError] = useState("");
 	const [searchKey, setSearchKey] = useState("");
 
-	const { loading, error, movies } = state;
-
-	const fetchMovies = async (searchKey = null) => {
+	const fetchMovies = async () => {
+		setLoading(true);
 		let url = "/api/movies";
-		if (searchKey) url = `/api/movies?searchKey=${searchKey}`;
+
 		axios
 			.get(`${url}`)
 			.then((res) => {
-				dispatch({ type: "FETCH_SUCCESS", payload: res.data.data.movies });
+				setMovies(res.data.data.movies);
+				setSearchedMovies(res.data.data.movies);
 			})
-			.catch((error) => dispatch({ type: "FETCH_ERROR", payload: "Something went wrong" }));
+			.catch(() => {
+				setError("Something went wrong");
+			})
+			.finally(() => {
+				setLoading(false);
+			});
 	};
 
-	const handleSearch = (e) => {
-		e.preventDefault();
-		fetchMovies(searchKey);
+	const handleSearchChange = (e) => {
+		setSearchKey(e.target.value);
+		const filteredMovies = movies.filter((movie) =>
+			movie.title.toLowerCase().includes(e.target.value.toLowerCase())
+		);
+		setSearchedMovies(filteredMovies);
 	};
 
 	useEffect(() => {
-		fetchMovies(searchKey);
-	}, [searchKey]);
+		if (movies.length === 0) {
+			fetchMovies(searchKey);
+		}
+	}, []);
 
-	let releasedMovies = movies
+	let releasedMovies = searchedMovies
 		?.filter((movie) => movie.status === "released")
 		.sort((a, b) => {
 			let dateA = new Date(a.release_date);
@@ -62,7 +56,7 @@ const Movies = () => {
 
 			return dateA > dateB ? -1 : 1;
 		});
-	let comingSoonMovies = movies
+	let comingSoonMovies = searchedMovies
 		?.filter((movie) => movie.status !== "released")
 		.sort((a, b) => {
 			let dateA = new Date(a.release_date);
@@ -91,9 +85,9 @@ const Movies = () => {
 		<>
 			<Navbar />
 			<div className={styles.main_div}>
-				<form onSubmit={handleSearch}>
+				<form>
 					<input
-						onChange={(e) => setSearchKey(e.target.value)}
+						onChange={handleSearchChange}
 						type="text"
 						placeholder="search movie"
 						className={styles.search_input}
@@ -102,7 +96,7 @@ const Movies = () => {
 						<SearchIcon fontSize="medium" />
 					</button>
 				</form>
-				{movies.length > 0 ? (
+				{searchedMovies.length > 0 ? (
 					<>
 						<div className="w-[100vw] max-w-[1296px] mb-2 mx-auto">
 							{releasedMovies.length > 0 ? (

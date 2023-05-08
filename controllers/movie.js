@@ -28,10 +28,8 @@ exports.userGetAllMovies = asyncHandler(async (req, res, next) => {
 			status: { $ne: "deleted" },
 		},
 		{
-			"images.poster": 1,
-			title: 1,
-			status: 1,
-			release_date: 1,
+			createdAt: 0,
+			updatedAt: 0,
 		}
 	).sort({
 		release_date: -1,
